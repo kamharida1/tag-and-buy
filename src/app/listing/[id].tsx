@@ -1,14 +1,16 @@
 import { useProduct } from "@/api/products";
 import ImageList from "@/components/ImageList";
 import ImageModal from "@/components/ImageModal";
+import { Text } from "@/components/Theme";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
-import { useState,  } from "react";
+import { useState } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default function ProductDetail() {
   const [activeIndex, setActiveIndex] = useState(0);
   let [isImageModalVisible, setIsImageModalVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { id } = useLocalSearchParams();
   const { data: product, isLoading, isError } = useProduct(id as string);
@@ -20,19 +22,17 @@ export default function ProductDetail() {
   };
 
   const goBack = () => {
-     router.back();
-   };
+    router.back();
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-     
-        <ImageList product={product} onImagePress={onPressImage} />
-        <ImageModal
-          activeIndex={activeIndex}
-          product={product}
-          isVisible={isImageModalVisible}
-          setVisible={setIsImageModalVisible}
-        />
+      <ScrollView>
+        <ImageList loading={loading} setIsLoading={setLoading} product={product} onImagePress={onPressImage} />
+        {/* <View style={{ flex: 1, padding: 16 }}>
+          <Text> Hello World</Text>
+        </View> */}
+      </ScrollView>
     </View>
   );
 }
@@ -56,7 +56,6 @@ export default function ProductDetail() {
 // const springOptions = {
 //   damping: 15,
 // };
-
 
 // const ProductDetail = () => {
 //   const { id } = useLocalSearchParams();
@@ -107,7 +106,6 @@ export default function ProductDetail() {
 //     };
 //   });
 
-
 //   const shareListing = async () => {
 //     try {
 //       await Share.share({
@@ -133,7 +131,7 @@ export default function ProductDetail() {
 //       ),
 //       headerTitle: '',
 //       headerTransparent: true,
-//       headerBackground: () => ( 
+//       headerBackground: () => (
 //         <Animated.View style={[headerAnimatedStyle, styles.header]}></Animated.View>
 //       ),
 //       headerLeft: () => (
@@ -143,7 +141,7 @@ export default function ProductDetail() {
 //       ),
 //     });
 //   }, []);
-  
+
 //   const scrollOffset = useScrollViewOffset(scrollRef);
 
 //   const imageAnimatedStyle = useAnimatedStyle(() => {

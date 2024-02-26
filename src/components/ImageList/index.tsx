@@ -1,71 +1,65 @@
 import { ScreenSize, useDimensions } from "@/helpers/dimensions";
 import { Product } from "@/types";
-import { FlatList, Pressable, StyleProp, StyleSheet, Touchable, View, ViewStyle } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  Touchable,
+  View,
+  ViewStyle,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { RemoteImage } from "../RemoteImage";
 import { defaultPizzaImage } from "../ProductListItem";
 import DiscountBadge from "@/core-ui";
 import { useCallback, useState } from "react";
+import ImageListItem from "../ImageListItem";
 
 type Props = {
   product: Product;
+  loading: boolean;
+  setIsLoading: Function;
   onImagePress: (index: number) => void;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
 };
 
-export default function ImageList({ product, onImagePress, style, contentContainerStyle }: Props) { 
+export default function ImageList({
+  product,
+  onImagePress,
+  style,
+  loading,
+  setIsLoading,
+  contentContainerStyle,
+}: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  let {screenSize, width } = useDimensions();
+  let { screenSize, width } = useDimensions();
 
-  let isIphone = screenSize === ScreenSize.Small;
-  let isLandscape = screenSize === ScreenSize.Large;
-  let isTabletPortrait = screenSize === ScreenSize.Medium && !isLandscape;
-
-  let imageSize = isLandscape
-    ? { width: width / 2, height: '100%' }
-    : { width, height: isIphone ? 450 : 576 };
-  
   const onFlatlistUpdate = useCallback(({ viewableItems }: any) => {
     if (viewableItems.length > 0) {
       setActiveIndex(viewableItems[0].index || 0);
     }
     //console.log(viewableItems);
   }, []);
-  
-  let renderProductImage = (
-    { item, index, }: { item: string; index: number }
-  ) => {
-    return (
-      <Pressable style={styles.flex} onPress={() => onImagePress(index)}>
-        <RemoteImage
-          path={item}
-          style={imageSize as any}
-          fallback={defaultPizzaImage}
-          resizeMode="cover"
-        />
-        {product.discount > 0 ? (
-          <DiscountBadge
-            value={product?.discount}
-            containerStyle={
-              isIphone
-                ? [styles.discountBox, styles.discountBoxTablet]
-                : styles.discountBox
-            }
-            textStyle={isTabletPortrait && styles.discountBoxTabletText}
-          />
-        ) : null}
-      </Pressable>
-    );
-  };
 
   return (
     <>
-      <View style={{margin: "auto", width: width, height: 450, flex: 1}}>
+      <View style={{ margin: "auto", width: width, height: 450, flex: 1 }}>
         <FlatList
           data={product?.images}
-          renderItem={renderProductImage}
+          renderItem={({ item, index }) => (
+            <ImageListItem
+              item={item}
+              index={index}
+              product={product}
+              onImagePress={onImagePress}
+              loading={loading}
+              setIsLoading={setIsLoading}
+            />
+          )}
           keyExtractor={(item) => item}
           horizontal
           pagingEnabled
@@ -76,21 +70,24 @@ export default function ImageList({ product, onImagePress, style, contentContain
             viewAreaCoveragePercentThreshold: 50,
           }}
           onViewableItemsChanged={onFlatlistUpdate}
+          ListFooterComponent={() => (
+            <View style={[styles.dots]}>
+              {product?.images &&
+                product?.images.map((_, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.dot,
+                      {
+                        backgroundColor:
+                          index === activeIndex ? "#000" : "#ededed",
+                      },
+                    ]}
+                  />
+                ))}
+            </View>
+          )}
         />
-        <View style={styles.dots}>
-          {product?.images &&
-            product?.images.map((_, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.dot,
-                  {
-                    backgroundColor: index === activeIndex ? "#000" : "#ededed",
-                  },
-                ]}
-              />
-            ))}
-        </View>
       </View>
     </>
   );
@@ -107,7 +104,6 @@ const styles = StyleSheet.create({
     top: 60,
     height: 40,
     opacity: 0.8,
-    
     paddingHorizontal: 12,
   },
   discountBoxTabletText: {
@@ -115,12 +111,7 @@ const styles = StyleSheet.create({
     fontFamily: "airMedium",
   },
   dots: {
-    flexDirection: "row",
-    justifyContent: "center",
-    position: "absolute",
-    right: 0,
-    bottom: 10,
-    left: 0,
+    //alignSelf: "center",
   },
   dot: {
     width: 10,
