@@ -5,6 +5,8 @@ import { ScreenSize, useDimensions } from '@/helpers/dimensions';
 import { RemoteImage } from '../RemoteImage';
 import DiscountBadge from '@/core-ui';
 import { defaultPizzaImage } from '../ProductListItem';
+import Animated from 'react-native-reanimated';
+import { Link, router, useSegments } from 'expo-router';
 
 interface ImageListItemProps {
   product: Product;
@@ -13,7 +15,9 @@ interface ImageListItemProps {
   index: number;
   loading: boolean;
   setIsLoading: Function;
-}
+};
+
+const AnimatedImage = Animated.createAnimatedComponent(RemoteImage);
 
 const ImageListItem = memo<ImageListItemProps>(({
   product,
@@ -26,6 +30,8 @@ const ImageListItem = memo<ImageListItemProps>(({
   let { screenSize, width } = useDimensions();
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const segments = useSegments();
+
   let isIphone = screenSize === ScreenSize.Small;
   let isLandscape = screenSize === ScreenSize.Large;
   let isTabletPortrait = screenSize === ScreenSize.Medium && !isLandscape;
@@ -34,35 +40,43 @@ const ImageListItem = memo<ImageListItemProps>(({
     ? { width: width / 2, height: "100%" }
     : { width, height: isIphone ? 450 : 576 };
   return (
-    <Pressable style={[imageSize as any]} onPress={() => onImagePress(index)}>
-      {loading && (
-        <ActivityIndicator
-          style={StyleSheet.absoluteFill}
-          size="large"
-          animating={true}
-        />
-      )}
-      <RemoteImage
-        path={item}
-        style={{ flex: 1 }}
-        fallback={defaultPizzaImage}
-        resizeMode="cover"
-        onLoad={() => {
-          setIsLoading(false);
-        }}
-      />
-      {product.discount > 0 ? (
-        <DiscountBadge
-          value={product?.discount}
-          containerStyle={
-            isIphone
-              ? [styles.discountBox, styles.discountBoxTablet]
-              : styles.discountBox
-          }
-          textStyle={isTabletPortrait && styles.discountBoxTabletText}
-        />
-      ) : null}
-    </Pressable>
+    <Link href={`/${segments[0]}/home/${item}`} asChild>
+      <Pressable>
+        <Animated.View
+          style={[imageSize as any]}
+          sharedTransitionTag="`container_${item}`"
+        >
+          {loading && (
+            <ActivityIndicator
+              style={StyleSheet.absoluteFill}
+              size="large"
+              animating={true}
+            />
+          )}
+          <AnimatedImage
+            sharedTransitionTag={`image_${item}`}
+            path={item}
+            style={{ flex: 1 }}
+            fallback={defaultPizzaImage}
+            contentFit="cover"
+            onLoad={() => {
+              setIsLoading(false);
+            }}
+          />
+        </Animated.View>
+        {product.discount > 0 ? (
+          <DiscountBadge
+            value={product?.discount}
+            containerStyle={
+              isIphone
+                ? [styles.discountBox, styles.discountBoxTablet]
+                : styles.discountBox
+            }
+            textStyle={isTabletPortrait && styles.discountBoxTabletText}
+          />
+        ) : null}
+      </Pressable>
+    </Link>
   );
 })
 

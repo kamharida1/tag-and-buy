@@ -6,7 +6,7 @@ import { useCallback, useMemo, useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function Home() { 
+export default function Home() {
   const { data: products, error, isLoading } = useProductList();
   const [category, setCategory] = useState<string>("Freezers");
 
@@ -14,22 +14,19 @@ export default function Home() {
     if (!products) return [];
     return products.filter((product) => product.category === category);
   }, [products, category]);
-  
-  const onCategoryChanged = useCallback((category: string) => { 
+
+  const onCategoryChanged = useCallback((category: string) => {
     setCategory(category);
   }, []);
-
 
   return (
     <View style={{ flex: 1, marginTop: 150 }}>
       <Stack.Screen
         options={{
-          header: () => (
-            <ExploreHeader onCategoryChanged={onCategoryChanged} />
-          ),
+          header: () => <ExploreHeader onCategoryChanged={onCategoryChanged} />,
         }}
       />
       <ListingsBottomSheet listings={filteredProducts} category={category} />
     </View>
-  )
+  );
 }

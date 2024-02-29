@@ -106,7 +106,7 @@ const InitialLayout = () => {
       !inTabsGroup &&
       user?.publicMetadata.role !== "Admin"
     ) {
-      router.replace("/(auth)/home");
+      router.replace("/(user)/home");
     } else if (!isSignedIn) {
       router.replace("/login");
     }

@@ -16,6 +16,7 @@ import { defaultPizzaImage } from "../ProductListItem";
 import DiscountBadge from "@/core-ui";
 import { useCallback, useState } from "react";
 import ImageListItem from "../ImageListItem";
+import Animated from "react-native-reanimated";
 
 type Props = {
   product: Product;
@@ -48,7 +49,7 @@ export default function ImageList({
   return (
     <>
       <View style={{ margin: "auto", width: width, height: 450, flex: 1 }}>
-        <FlatList
+        <Animated.FlatList
           data={product?.images}
           renderItem={({ item, index }) => (
             <ImageListItem
@@ -111,7 +112,13 @@ const styles = StyleSheet.create({
     fontFamily: "airMedium",
   },
   dots: {
-    //alignSelf: "center",
+    width: 400,
+    height: 40,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignSelf: "center",
+    position: "absolute",
+    bottom: 10,
   },
   dot: {
     width: 10,

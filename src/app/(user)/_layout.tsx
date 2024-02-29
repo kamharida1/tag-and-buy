@@ -35,10 +35,11 @@ const TabsPage = () => {
           tabBarInactiveTintColor: "#777",
         }}
       >
+        <Tabs.Screen name="index" options={{ href: null }} />
+
         <Tabs.Screen
           name="home"
           options={{
-            headerShown: true,
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="home-outline" size={size} color={color} />
             ),
@@ -47,9 +48,9 @@ const TabsPage = () => {
           redirect={!isSignedIn}
         />
         <Tabs.Screen
-          name="cart"
+          name="orders"
           options={{
-            headerTitle: "Cart",
+            headerTitle: "Orders",
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="cart-outline" size={size} color={color} />
             ),

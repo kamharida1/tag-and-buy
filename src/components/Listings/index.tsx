@@ -4,7 +4,7 @@ import {
   BottomSheetFlatList,
 } from "@gorhom/bottom-sheet";
 import { Dimensions, ListRenderItem, StyleSheet, Touchable, View } from "react-native";
-import { Link } from "expo-router";
+import { Link, useSegments } from "expo-router";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Animated, { FadeInRight, FadeOutLeft, SharedTransition, withSpring } from "react-native-reanimated";
 import { de } from "@faker-js/faker";
@@ -47,6 +47,9 @@ const Listings = ({ listings: items, refresh, category }: Props) => {
   const listRef = useRef<BottomSheetFlatListMethods>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const segments = useSegments();
+
+
   // Update the view to scroll the list back to the top
   useEffect(() => {
     if (refresh) {
@@ -69,7 +72,7 @@ const Listings = ({ listings: items, refresh, category }: Props) => {
 
   // Render one listing row for the FlatList
   const renderRow: ListRenderItem<any> = ({ item }) => (
-    <Link href={`/listing/${item.id}`} asChild>
+    <Link href={`/${segments[0]}/home/${item.id}`} asChild>
       <TouchableOpacity>
         <Animated.View
           style={styles.listing}

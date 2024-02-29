@@ -1,7 +1,6 @@
 import { ComponentProps, Ref, forwardRef, memo, useEffect, useState } from "react";
-import { Image } from "react-native";
+import { Image } from "expo-image";
 import { supabase } from "../../lib/supabase";
-import Animated from "react-native-reanimated";
 
 type RemoteImageProps = {
   path?: string | null;
@@ -37,7 +36,10 @@ const RemoteImage = forwardRef((props: RemoteImageProps, ref: Ref<Image>) => {
   if (!image) {
   }
 
-  return <Image ref={ref} source={{ uri: image || fallback }} {...imageProps} />;
+  return <Image
+    ref={ref}
+    source={{ uri: image || fallback }} {...imageProps}
+  />;
 });
 
 export {RemoteImage}
