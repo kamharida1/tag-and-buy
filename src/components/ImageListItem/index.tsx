@@ -28,9 +28,6 @@ const ImageListItem = memo<ImageListItemProps>(({
   setIsLoading,
 }) => {
   let { screenSize, width } = useDimensions();
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const segments = useSegments();
 
   let isIphone = screenSize === ScreenSize.Small;
   let isLandscape = screenSize === ScreenSize.Large;
@@ -40,11 +37,10 @@ const ImageListItem = memo<ImageListItemProps>(({
     ? { width: width / 2, height: "100%" }
     : { width, height: isIphone ? 450 : 576 };
   return (
-    <Link href={`/${segments[0]}/home/${item}`} asChild>
-      <Pressable>
+      <Pressable onPress={() => onImagePress(index)}>
         <Animated.View
           style={[imageSize as any]}
-          sharedTransitionTag="`container_${item}`"
+          //sharedTransitionTag="`container_${item}`"
         >
           {loading && (
             <ActivityIndicator
@@ -54,7 +50,7 @@ const ImageListItem = memo<ImageListItemProps>(({
             />
           )}
           <AnimatedImage
-            sharedTransitionTag={`image_${item}`}
+            //sharedTransitionTag={`image_${item}`}
             path={item}
             style={{ flex: 1 }}
             fallback={defaultPizzaImage}
@@ -76,7 +72,6 @@ const ImageListItem = memo<ImageListItemProps>(({
           />
         ) : null}
       </Pressable>
-    </Link>
   );
 })
 

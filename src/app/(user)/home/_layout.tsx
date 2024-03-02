@@ -27,7 +27,7 @@ export default function HomeStack() {
     >
       <Stack.Screen name="index" options={{ title: "home" }} />
       <Stack.Screen name="[id]" options={{ headerShown: false }} />
-      {/* <Stack.Screen name="[item]" options={{ headerShown: false }} /> */}
+      <Stack.Screen name="item" options={{ headerShown: false }} />
     </Stack>
   );
 }

@@ -8,18 +8,10 @@ import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default function ProductDetail() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  let [isImageModalVisible, setIsImageModalVisible] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   const { id } = useLocalSearchParams();
   const { data: product, isLoading, isError } = useProduct(id as string);
   const navigation = useNavigation();
-
-  let onPressImage = (index: number) => {
-    setIsImageModalVisible(!isImageModalVisible);
-    setActiveIndex(index);
-  };
 
   const goBack = () => {
     router.back();
@@ -27,8 +19,10 @@ export default function ProductDetail() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <ScrollView>
-        <ImageList loading={loading} setIsLoading={setLoading} product={product} onImagePress={onPressImage} />
+      <ScrollView contentContainerStyle={{flex: 1}}>
+        <ImageList
+          product={product}
+        />
         {/* <View style={{ flex: 1, padding: 16 }}>
           <Text> Hello World</Text>
         </View> */}
@@ -37,7 +31,7 @@ export default function ProductDetail() {
   );
 }
 // import { Dimensions, Share, StyleSheet, Text, Touchable, View } from 'react-native'
-// import React, { useLayoutEffect } from 'react';
+//setActiveIndex,tActiveIndex,mport React, { useLayoutEffect } from 'react';
 // import { useLocalSearchParams, useNavigation } from 'expo-router';
 // import { useProduct } from '@/api/products';
 // import Animated, { interpolate, runOnJS, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, useSharedValue, withSpring } from 'react-native-reanimated';

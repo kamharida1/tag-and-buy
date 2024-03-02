@@ -2,7 +2,9 @@ import { ScreenSize, useDimensions } from "@/helpers/dimensions";
 import { Product } from "@/types";
 import {
   ActivityIndicator,
+  Dimensions,
   FlatList,
+  Modal,
   Pressable,
   StyleProp,
   StyleSheet,
@@ -14,30 +16,30 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { RemoteImage } from "../RemoteImage";
 import { defaultPizzaImage } from "../ProductListItem";
 import DiscountBadge from "@/core-ui";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import ImageListItem from "../ImageListItem";
 import Animated from "react-native-reanimated";
+import { Text } from "../Theme";
 
 type Props = {
   product: Product;
-  loading: boolean;
-  setIsLoading: Function;
-  onImagePress: (index: number) => void;
-  style?: StyleProp<ViewStyle>;
-  contentContainerStyle?: StyleProp<ViewStyle>;
+  // setActiveIndex: React.Dispatch<React.SetStateAction<number>>;
 };
 
 export default function ImageList({
   product,
-  onImagePress,
-  style,
-  loading,
-  setIsLoading,
-  contentContainerStyle,
+  //
 }: Props) {
-  const [activeIndex, setActiveIndex] = useState(0);
+  let [activeIndex, setActiveIndex] = useState(0);
+  let [isImageModalVisible, setIsImageModalVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   let { screenSize, width } = useDimensions();
+
+  let onPressImage = (index: number) => {
+    setIsImageModalVisible(!isImageModalVisible);
+    setActiveIndex(index);
+  };
 
   const onFlatlistUpdate = useCallback(({ viewableItems }: any) => {
     if (viewableItems.length > 0) {
@@ -48,25 +50,24 @@ export default function ImageList({
 
   return (
     <>
-      <View style={{ margin: "auto", width: width, height: 450, flex: 1 }}>
+      <View style={{ margin: "auto", width: width, height: 450 }}>
         <Animated.FlatList
           data={product?.images}
           renderItem={({ item, index }) => (
             <ImageListItem
               item={item}
-              index={index}
+              index={activeIndex = index}
               product={product}
-              onImagePress={onImagePress}
+              onImagePress={onPressImage}
               loading={loading}
-              setIsLoading={setIsLoading}
+              setIsLoading={setLoading}
             />
           )}
           keyExtractor={(item) => item}
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}
-          style={[styles.flex, style]}
-          contentContainerStyle={contentContainerStyle}
+          style={[styles.flex,]}
           viewabilityConfig={{
             viewAreaCoveragePercentThreshold: 50,
           }}
@@ -90,6 +91,34 @@ export default function ImageList({
           )}
         />
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isImageModalVisible}
+        onRequestClose={() => {
+          setIsImageModalVisible(!isImageModalVisible);
+        }}
+      >
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.8)'}}>
+          <RemoteImage
+            path={product?.images && product.images[activeIndex]}
+            style={{ 
+              width: Dimensions.get('window').width -40,
+              height: Dimensions.get('window').height -80,
+              borderRadius: 10,
+              borderWidth: 1,
+              borderColor: '#c9c9c9',
+              overflow: 'hidden',
+             }}
+            fallback={defaultPizzaImage}
+            contentFit="cover"
+          />
+
+          <TouchableOpacity>
+            <Text style={{ color: 'white', fontSize: 20, fontFamily: 'airMedium', position: 'absolute', top: 20, right: 20 }} onPress={() => setIsImageModalVisible(!isImageModalVisible)}>X</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </>
   );
 }
