@@ -14,6 +14,7 @@ import Constants from "expo-constants";
 import { ClerkProvider, useAuth, useUser } from "@clerk/clerk-expo";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import QueryProvider from "@/providers/QueryProvider";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -125,9 +126,11 @@ function RootLayoutNav() {
         tokenCache={tokenCache}
       >
         <ThemeProvider>
-          <SafeAreaProvider>
-            <InitialLayout />
-          </SafeAreaProvider>
+          <GestureHandlerRootView style={{flex: 1}}>
+            <SafeAreaProvider>
+              <InitialLayout />
+            </SafeAreaProvider>
+          </GestureHandlerRootView>
         </ThemeProvider>
         {/* </ThemeProvider> */}
       </ClerkProvider>

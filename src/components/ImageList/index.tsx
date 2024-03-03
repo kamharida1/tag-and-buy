@@ -12,19 +12,22 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native";
 import { RemoteImage } from "../RemoteImage";
 import { defaultPizzaImage } from "../ProductListItem";
 import DiscountBadge from "@/core-ui";
 import React, { useCallback, useState } from "react";
 import ImageListItem from "../ImageListItem";
-import Animated from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import { Text } from "../Theme";
+import { Ionicons } from "@expo/vector-icons";
+import { Gesture } from "react-native-gesture-handler";
 
 type Props = {
   product: Product;
-  // setActiveIndex: React.Dispatch<React.SetStateAction<number>>;
 };
+
+const AnimatedImage = Animated.createAnimatedComponent(RemoteImage)
 
 export default function ImageList({
   product,
@@ -33,6 +36,36 @@ export default function ImageList({
   let [activeIndex, setActiveIndex] = useState(0);
   let [isImageModalVisible, setIsImageModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
+  const offset = useSharedValue({ x: 0, y: 0 });
+  const start = useSharedValue({ x: 0, y: 0 });
+  const scale = useSharedValue(1);
+  const savedScale = useSharedValue(1);
+  const rotation = useSharedValue(0);
+  const savedRotation = useSharedValue(0);
+
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: offset.value.x },
+        { translateY: offset.value.y },
+        { scale: scale.value },
+        { rotateZ: `${rotation.value}rad` },
+      ],
+    };
+  });
+
+  const dragGesture = Gesture.Pan()
+    .averageTouches(true)
+    .onUpdate((e) => {
+      offset.value.x = start.value.x + e.translationX;
+      offset.value.y = start.value.y + e.translationY;
+    })
+    .onEnd(() => {
+      start.value.x = offset.value.x;
+      start.value.y = offset.value.y;
+    });
+  
+  const zoomGesture = Gesture.Pinch()
 
   let { screenSize, width } = useDimensions();
 
@@ -40,6 +73,11 @@ export default function ImageList({
     setIsImageModalVisible(!isImageModalVisible);
     setActiveIndex(index);
   };
+
+  let onCloseModal = () => { 
+    setIsImageModalVisible(!isImageModalVisible);
+    setActiveIndex(-1);
+  }
 
   const onFlatlistUpdate = useCallback(({ viewableItems }: any) => {
     if (viewableItems.length > 0) {
@@ -56,7 +94,7 @@ export default function ImageList({
           renderItem={({ item, index }) => (
             <ImageListItem
               item={item}
-              index={activeIndex = index}
+              index={(activeIndex = index)}
               product={product}
               onImagePress={onPressImage}
               loading={loading}
@@ -67,7 +105,7 @@ export default function ImageList({
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}
-          style={[styles.flex,]}
+          style={[styles.flex]}
           viewabilityConfig={{
             viewAreaCoveragePercentThreshold: 50,
           }}
@@ -92,31 +130,57 @@ export default function ImageList({
         />
       </View>
       <Modal
+        style={{ flex: 1 }}
         animationType="slide"
         transparent={true}
         visible={isImageModalVisible}
-        onRequestClose={() => {
-          setIsImageModalVisible(!isImageModalVisible);
-        }}
+        onRequestClose={onCloseModal}
       >
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.8)'}}>
-          <RemoteImage
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0,0,0,0.8)",
+          }}
+        >
+          <AnimatedImage
             path={product?.images && product.images[activeIndex]}
-            style={{ 
-              width: Dimensions.get('window').width -40,
-              height: Dimensions.get('window').height -80,
+            style={{
+              width: Dimensions.get("window").width - 40,
+              height: Dimensions.get("window").height - 200,
               borderRadius: 10,
               borderWidth: 1,
-              borderColor: '#c9c9c9',
-              overflow: 'hidden',
-             }}
+              borderColor: "#c9c9c9",
+              overflow: "hidden",
+            }}
             fallback={defaultPizzaImage}
             contentFit="cover"
           />
 
-          <TouchableOpacity>
-            <Text style={{ color: 'white', fontSize: 20, fontFamily: 'airMedium', position: 'absolute', top: 20, right: 20 }} onPress={() => setIsImageModalVisible(!isImageModalVisible)}>X</Text>
-          </TouchableOpacity>
+          <View
+            style={{
+              position: "absolute",
+              top: 45,
+              left: 35,
+              alignSelf: "center",
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => setIsImageModalVisible(!isImageModalVisible)}
+            >
+              {/* <Text
+                style={{
+                  color: "white",
+                  fontSize: 20,
+                  fontFamily: "airMedium",
+                }}
+              >
+                X
+              </Text> */}
+              <Ionicons name="close-circle-outline" color="white" size={40} />
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
     </>
