@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.background,
   },
   sheetContainer: {
-    backgroundColor: "transparent",
+    backgroundColor: "white",
     elevation: 4,
     shadowColor: "#000",
     shadowOpacity: 0.3,

@@ -1,7 +1,5 @@
 import { useProduct } from "@/api/products";
 import ImageList from "@/components/ImageList";
-import ImageModal from "@/components/ImageModal";
-import { Text } from "@/components/Theme";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
@@ -18,16 +16,14 @@ export default function ProductDetail() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
-      <ScrollView contentContainerStyle={{flex: 1}}>
-        <ImageList
-          product={product}
-        />
-        {/* <View style={{ flex: 1, padding: 16 }}>
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <ScrollView contentContainerStyle={{ flex: 1 }}>
+          <ImageList product={product} />
+          {/* <View style={{ flex: 1, padding: 16 }}>
           <Text> Hello World</Text>
         </View> */}
-      </ScrollView>
-    </View>
+        </ScrollView>
+      </View>
   );
 }
 // import { Dimensions, Share, StyleSheet, Text, Touchable, View } from 'react-native'

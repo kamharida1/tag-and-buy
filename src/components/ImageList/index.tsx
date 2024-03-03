@@ -15,19 +15,18 @@ import {
 import { TouchableOpacity } from "react-native";
 import { RemoteImage } from "../RemoteImage";
 import { defaultPizzaImage } from "../ProductListItem";
-import DiscountBadge from "@/core-ui";
 import React, { useCallback, useState } from "react";
 import ImageListItem from "../ImageListItem";
 import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import { Text } from "../Theme";
 import { Ionicons } from "@expo/vector-icons";
-import { Gesture } from "react-native-gesture-handler";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 type Props = {
   product: Product;
 };
 
-const AnimatedImage = Animated.createAnimatedComponent(RemoteImage)
+const AnimatedImage = Animated.createAnimatedComponent(RemoteImage);
 
 export default function ImageList({
   product,
@@ -57,15 +56,44 @@ export default function ImageList({
   const dragGesture = Gesture.Pan()
     .averageTouches(true)
     .onUpdate((e) => {
-      offset.value.x = start.value.x + e.translationX;
-      offset.value.y = start.value.y + e.translationY;
+      console.log(e.translationX, e.translationY);
+      offset.value = {
+        x: e.translationX + start.value.x,
+        y: e.translationY + start.value.y,
+      };
     })
     .onEnd(() => {
-      start.value.x = offset.value.x;
-      start.value.y = offset.value.y;
+      start.value = {
+        x: offset.value.x,
+        y: offset.value.y,
+      };
+      // const distanceY = Math.abs(e.translationY);
+      // const threshold = 400
+      // if (distanceY > threshold) {
+      //   setIsImageModalVisible(false);
+      // }
     });
   
   const zoomGesture = Gesture.Pinch()
+    .onUpdate((e) => {
+      scale.value = savedScale.value * e.scale;
+    })
+    .onEnd(() => {
+      savedScale.value = scale.value;
+    });
+  
+  const rotateGesture = Gesture.Rotation()
+    .onUpdate((e) => {
+      rotation.value = savedRotation.value + e.rotation;
+    })
+    .onEnd(() => {
+      savedRotation.value = rotation.value;
+    });
+  
+  const composed = Gesture.Race(
+    dragGesture,
+    zoomGesture,
+  )
 
   let { screenSize, width } = useDimensions();
 
@@ -136,7 +164,7 @@ export default function ImageList({
         visible={isImageModalVisible}
         onRequestClose={onCloseModal}
       >
-        <View
+        <Animated.View
           style={{
             flex: 1,
             justifyContent: "center",
@@ -144,21 +172,26 @@ export default function ImageList({
             backgroundColor: "rgba(0,0,0,0.8)",
           }}
         >
-          <AnimatedImage
-            path={product?.images && product.images[activeIndex]}
-            style={{
-              width: Dimensions.get("window").width - 40,
-              height: Dimensions.get("window").height - 200,
-              borderRadius: 10,
-              borderWidth: 1,
-              borderColor: "#c9c9c9",
-              overflow: "hidden",
-            }}
-            fallback={defaultPizzaImage}
-            contentFit="cover"
-          />
+          <GestureDetector gesture={composed}>
+            <AnimatedImage
+              path={product?.images && product.images[activeIndex]}
+              style={[
+                animatedStyles,
+                {
+                  width: Dimensions.get("window").width - 40,
+                  height: Dimensions.get("window").height - 200,
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  borderColor: "#c9c9c9",
+                  overflow: "hidden",
+                },
+              ]}
+              fallback={defaultPizzaImage}
+              contentFit="contain"
+            />
+          </GestureDetector>
 
-          <View
+          <Animated.View
             style={{
               position: "absolute",
               top: 45,
@@ -180,8 +213,8 @@ export default function ImageList({
               </Text> */}
               <Ionicons name="close-circle-outline" color="white" size={40} />
             </TouchableOpacity>
-          </View>
-        </View>
+          </Animated.View>
+        </Animated.View>
       </Modal>
     </>
   );

@@ -3,10 +3,10 @@ import React, { memo, useState } from 'react'
 import { Product } from '@/types';
 import { ScreenSize, useDimensions } from '@/helpers/dimensions';
 import { RemoteImage } from '../RemoteImage';
-import DiscountBadge from '@/core-ui';
 import { defaultPizzaImage } from '../ProductListItem';
 import Animated from 'react-native-reanimated';
 import { Link, router, useSegments } from 'expo-router';
+import DiscountBadge from '../DiscountBadge';
 
 interface ImageListItemProps {
   product: Product;
@@ -21,13 +21,15 @@ const AnimatedImage = Animated.createAnimatedComponent(RemoteImage);
 
 const ImageListItem = memo<ImageListItemProps>(({
   product,
-  onImagePress,
+  //onImagePress,
   item,
   index,
   loading,
   setIsLoading,
 }) => {
   let { screenSize, width } = useDimensions();
+
+  const segments = useSegments();
 
   let isIphone = screenSize === ScreenSize.Small;
   let isLandscape = screenSize === ScreenSize.Large;
@@ -37,11 +39,9 @@ const ImageListItem = memo<ImageListItemProps>(({
     ? { width: width / 2, height: "100%" }
     : { width, height: isIphone ? 450 : 576 };
   return (
-      <Pressable onPress={() => onImagePress(index)}>
-        <Animated.View
-          style={[imageSize as any]}
-          //sharedTransitionTag="`container_${item}`"
-        >
+    <Link href={`/(user)/home/item?item=${item}`} asChild>
+      <Pressable>
+        <Animated.View style={[imageSize as any]}>
           {loading && (
             <ActivityIndicator
               style={StyleSheet.absoluteFill}
@@ -50,7 +50,6 @@ const ImageListItem = memo<ImageListItemProps>(({
             />
           )}
           <AnimatedImage
-            //sharedTransitionTag={`image_${item}`}
             path={item}
             style={{ flex: 1 }}
             fallback={defaultPizzaImage}
@@ -68,10 +67,13 @@ const ImageListItem = memo<ImageListItemProps>(({
                 ? [styles.discountBox, styles.discountBoxTablet]
                 : styles.discountBox
             }
-            textStyle={isTabletPortrait && styles.discountBoxTabletText}
+            textStyle={[isTabletPortrait && styles.discountBoxTabletText, {
+              fontWeight: "bold",
+            }]}
           />
         ) : null}
       </Pressable>
+    </Link>
   );
 })
 
