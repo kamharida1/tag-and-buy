@@ -4,18 +4,23 @@ import { Product } from '@/types';
 import { ScreenSize, useDimensions } from '@/helpers/dimensions';
 import { RemoteImage } from '../RemoteImage';
 import { defaultPizzaImage } from '../ProductListItem';
-import Animated from 'react-native-reanimated';
+import Animated, { Extrapolate, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 import { Link, router, useSegments } from 'expo-router';
 import DiscountBadge from '../DiscountBadge';
 
 interface ImageListItemProps {
   product: Product;
   onImagePress: (index: number) => void;
+  scrollY: Animated.SharedValue<number>;
   item: string;
   index: number;
   loading: boolean;
   setIsLoading: Function;
 };
+
+const HEADER_MAX_HEIGHT = 450;
+const HEADER_MIN_HEIGHT = 100;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 const AnimatedImage = Animated.createAnimatedComponent(RemoteImage);
 
@@ -24,12 +29,11 @@ const ImageListItem = memo<ImageListItemProps>(({
   //onImagePress,
   item,
   index,
+  scrollY,
   loading,
   setIsLoading,
 }) => {
   let { screenSize, width } = useDimensions();
-
-  const segments = useSegments();
 
   let isIphone = screenSize === ScreenSize.Small;
   let isLandscape = screenSize === ScreenSize.Large;
@@ -38,10 +42,39 @@ const ImageListItem = memo<ImageListItemProps>(({
   let imageSize = isLandscape
     ? { width: width / 2, height: "100%" }
     : { width, height: isIphone ? 450 : 576 };
+  
+  const imageOpacity = useAnimatedStyle(() => {
+    "worklet";
+    return {
+      opacity: interpolate(
+        scrollY.value,
+        [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+        [1, 1, 0.05],
+        Extrapolate.CLAMP
+      ),
+    };
+  });
+
+  const imageTranslateY = useAnimatedStyle(() => {
+    "worklet";
+    return {
+      transform: [
+        {
+          translateY: interpolate(
+            scrollY.value,
+            [0, HEADER_MAX_HEIGHT],
+            [0, -100],
+            Extrapolate.EXTEND
+          ),
+        },
+      ],
+    };
+  });
+  
   return (
     <Link href={`/(user)/home/item?item=${item}`} asChild>
       <Pressable>
-        <Animated.View style={[imageSize as any]}>
+        <Animated.View style={[imageSize as any, imageOpacity, imageTranslateY]}>
           {loading && (
             <ActivityIndicator
               style={StyleSheet.absoluteFill}
@@ -81,6 +114,15 @@ export default ImageListItem
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  headerBackground: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    width: null,
+    height: HEADER_MAX_HEIGHT,
+    resizeMode: "cover",
+  },
   discountBox: {
     position: "absolute",
     top: 0,
@@ -112,4 +154,4 @@ const styles = StyleSheet.create({
     borderColor: "#c9c9c9",
     margin: 2,
   },
-})
+});

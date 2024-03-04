@@ -24,13 +24,14 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 type Props = {
   product: Product;
+  scrollY: Animated.SharedValue<number>;
 };
 
 const AnimatedImage = Animated.createAnimatedComponent(RemoteImage);
 
 export default function ImageList({
   product,
-  //
+  scrollY
 }: Props) {
   let [activeIndex, setActiveIndex] = useState(0);
   let [isImageModalVisible, setIsImageModalVisible] = useState(false);
@@ -121,6 +122,7 @@ export default function ImageList({
           data={product?.images}
           renderItem={({ item, index }) => (
             <ImageListItem
+              scrollY={scrollY}
               item={item}
               index={(activeIndex = index)}
               product={product}

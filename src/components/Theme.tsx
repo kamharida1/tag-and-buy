@@ -86,7 +86,7 @@ const theme = createTheme({
       fontWeight: "bold",
       fontSize: 35,
       lineHeight: 80,
-      color: "background",
+      color: "textDark",
       textAlign: "center",
     },
     title1: {

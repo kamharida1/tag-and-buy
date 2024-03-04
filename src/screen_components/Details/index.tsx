@@ -173,6 +173,7 @@ const Page = () => {
   });
   const insets = useSafeAreaInsets();
 
+
   return (
     <View style={[styles.saveArea, { paddingTop: insets.top }]}>
       <Animated.ScrollView
@@ -180,7 +181,7 @@ const Page = () => {
         onScroll={scrollHandler}
         scrollEventThrottle={16}
         contentContainerStyle={{
-          paddingTop: HEADER_MAX_HEIGHT -32,
+          paddingTop: HEADER_MAX_HEIGHT -32 ,
           backgroundColor: "#fff",
         }}
       >

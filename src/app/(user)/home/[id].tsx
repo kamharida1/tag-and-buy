@@ -1,9 +1,17 @@
 import { useProduct } from "@/api/products";
 import ImageList from "@/components/ImageList";
+import { Text } from "@/components/Theme";
+import { backgroundColor, position } from "@shopify/restyle";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useState } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Animated, { Extrapolate, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const HEADER_MAX_HEIGHT = 450;
+const HEADER_MIN_HEIGHT = 100;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function ProductDetail() {
 
@@ -11,21 +19,114 @@ export default function ProductDetail() {
   const { data: product, isLoading, isError } = useProduct(id as string);
   const navigation = useNavigation();
 
-  const goBack = () => {
-    router.back();
-  };
+  const insets = useSafeAreaInsets();
+
+  const scrollY = useSharedValue(0);
+
+  const scrollHandler = useAnimatedScrollHandler((event) => {
+    scrollY.value = event.contentOffset.y;
+    console.log(event.contentOffset.y);
+  });
+
+  const headerStyle = useAnimatedStyle(() => {
+    "worklet";
+    return {
+      height: interpolate(
+        scrollY.value,
+        [0, HEADER_SCROLL_DISTANCE],
+        [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+        Extrapolate.CLAMP
+      ),
+    };
+  });
+
+  const headerOpacity = useAnimatedStyle(() => {
+   "worklet";
+   return {
+     opacity: interpolate(
+       scrollY.value,
+       [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+       [0.05, 0.3, 1],
+        Extrapolate.CLAMP
+     ),
+     transform: [{ translateY: interpolate(scrollY.value, [0, HEADER_SCROLL_DISTANCE], [-100, 6], Extrapolate.CLAMP) }]
+   };
+  });
+  
+  const imageTranslateY = useAnimatedStyle(() => {
+    "worklet";
+    return {
+      transform: [
+        {
+          translateY: interpolate(
+            scrollY.value,
+            [0, HEADER_SCROLL_DISTANCE],
+            [0, 100],
+            Extrapolate.CLAMP
+          ),
+        },
+      ],
+    };
+  });
+
+  const array = new Array(40).fill("");
 
   return (
-      <View style={{ flex: 1, backgroundColor: "white" }}>
-        <ScrollView contentContainerStyle={{ flex: 1 }}>
-          <ImageList product={product} />
-          {/* <View style={{ flex: 1, padding: 16 }}>
-          <Text> Hello World</Text>
-        </View> */}
-        </ScrollView>
-      </View>
+    <View style={[styles.saveArea, { paddingTop: insets.top + 50 }]}>
+      <Animated.View
+        style={[
+         { position: "absolute",
+            top: insets.top + 6,
+            left: 0,
+            right: 0,
+            zIndex: 10,
+            alignItems: "center",
+         },
+         headerOpacity
+        ]}
+      >
+        <Text style={{}}>Arnaud</Text>
+        <Text style={{}}>379 tweets</Text>
+      </Animated.View>
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
+        contentContainerStyle={{
+          paddingTop: HEADER_MAX_HEIGHT - 70,
+          backgroundColor: "#fff",
+          zindex: 3,
+        }}
+      >
+        <Animated.View style={[{ flex: 1, paddingHorizontal: 16, overflow: "hidden" },]}>
+          {array.map((_, index) => (
+            <Text key={index}>Your text goes here</Text>
+          ))}
+        </Animated.View>
+      </Animated.ScrollView>
+      <Animated.View style={[styles.header, headerStyle]}>
+        <ImageList scrollY={scrollY} product={product} />
+      </Animated.View>
+    </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  saveArea: {
+    flex: 1,
+    backgroundColor: "#eff3fb",
+  },
+  header: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#00000050",
+    overflow: "hidden",
+    height: HEADER_MAX_HEIGHT,
+  }
+  
+});
 // import { Dimensions, Share, StyleSheet, Text, Touchable, View } from 'react-native'
 //setActiveIndex,tActiveIndex,mport React, { useLayoutEffect } from 'react';
 // import { useLocalSearchParams, useNavigation } from 'expo-router';
