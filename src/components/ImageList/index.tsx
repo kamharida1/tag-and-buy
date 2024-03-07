@@ -24,14 +24,14 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 type Props = {
   product: Product;
-  scrollY: Animated.SharedValue<number>;
+  scrollOffset: Animated.SharedValue<number>;
 };
 
 const AnimatedImage = Animated.createAnimatedComponent(RemoteImage);
 
 export default function ImageList({
   product,
-  scrollY
+  scrollOffset
 }: Props) {
   let [activeIndex, setActiveIndex] = useState(0);
   let [isImageModalVisible, setIsImageModalVisible] = useState(false);
@@ -117,12 +117,12 @@ export default function ImageList({
 
   return (
     <>
-      <View style={{ margin: "auto", width: width, height: 450 }}>
+      <View style={{ margin: "auto", width: width, height: 350 }}>
         <Animated.FlatList
           data={product?.images}
           renderItem={({ item, index }) => (
             <ImageListItem
-              scrollY={scrollY}
+              scrollOffset={scrollOffset}
               item={item}
               index={(activeIndex = index)}
               product={product}
@@ -140,23 +140,23 @@ export default function ImageList({
             viewAreaCoveragePercentThreshold: 50,
           }}
           onViewableItemsChanged={onFlatlistUpdate}
-          ListFooterComponent={() => (
-            <View style={[styles.dots]}>
-              {product?.images &&
-                product?.images.map((_, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      styles.dot,
-                      {
-                        backgroundColor:
-                          index === activeIndex ? "#000" : "#ededed",
-                      },
-                    ]}
-                  />
-                ))}
-            </View>
-          )}
+          // ListFooterComponent={() => (
+          //   <View style={[styles.dots]}>
+          //     {product?.images &&
+          //       product?.images.map((_, index) => (
+          //         <View
+          //           key={index}
+          //           style={[
+          //             styles.dot,
+          //             {
+          //               backgroundColor:
+          //                 index === activeIndex ? "#000" : "#ededed",
+          //             },
+          //           ]}
+          //         />
+          //       ))}
+          //   </View>
+          // )}
         />
       </View>
       <Modal

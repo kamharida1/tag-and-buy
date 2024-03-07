@@ -90,7 +90,7 @@ export default function ImageItem() {
           }}
           name="close"
           size={40}
-          color="bgSurface"
+          color="bgFillMagic"
         />
         <Animated.View
           style={{
@@ -101,7 +101,6 @@ export default function ImageItem() {
             borderColor: "#c9c9c9",
             overflow: "hidden",
           }}
-          
         >
           <GestureDetector gesture={composed}>
             <AnimatedRemoteImage
