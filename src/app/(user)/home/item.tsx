@@ -82,6 +82,7 @@ export default function ImageItem() {
         }}
       >
         <RoundIconButton
+          backgroundColor="textInfo"
           onPress={() => router.back()}
           style={{
             position: "absolute",
@@ -103,19 +104,20 @@ export default function ImageItem() {
           }}
         >
           <GestureDetector gesture={composed}>
-            <AnimatedRemoteImage
-              path={item as string}
-              style={[
-                animatedStyles,
-                {
-                  ...StyleSheet.absoluteFillObject,
-                },
-              ]}
-              fallback={""}
-              cachePolicy={"memory-disk"}
-              blurRadius={0}
-              contentFit="contain"
-            />
+            {item && (
+              <AnimatedRemoteImage
+                path={item as string}
+                style={[
+                  animatedStyles,
+                  {
+                    ...StyleSheet.absoluteFillObject,
+                  },
+                ]}
+                fallback={""}
+                blurRadius={0}
+                resizeMode="contain"
+              />
+            )}
           </GestureDetector>
         </Animated.View>
       </Animated.View>

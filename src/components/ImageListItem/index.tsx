@@ -18,7 +18,7 @@ interface ImageListItemProps {
   setIsLoading: Function;
 };
 
-const IMG_HEIGHT = 350;
+const IMG_HEIGHT = 450;
 // const HEADER_MAX_HEIGHT = 350;
 // const HEADER_MIN_HEIGHT = 100;
 // const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
@@ -43,7 +43,7 @@ const ImageListItem = memo<ImageListItemProps>(
 
     let imageSize = isLandscape
       ? { width: width / 2, height: "100%" }
-      : { width, height: isIphone ? 350 : 576 };
+      : { width, height: isIphone ? 450 : 576 };
 
     const imageAnimatedStyle = useAnimatedStyle(() => {
       return {
@@ -66,34 +66,6 @@ const ImageListItem = memo<ImageListItemProps>(
       };
     });
 
-    // const imageOpacity = useAnimatedStyle(() => {
-    //   "worklet";
-    //   return {
-    //     opacity: interpolate(
-    //       scrollY.value,
-    //       [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    //       [1, 1, 0.05],
-    //       Extrapolate.CLAMP
-    //     ),
-    //   };
-    // });
-
-    // const imageTranslateY = useAnimatedStyle(() => {
-    //   "worklet";
-    //   return {
-    //     transform: [
-    //       {
-    //         translateY: interpolate(
-    //           scrollY.value,
-    //           [0, HEADER_MAX_HEIGHT],
-    //           [0, -100],
-    //           Extrapolate.EXTEND
-    //         ),
-    //       },
-    //     ],
-    //   };
-    // });
-
     return (
       <Link href={`/(user)/home/item?item=${item}`} asChild>
         <Pressable>
@@ -112,9 +84,9 @@ const ImageListItem = memo<ImageListItemProps>(
             )}
             <AnimatedImage
               path={item}
-              style={{ flex: 1 }}
+              style={StyleSheet.absoluteFill}
               fallback={defaultPizzaImage}
-              contentFit="cover"
+              resizeMode="cover"
               onLoad={() => {
                 setIsLoading(false);
               }}

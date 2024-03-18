@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 //import { supabase } from '../../lib/supabase';
 import { useAuth } from '@clerk/clerk-expo';
-import { supabaseClient } from '@/utilities/supabaseClient';
+import { supabaseClient } from '@/utils/supabaseClient';
 
 
 

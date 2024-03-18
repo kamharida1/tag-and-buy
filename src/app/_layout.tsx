@@ -5,11 +5,9 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 import { ThemeProvider } from "@/components/Theme";
 import { useFonts } from "expo-font";
-import { Slot, SplashScreen, Stack, useRootNavigationState, useRouter, useSegments } from "expo-router";
+import { Slot, SplashScreen, useRootNavigationState, useRouter, useSegments } from "expo-router";
 import { useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
-import { useColorScheme } from "react-native";
-import Constants from "expo-constants";
 
 import { ClerkProvider, useAuth, useUser } from "@clerk/clerk-expo";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -51,13 +49,13 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-    airBold: require("../assets/fonts/AirbnbCereal_W_Bd.otf"),
-    airRegular: require("../assets/fonts/AirbnbCereal_W_Bk.otf"),
-    airExtraBold: require("../assets/fonts/AirbnbCereal_W_XBd.otf"),
-    airLight: require("../assets/fonts/AirbnbCereal_W_Lt.otf"),
-    airMedium: require("../assets/fonts/AirbnbCereal_W_Md.otf"),
-    airBlack: require("../assets/fonts/AirbnbCereal_W_Blk.otf"),
+    SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
+    airBold: require("../../assets/fonts/AirbnbCereal_W_Bd.otf"),
+    airRegular: require("../../assets/fonts/AirbnbCereal_W_Bk.otf"),
+    airExtraBold: require("../../assets/fonts/AirbnbCereal_W_XBd.otf"),
+    airLight: require("../../assets/fonts/AirbnbCereal_W_Lt.otf"),
+    airMedium: require("../../assets/fonts/AirbnbCereal_W_Md.otf"),
+    airBlack: require("../../assets/fonts/AirbnbCereal_W_Blk.otf"),
     ...FontAwesome.font,
   });
 

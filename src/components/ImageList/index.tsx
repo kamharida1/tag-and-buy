@@ -27,7 +27,30 @@ type Props = {
   scrollOffset: Animated.SharedValue<number>;
 };
 
-const AnimatedImage = Animated.createAnimatedComponent(RemoteImage);
+// Define the props for the DotIndicator component
+type DotIndicatorProps = {
+  activeIndex: number;
+  totalDots: number;
+  style: StyleProp<ViewStyle>;
+};
+
+// Define the DotIndicator component
+const DotIndicator: React.FC<DotIndicatorProps> = ({ activeIndex, totalDots, style }) => {
+  return (
+    <View style={styles.dots}>
+      {Array.from({ length: totalDots }).map((_, i) => (
+        <View
+          key={i}
+          style={[
+            style,
+            styles.dot,
+            i === activeIndex ? { backgroundColor: "#c9c9c9" } : {},
+          ]}
+        />
+      ))}
+    </View>
+  );
+};
 
 export default function ImageList({
   product,
@@ -54,59 +77,13 @@ export default function ImageList({
     };
   });
 
-  const dragGesture = Gesture.Pan()
-    .averageTouches(true)
-    .onUpdate((e) => {
-      console.log(e.translationX, e.translationY);
-      offset.value = {
-        x: e.translationX + start.value.x,
-        y: e.translationY + start.value.y,
-      };
-    })
-    .onEnd(() => {
-      start.value = {
-        x: offset.value.x,
-        y: offset.value.y,
-      };
-      // const distanceY = Math.abs(e.translationY);
-      // const threshold = 400
-      // if (distanceY > threshold) {
-      //   setIsImageModalVisible(false);
-      // }
-    });
-  
-  const zoomGesture = Gesture.Pinch()
-    .onUpdate((e) => {
-      scale.value = savedScale.value * e.scale;
-    })
-    .onEnd(() => {
-      savedScale.value = scale.value;
-    });
-  
-  const rotateGesture = Gesture.Rotation()
-    .onUpdate((e) => {
-      rotation.value = savedRotation.value + e.rotation;
-    })
-    .onEnd(() => {
-      savedRotation.value = rotation.value;
-    });
-  
-  const composed = Gesture.Race(
-    dragGesture,
-    zoomGesture,
-  )
-
-  let { screenSize, width } = useDimensions();
+  let { width } = useDimensions();
 
   let onPressImage = (index: number) => {
     setIsImageModalVisible(!isImageModalVisible);
     setActiveIndex(index);
   };
 
-  let onCloseModal = () => { 
-    setIsImageModalVisible(!isImageModalVisible);
-    setActiveIndex(-1);
-  }
 
   const onFlatlistUpdate = useCallback(({ viewableItems }: any) => {
     if (viewableItems.length > 0) {
@@ -117,7 +94,7 @@ export default function ImageList({
 
   return (
     <>
-      <View style={{ margin: "auto", width: width, height: 350 }}>
+      <View style={{ margin: "auto", width: width, height: 450 }}>
         <Animated.FlatList
           data={product?.images}
           renderItem={({ item, index }) => (
@@ -140,84 +117,15 @@ export default function ImageList({
             viewAreaCoveragePercentThreshold: 50,
           }}
           onViewableItemsChanged={onFlatlistUpdate}
-          // ListFooterComponent={() => (
-          //   <View style={[styles.dots]}>
-          //     {product?.images &&
-          //       product?.images.map((_, index) => (
-          //         <View
-          //           key={index}
-          //           style={[
-          //             styles.dot,
-          //             {
-          //               backgroundColor:
-          //                 index === activeIndex ? "#000" : "#ededed",
-          //             },
-          //           ]}
-          //         />
-          //       ))}
-          //   </View>
-          // )}
         />
+        {product?.images && (
+          <DotIndicator
+            style={{ bottom: 10 }}
+            activeIndex={activeIndex}
+            totalDots={product.images.length}
+          />
+        )}
       </View>
-      <Modal
-        style={{ flex: 1 }}
-        animationType="slide"
-        transparent={true}
-        visible={isImageModalVisible}
-        onRequestClose={onCloseModal}
-      >
-        <Animated.View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0,0,0,0.8)",
-          }}
-        >
-          <GestureDetector gesture={composed}>
-            <AnimatedImage
-              path={product?.images && product.images[activeIndex]}
-              style={[
-                animatedStyles,
-                {
-                  width: Dimensions.get("window").width - 40,
-                  height: Dimensions.get("window").height - 200,
-                  borderRadius: 10,
-                  borderWidth: 1,
-                  borderColor: "#c9c9c9",
-                  overflow: "hidden",
-                },
-              ]}
-              fallback={defaultPizzaImage}
-              contentFit="contain"
-            />
-          </GestureDetector>
-
-          <Animated.View
-            style={{
-              position: "absolute",
-              top: 45,
-              left: 35,
-              alignSelf: "center",
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => setIsImageModalVisible(!isImageModalVisible)}
-            >
-              {/* <Text
-                style={{
-                  color: "white",
-                  fontSize: 20,
-                  fontFamily: "airMedium",
-                }}
-              >
-                X
-              </Text> */}
-              <Ionicons name="close-circle-outline" color="white" size={40} />
-            </TouchableOpacity>
-          </Animated.View>
-        </Animated.View>
-      </Modal>
     </>
   );
 }
@@ -240,21 +148,16 @@ const styles = StyleSheet.create({
     fontFamily: "airMedium",
   },
   dots: {
-    width: 400,
-    height: 40,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignSelf: "center",
     position: "absolute",
     bottom: 10,
+    flexDirection: "row",
+    alignSelf: "center",
   },
   dot: {
     width: 10,
     height: 10,
-    borderRadius: 25,
-    borderWidth: 1,
+    borderRadius: 5,
     backgroundColor: "#ededed",
-    borderColor: "#c9c9c9",
     margin: 2,
   },
 });

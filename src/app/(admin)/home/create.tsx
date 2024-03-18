@@ -1,54 +1,64 @@
-import { Alert, Dimensions, Image, Platform, StyleSheet, TextInput, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
-import { useDeleteProduct, useInsertProduct, useProduct, useUpdateProduct } from '@/api/products';
+import {
+  Alert,
+  Dimensions,
+  Image,
+  Platform,
+  StyleSheet,
+  TextInput,
+  View,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import {
+  useDeleteProduct,
+  useInsertProduct,
+  useProduct,
+  useUpdateProduct,
+} from "@/api/products";
 import * as ImagePicker from "expo-image-picker";
-import { randomUUID } from "expo-crypto"; 
-import { decode } from "base64-arraybuffer";  
-import {  categories, brands } from "../../../utils/data"; 
+import { randomUUID } from "expo-crypto";
+import { decode } from "base64-arraybuffer";
+import { categories, brands } from "../../../utils/data";
 import * as FileSystem from "expo-file-system";
-import { useAuth } from '@clerk/clerk-expo';
-import { MaterialIcons } from '@expo/vector-icons';
-import Colors from '@/constants/Colors';
-import { AppContainer } from '@/components/AppContainer';
-import { Text } from '@/components/Theme';
-import Button from '@/components/Button';
-import { Space } from '@/components/Space';
+import { useAuth } from "@clerk/clerk-expo";
+import { MaterialIcons } from "@expo/vector-icons";
+import Colors from "@/constants/Colors";
+import { AppContainer } from "@/components/AppContainer";
+import { Text } from "@/components/Theme";
+import Button from "@/components/Button";
+import { Space } from "@/components/Spacer";
 import tw from "twrnc";
 import RNPickerSelect from "react-native-picker-select";
-import { getAvailableSubtypes } from '@/utils/generateSubtypes';
-import { generateFieldsForCategory } from '@/utils/generateFieldsForCategory';
-import DynamicForm from '@/components/FormDyamic';
-import { supabaseClient } from '@/utilities/supabaseClient';
+import { getAvailableSubtypes } from "@/utils/generateSubtypes";
+import { generateFieldsForCategory } from "@/utils/generateFieldsForCategory";
+import DynamicForm from "@/components/FormDyamic";
+import { supabaseClient } from "@/utils/supabaseClient";
 const { width } = Dimensions.get("window");
 
+export default function CreateProduct() {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [image, setImage] = useState("");
+  const [category, setCategory] = useState("");
+  const [avg_rating, setAvgRating] = useState("0");
+  const [ratings, setRatings] = useState("0");
+  const [brand, setBrand] = useState("");
+  const [count, setCount] = useState("0");
+  const [price, setPrice] = useState("0");
+  const [sub_category, setSubCategory] = useState<string | null>(null);
+  const [old_price, setOldPrice] = useState("0");
+  const [product_details, setProductDetails] = useState({});
 
-
-export default function CreateProduct () {
- const [title, setTitle] = useState("");
- const [description, setDescription] = useState("");
- const [uploadedImages, setUploadedImages] = useState<string[]>([]);
- const [selectedImages, setSelectedImages] = useState<string[]>([]);
- const [image, setImage] = useState("");
- const [category, setCategory] = useState("");
- const [avg_rating, setAvgRating] = useState("0");
- const [ratings, setRatings] = useState("0");
- const [brand, setBrand] = useState("");
- const [count, setCount] = useState("0");
- const [price, setPrice] = useState("0");
- const [sub_category, setSubCategory] = useState<string | null>(null);
- const [old_price, setOldPrice] = useState("0");
- const [product_details, setProductDetails] = useState({});
- 
-  
- const [isLoading, setIsLoading] = useState(false);
- const [errors, setErrors] = useState<string | null>(null);
- const [error, setError] = useState<string | null>(null);
- const [successMessage, setSuccessMessage] = useState<string | null>(null);
- const [token, setToken] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [token, setToken] = useState<any>(null);
 
   const { getToken } = useAuth();
-  
+
   // useEffect(() => {
   //   const GetToken = async () => {
   //     const token = await getToken();
@@ -56,12 +66,11 @@ export default function CreateProduct () {
   //   };
   //   GetToken();
   // }, [token]);
-  
+
   const { id: idString } = useLocalSearchParams();
   // const id = parseFloat(typeof idString === "string" ? idString : idString?.[0]);
-  
-  const isUpdating = !!idString;
 
+  const isUpdating = !!idString;
 
   const { mutate: insertProduct } = useInsertProduct();
   const { mutate: updateProduct } = useUpdateProduct();
@@ -104,69 +113,69 @@ export default function CreateProduct () {
     setProductDetails({});
   };
 
-   const validateInput = () => {
-     setErrors("");
-     if (!title) {
-       setErrors("Title is required");
-       return false;
-     }
-     if (!description) {
-       setErrors("Description is required");
-       return false;
-     }
-     // if (!image) {
-     //   setErrors("Image is required");
-     //   return false;
-     // }
-     if (!category) {
-       setErrors("Category is required");
-       return false;
-     }
-     if (!avg_rating) {
-       setErrors("Avg Rating is required");
-       return false;
-     }
-     if (!ratings) {
-       setErrors("Ratings is required");
-       return false;
-     }
-     if (!brand) {
-       setErrors("Brand is required");
-       return false;
-     }
-     if (!count) {
-       setErrors("Count is required");
-       return false;
-     }
-     if (!price) {
-       setErrors("Price is required");
-       return false;
-     }
-     if (!sub_category && !updatingProduct) {
-       setErrors("Sub Category is required");
-       return false;
-     }
-     if (!old_price) {
-       setErrors("Old Price is required");
-       return false;
-     }
-     if (!product_details) {
-       setErrors("Product Details is required");
-       return false;
-     }
-     return true;
-   };
+  const validateInput = () => {
+    setErrors("");
+    if (!title) {
+      setErrors("Title is required");
+      return false;
+    }
+    if (!description) {
+      setErrors("Description is required");
+      return false;
+    }
+    // if (!image) {
+    //   setErrors("Image is required");
+    //   return false;
+    // }
+    if (!category) {
+      setErrors("Category is required");
+      return false;
+    }
+    if (!avg_rating) {
+      setErrors("Avg Rating is required");
+      return false;
+    }
+    if (!ratings) {
+      setErrors("Ratings is required");
+      return false;
+    }
+    if (!brand) {
+      setErrors("Brand is required");
+      return false;
+    }
+    if (!count) {
+      setErrors("Count is required");
+      return false;
+    }
+    if (!price) {
+      setErrors("Price is required");
+      return false;
+    }
+    if (!sub_category && !updatingProduct) {
+      setErrors("Sub Category is required");
+      return false;
+    }
+    if (!old_price) {
+      setErrors("Old Price is required");
+      return false;
+    }
+    if (!product_details) {
+      setErrors("Product Details is required");
+      return false;
+    }
+    return true;
+  };
 
-   const onSubmit = () => {
-     if (isUpdating) {
-       // update
-       onUpdate();
-     } else {
-       // create
-       onCreate();
-     }
-   };
-  
+  const onSubmit = () => {
+    if (isUpdating) {
+      // update
+      onUpdate();
+    } else {
+      // create
+      onCreate();
+    }
+  };
+
   const onCreate = () => {
     if (!validateInput()) {
       return;
@@ -233,7 +242,6 @@ export default function CreateProduct () {
       }
     );
   };
-
 
   const onDelete = () => {
     deleteProduct(idString as string, {
@@ -346,17 +354,17 @@ export default function CreateProduct () {
     }
   };
 
-const showIconPlatform =
-  Platform.OS === "android" ? (
-    <></>
-  ) : (
-    <MaterialIcons
-      style={{ position: "absolute", right: 10, top: 10 }}
-      name="keyboard-arrow-down"
-      size={25}
-      color="black"
-    />
-  );
+  const showIconPlatform =
+    Platform.OS === "android" ? (
+      <></>
+    ) : (
+      <MaterialIcons
+        style={{ position: "absolute", right: 10, top: 10 }}
+        name="keyboard-arrow-down"
+        size={25}
+        color="black"
+      />
+    );
 
   return (
     <AppContainer>

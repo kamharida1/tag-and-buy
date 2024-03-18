@@ -1,15 +1,14 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { Link } from 'expo-router';
-import Airplay from "../../assets/svgs/airplay-svgrepo-com.svg";
-import Calender from "../../assets/svgs/calendar-svgrepo-com.svg";
-import Door from "../../assets/svgs/door-closed-svgrepo-com.svg";
-import AirCon from "../../assets/svgs/diagram-next-svgrepo-com.svg";
-import Gen from "../../assets/svgs/sensor-on-svgrepo-com.svg";
-import Gas from "../../assets/svgs/candle-stand-svgrepo-com.svg";
-import Washer from "../../assets/svgs/mp3-player-svgrepo-com.svg";
-import Others from "../../assets/svgs/network-wired-svgrepo-com.svg";
-
+import AirCon from '../../../assets/svgs/AirCon.svg';
+import Airplay from '../../../assets/svgs/Airplay.svg';
+import Calender from '../../../assets/svgs/Calender.svg';
+import Door from '../../../assets/svgs/Door.svg';
+import Gas from '../../../assets/svgs/CandleStand.svg';
+import Gen from '../../../assets/svgs/Gen.svg';
+import Others from '../../../assets/svgs/Others.svg';
+import Washer from '../../../assets/svgs/Washer.svg';
 import * as Haptics from "expo-haptics";
 import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -32,11 +31,18 @@ const categories = [
   },
   {
     name: "Televisions",
-    icon: <Airplay width={30} height={30} />,
+    icon: <Airplay
+      width={30}
+      height={30}
+    />
   },
   {
     name: "Generators",
-    icon: <Gen width={30} height={30} />,
+    icon: <Gen
+      width={30}
+      height={30}
+      stroke={"#000"}
+    />,
   },
   {
     name: "Air Conditioners",

@@ -85,24 +85,25 @@ const Listings = ({ listings: items, refresh, category }: Props) => {
             path={item.image}
             fallback={defaultPizzaImage}
             style={styles.image}
-          />
+          >
             <TouchableOpacity
               style={{
                 position: "absolute",
-                bottom: 300,
+                top: 20,
                 right: 16,
                 zIndex: 1,
               }}
             >
               <Ionicons name="ios-heart-outline" size={28} color="black" />
             </TouchableOpacity>
+          </AnimatedImage>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <Text
               style={{
                 fontFamily: "airMedium",
-                fontSize: 14,
+                fontSize: 17,
                 fontWeight: "600",
               }}
             >
@@ -123,7 +124,7 @@ const Listings = ({ listings: items, refresh, category }: Props) => {
           <Text
             style={{
               fontFamily: "airRegular",
-              fontSize: 15,
+              fontSize: 16,
               color: "#555",
               marginTop: 4,
             }}
@@ -160,6 +161,7 @@ const styles = StyleSheet.create({
   image: {
     width: windowWidth - 60,
     alignSelf: "center",
+    overflow: 'hidden',
     height: 350,
     borderRadius: 15,
     marginBottom: 10,

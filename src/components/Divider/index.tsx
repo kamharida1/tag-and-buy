@@ -1,0 +1,19 @@
+import { StyleSheet, Text, View } from 'react-native'
+import React from 'react'
+import { AppColors } from '@/utils'
+
+const Divder = () => {
+  return (
+   <View style={styles.divider} />
+  )
+}
+
+export default Divder
+
+const styles = StyleSheet.create({
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: AppColors.Grey,
+    marginVertical: 10,
+  }
+})

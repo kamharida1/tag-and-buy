@@ -11,6 +11,11 @@ declare module '*.jpg' {
   export = value;
 }
 
+// declare module "*.svg" {
+//   const content: any;
+//   return content;
+// }
+
 declare module "*.svg" {
   import React from "react";
   import { SvgProps } from "react-native-svg";

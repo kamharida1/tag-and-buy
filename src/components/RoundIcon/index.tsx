@@ -7,7 +7,7 @@ export interface RoundIconProps {
   name: string;
   size: number;
   color: keyof Theme["colors"];
-  backgroundColor?: keyof Theme["colors"];
+  backgroundColor: keyof Theme["colors"];
   iconRatio: number;
   align: "center" | "flex-start" | "flex-end";
 }

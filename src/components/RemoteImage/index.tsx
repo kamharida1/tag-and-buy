@@ -1,45 +1,51 @@
-import { ComponentProps, Ref, forwardRef, memo, useEffect, useState } from "react";
-import { Image } from "expo-image";
+import {
+  ComponentProps,
+  Ref,
+  forwardRef,
+  memo,
+  useEffect,
+  useState,
+} from "react";
+import { ImageBackground } from "react-native";
 import { supabase } from "../../lib/supabase";
+import { CacheManager } from "react-native-expo-image-cache";
 
 type RemoteImageProps = {
   path?: string | null;
   fallback: string;
-} & Omit<ComponentProps<typeof Image>, "source">;
+  children?: React.ReactNode;
+} & Omit<ComponentProps<typeof ImageBackground>, "source">;
 
-const RemoteImage = forwardRef((props: RemoteImageProps, ref: Ref<Image>) => { 
-  const { path, fallback, ...imageProps } = props;  
-  const [image, setImage] = useState("");
+const RemoteImage = forwardRef(
+  (props: RemoteImageProps, ref: Ref<ImageBackground>) => {
+    const { path, fallback, children, ...imageProps } = props;
+    const [image, setImage] = useState("");
 
-  useEffect(() => {
-    if (!path) return;
-    (async () => {
-      const { data } = await supabase.storage
-        .from("product-images")
-        .getPublicUrl(path as string);
+    useEffect(() => {
+      if (!path) return;
+      (async () => {
+        const { data } = await supabase.storage
+          .from("product-images")
+          .getPublicUrl(path as string);
 
-      setImage(data.publicUrl);
-      // if (error) {
-      //   console.log(error);
-      // }
+        if (data) {
+          const url = data.publicUrl;
+          const cached = (await CacheManager.get(url, {}).getPath()) ?? "";
+          setImage(cached);
+        }
+      })();
+    }, [path]);
 
-      // if (data) {
-      //   const fr = new FileReader();
-      //   fr.readAsDataURL(data);
-      //   fr.onload = () => {
-      //     setImage(fr.result as string);
-      //   };  
-      // }
-    })();
-  }, [path]);
-
-  if (!image) {
+    return (
+      <ImageBackground
+        ref={ref}
+        source={{ uri: image || fallback }}
+        {...imageProps}
+      >
+        {children}
+      </ImageBackground>
+    );
   }
+);
 
-  return <Image
-    ref={ref}
-    source={{ uri: image || fallback }} {...imageProps}
-  />;
-});
-
-export {RemoteImage}
+export { RemoteImage };
