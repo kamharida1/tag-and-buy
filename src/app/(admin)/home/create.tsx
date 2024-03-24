@@ -26,7 +26,6 @@ import Colors from "@/constants/Colors";
 import { AppContainer } from "@/components/AppContainer";
 import { Text } from "@/components/Theme";
 import Button from "@/components/Button";
-import { Space } from "@/components/Spacer";
 import tw from "twrnc";
 import RNPickerSelect from "react-native-picker-select";
 import { getAvailableSubtypes } from "@/utils/generateSubtypes";
@@ -465,7 +464,6 @@ export default function CreateProduct() {
         {successMessage && (
           <Text style={{ color: "green" }}>{successMessage}</Text>
         )}
-        <Space />
         <View
           style={tw` flex-row  bg-white border-[1.5px] rounded-md h-13 justify-between px-2 border-slate-300 items-center relative`}
         >

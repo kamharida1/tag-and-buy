@@ -2,10 +2,11 @@ import { useProduct } from "@/api/products";
 import ImageList from "@/components/ImageList";
 import formatPrice from "@/utils/naira_price";
 import { Ionicons } from "@expo/vector-icons";
-import { useFocusEffect, useLocalSearchParams, useNavigation } from "expo-router";
-import { useEffect, useLayoutEffect } from "react";
+import PlusIcon from "../../../../assets/svgs/PlusIcon.svg";
+import {useLocalSearchParams, useNavigation } from "expo-router";
+import { useLayoutEffect, useState } from "react";
 import { BlurView } from 'expo-blur';
-import { TouchableOpacity } from "react-native";
+import { Modal, TouchableOpacity } from "react-native";
 import { Dimensions, Share, StyleSheet, View } from "react-native";
 import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, useSharedValue } from "react-native-reanimated";
 import { StatusBar } from "expo-status-bar";
@@ -13,8 +14,13 @@ import { FlexContainer, PaddingContainer } from "@/containers";
 import AppText from "@/components/AppText";
 import { AppColors } from "@/utils";
 import Spacer from "@/components/Spacer";
-import Divder from "@/components/Divider";
+import Divider from "@/components/Divider";
 import { CardProductDetail } from "@/components/CardProductDetail";
+import QuickActionButton from "@/components/QuickActionButton";
+import AppButton from "@/components/AppButton";
+import CartButtonWithIndicator from "@/components/CartButtonWithIndicator";
+import ModalBottomSheet from "@/components/BottomSheet";
+import ModalBottomSheetMessage from "@/components/ModalBottomSheetMessage";
 
 const { width } = Dimensions.get("window");
 const IMG_HEIGHT = 450;
@@ -23,6 +29,8 @@ export default function ProductDetail() {
   const { id } = useLocalSearchParams();
   const { data: product, isLoading, isError } = useProduct(id as string);
   const navigation = useNavigation();
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const AnimatedBlur = Animated.createAnimatedComponent(BlurView)
@@ -45,7 +53,7 @@ export default function ProductDetail() {
         headerShown: true,
         headerRight: () => (
           <Animated.View style={styles.bar}>
-            <TouchableOpacity style={styles.roundButton} onPress={shareListing}>
+            <TouchableOpacity style={styles.roundButton} onPress={() => shareListing}>
               <Ionicons name="share-social" size={24} color="black" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.roundButton} onPress={shareListing}>
@@ -78,6 +86,10 @@ export default function ProductDetail() {
   }, []);
 
   const array = new Array(40).fill("");
+
+  let closeModal = () => setModalVisible(false);
+
+  let toggleModalVisible = () => setModalVisible(true);
 
   return (
     <Animated.View style={styles.container}>
@@ -122,7 +134,7 @@ export default function ProductDetail() {
                   </AppText>
                 </View>
               </FlexContainer>
-              <Divder />
+              <Divider />
               <AppText
                 fontFamily="airBold"
                 fontSize="medium"
@@ -133,8 +145,14 @@ export default function ProductDetail() {
               >
                 Description
               </AppText>
-              <AppText fontFamily="airRegular">{product?.description}</AppText>
-              <Divder />
+              <AppText
+                fontSize="regular"
+                color="PureBlack"
+                fontFamily="airRegular"
+              >
+                {product?.description}
+              </AppText>
+              <Divider />
               <AppText
                 fontFamily="airBold"
                 fontSize="medium"
@@ -143,6 +161,56 @@ export default function ProductDetail() {
                 Product Details
               </AppText>
               <CardProductDetail productDetails={product?.product_details} />
+              <Divider />
+              <FlexContainer position="rowBetween" direction="row">
+                <FlexContainer position="start" direction="row">
+                  <AppText fontFamily="airBold" fontSize="medium">
+                    Reviews
+                  </AppText>
+                  <Spacer space={10} between />
+                  <AppText color="GreyDarkLight" fontSize="large">
+                    {product?.reviews || "0"}
+                  </AppText>
+                  <Spacer between space={270} />
+                  <QuickActionButton onPress={() => alert("Hello")}>
+                    <PlusIcon
+                      height={25}
+                      width={25}
+                      fill={AppColors.PureBlack}
+                    />
+                  </QuickActionButton>
+                </FlexContainer>
+              </FlexContainer>
+              <Divider />
+              <Spacer space={26} />
+              <FlexContainer position="center">
+                <AppButton
+                  style={styles.addToCartButton}
+                  onPress={() => toggleModalVisible()}
+                  color="PrimaryBlue"
+                >
+                  {"Add To Cart"}
+                </AppButton>
+                <Spacer space={20} />
+                <AppButton
+                  style={{ flex: 1, width: "100%" }}
+                  onPress={() => alert("Buy now")}
+                >
+                  Buy Now
+                </AppButton>
+              </FlexContainer>
+              <ModalBottomSheet
+                title="Errors in the code"
+                isModalVisible={isModalVisible}
+                onClose={closeModal}
+              >
+                <ModalBottomSheetMessage
+                  isError={isModalVisible}
+                  buttonText="Try Again"
+                  message="An error occured while adding to cart"
+                  onPressModalButton={closeModal}
+                />
+              </ModalBottomSheet>
             </PaddingContainer>
           </>
         )}
@@ -155,6 +223,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+  },
+  addToCartButton: {
+    width: "100%",
+    borderWidth: 1,
+    borderColor: AppColors.PrimaryBlue,
+    backgroundColor: undefined,
+    flex: 1,
   },
   image: { width, height: IMG_HEIGHT },
   infoContainer: {

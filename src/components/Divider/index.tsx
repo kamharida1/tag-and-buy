@@ -2,13 +2,13 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { AppColors } from '@/utils'
 
-const Divder = () => {
+const Divider = () => {
   return (
    <View style={styles.divider} />
   )
 }
 
-export default Divder
+export default Divider
 
 const styles = StyleSheet.create({
   divider: {

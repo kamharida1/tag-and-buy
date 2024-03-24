@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Pressable } from 'react-native';
 import { useAuth } from '@clerk/clerk-expo';
 import { StatusBar } from 'expo-status-bar';
+import CartButtonWithIndicator from '@/components/CartButtonWithIndicator';
 
 export const LogoutButton = () => {
 	const { signOut } = useAuth();
@@ -48,11 +49,11 @@ const TabsPage = () => {
           redirect={!isSignedIn}
         />
         <Tabs.Screen
-          name="orders"
+          name="cart"
           options={{
-            headerTitle: "Orders",
+            headerTitle: "Cart",
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="cart-outline" size={size} color={color} />
+             <CartButtonWithIndicator quantity={3} color={color} size={size} />
             ),
             tabBarLabel: "Cart",
           }}

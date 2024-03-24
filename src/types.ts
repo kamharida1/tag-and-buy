@@ -48,11 +48,16 @@ export type Address = {
   zip_code: string | null
 }
 
+// export type CartItem = {
+//   id: string;
+//   quantity: number;
+//   product: Product;
+//   product_id: string;
+// };
+
 export type CartItem = {
-  id: string;
-  quantity: number;
   product: Product;
-  product_id: string;
+  quantity: number;
 };
 
 export const OrderStatusList: OrderStatus[] = [
