@@ -46,7 +46,7 @@ const FlexContainer: React.FC<FlexContainerProps> = ({
           ...baseStyles,
           justifyContent: "space-between",
           flexDirection: "row",
-          alignItems: "center",
+          //alignItems: direction === "row" ? "center" : "flex-start",
         };
       case "columnBetween":
         return {

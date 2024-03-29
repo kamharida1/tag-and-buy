@@ -5,7 +5,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 import { ThemeProvider } from "@/components/Theme";
 import { useFonts } from "expo-font";
-import { Slot, SplashScreen, useRootNavigationState, useRouter, useSegments } from "expo-router";
+import { Slot, SplashScreen, Stack, useRootNavigationState, useRouter, useSegments } from "expo-router";
 import { useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 
@@ -111,7 +111,15 @@ const InitialLayout = () => {
     }
   }, [isSignedIn, navigationState?.key]);
 
-  return <Slot />;
+  return (
+    <Stack>
+      <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+      <Stack.Screen name="(modals)" options={{ presentation: "transparentModal", headerShown: false }} />
+      <Stack.Screen name="(user)" options={{ headerShown: false }} />
+      <Stack.Screen name="(public)" options={{ headerShown: false }} />
+      <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+    </Stack>
+  );
 };
 
 

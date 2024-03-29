@@ -64,6 +64,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "absolute",
     right: -9,
-    top: -7,
+    top: -4,
   },
 });

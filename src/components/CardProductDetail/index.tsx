@@ -28,22 +28,8 @@ const CardProductDetail = memo(({ productDetails }: ProductDetailsProps) => {
               marginVertical: 5,
             }}
           >
-            <AppText
-              style={{
-                fontSize: 15,
-                color: "#555",
-              }}
-            >
-              {key}
-            </AppText>
-            <AppText
-              style={{
-                fontSize: 15,
-                marginRight: 10,
-              }}
-            >
-              {value as string}
-            </AppText>
+            <AppText fontFamily="airRegular" style={{}}> {key} </AppText>
+            <AppText fontFamily="airMedium" style={{}}> {value as string}</AppText>    
           </FlexContainer>
         );
       })}

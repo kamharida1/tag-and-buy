@@ -1,46 +1,42 @@
-import Colors from "@/constants/Colors";
-import { Text } from "moti";
-import { memo } from "react";
-import { StyleSheet, ViewProps } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { Text, Pressable, ViewStyle, TextStyle } from "react-native";
+import React, { memo } from "react";
+import { StyleSheet } from "react-native";
+
+const ButtonOutline = memo(
+  ({
+    title,
+    onPress,
+    style,
+    textStyle,
+  }: {
+    title: string;
+    onPress: () => void;
+    style?: ViewStyle;
+    textStyle?: TextStyle;
+  }) => {
+    return (
+      <Pressable onPress={onPress} style={[styles.container, style]}>
+        <Text style={[styles.text, textStyle]}>{title}</Text>
+      </Pressable>
+    );
+  }
+);
+
+export { ButtonOutline };
 
 const styles = StyleSheet.create({
-  btnOutline: {
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: Colors.light.tabIconSelected,
-    height: 54,
-    width: "100%",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 6, 
-    borderRadius: 25,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-    paddingHorizontal: 10,
+  container: {
+    backgroundColor: "transparent",
+    paddingHorizontal: 3,
+    paddingVertical: 10,
+    borderRadius: 5,
+    borderColor: "#666",
+    borderWidth: 0.6,
+    width: 150,
+    height: 40,
+  },
+  text: {
+    color: "#888",
+    textAlign: "center",
   },
 });
-
-interface ButtonOutlineT {
-  style?: ViewProps["style"];
-  onPress?: () => void;
-  children: React.ReactNode;  
-}
-
-const ButtonOutline = memo<ButtonOutlineT>(({
-  style, onPress, children
-}) => {
-  return (
-    <TouchableOpacity style={[{...styles.btnOutline}, style]} onPress={onPress}>
-      {children}
-    </TouchableOpacity>
-  );
-});
-
-export default ButtonOutline;
-

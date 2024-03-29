@@ -36,8 +36,8 @@ interface AppButtonProps
 export default ({
   color = "PureWhite",
   fontFamily = "airMedium",
-  fontSize = "regular",
-  backgroundColor = "PrimaryBlue",
+  fontSize = "medium",
+  backgroundColor = "PrimaryGreen",
   children,
   onPress,
   style,

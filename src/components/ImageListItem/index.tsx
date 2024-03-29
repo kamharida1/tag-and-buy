@@ -1,5 +1,5 @@
-import { ActivityIndicator, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
-import React, { memo, useState } from 'react'
+import { ActivityIndicator, Pressable, StyleProp, StyleSheet, Text, Vibration, View, ViewStyle } from 'react-native'
+import React, { memo, useMemo, useState } from 'react'
 import { Product } from '@/types';
 import { ScreenSize, useDimensions } from '@/helpers/dimensions';
 import { RemoteImage } from '../RemoteImage';
@@ -7,6 +7,9 @@ import { defaultPizzaImage } from '../ProductListItem';
 import Animated, { Extrapolate, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 import { Link, router, useSegments } from 'expo-router';
 import DiscountBadge from '../DiscountBadge';
+import { position } from '@shopify/restyle';
+import { useCartStore } from '@/store';
+import { showToast } from '@/utils/functions';
 
 interface ImageListItemProps {
   product: Product;
@@ -51,17 +54,19 @@ const ImageListItem = memo<ImageListItemProps>(
           {
             translateY: interpolate(
               scrollOffset.value,
-              [-IMG_HEIGHT, 0, IMG_HEIGHT, IMG_HEIGHT],
-              [-IMG_HEIGHT / 2, 0, IMG_HEIGHT * 0.75]
+              [ 0, IMG_HEIGHT],
+              [ 0, IMG_HEIGHT * 0.75],
+              Extrapolate.CLAMP
             ),
           },
-          {
-            scale: interpolate(
-              scrollOffset.value,
-              [-IMG_HEIGHT, 0, IMG_HEIGHT],
-              [2, 1, 1]
-            ),
-          },
+          // {
+          //   scale: interpolate(
+          //     scrollOffset.value,
+          //     [ 0, IMG_HEIGHT],
+          //     [1, 0],
+          //     Extrapolate.CLAMP
+          //   ),
+          // },
         ],
       };
     });
@@ -72,7 +77,8 @@ const ImageListItem = memo<ImageListItemProps>(
           <Animated.View
             style={[
               imageSize as any,
-              imageAnimatedStyle]
+              imageAnimatedStyle,
+            ]
             }
           >
             {loading && (

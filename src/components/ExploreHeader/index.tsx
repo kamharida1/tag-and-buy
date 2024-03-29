@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import React, { useRef, useState } from 'react'
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import AirCon from '../../../assets/svgs/AirCon.svg';
 import Airplay from '../../../assets/svgs/Airplay.svg';
 import Calender from '../../../assets/svgs/Calender.svg';
@@ -80,7 +80,7 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.container}>
         <View style={styles.actionRow}>
-          <Link href={`/(modals)/search`} asChild>
+          <Link href={`/search`} asChild>
             <TouchableOpacity>
               <View style={styles.searchBtn}>
                 <Ionicons name="search" size={24} />
@@ -91,7 +91,10 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
               </View>
             </TouchableOpacity>
           </Link>
-          <TouchableOpacity style={styles.filterBtn}>
+          <TouchableOpacity
+            onPress={() => router.push("/cart")}
+            style={styles.filterBtn}
+          >
             <Ionicons name="options-outline" size={24} />
           </TouchableOpacity>
         </View>

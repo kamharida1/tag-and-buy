@@ -4,9 +4,10 @@ import { Pressable } from 'react-native';
 import { useAuth } from '@clerk/clerk-expo';
 import { StatusBar } from 'expo-status-bar';
 import CartButtonWithIndicator from '@/components/CartButtonWithIndicator';
+import { useCartStore } from '@/store';
 
 export const LogoutButton = () => {
-	const { signOut } = useAuth();
+  const { signOut } = useAuth();
 
 	const doLogout = () => {
 		signOut();
@@ -21,7 +22,8 @@ export const LogoutButton = () => {
 
 const TabsPage = () => {
 	const { isSignedIn } = useAuth();
-
+  const { cart } = useCartStore();
+  const cartItem = cart.reduce((acc, item) => acc + item.quantity, 0);
   return (
     <>
       <StatusBar style="dark" />
@@ -49,13 +51,13 @@ const TabsPage = () => {
           redirect={!isSignedIn}
         />
         <Tabs.Screen
-          name="cart"
+          name="favorites"
           options={{
-            headerTitle: "Cart",
+            headerTitle: "Favorites",
             tabBarIcon: ({ color, size }) => (
-             <CartButtonWithIndicator quantity={3} color={color} size={size} />
+              <Ionicons name="heart" size={size} color={color} />
             ),
-            tabBarLabel: "Cart",
+            tabBarLabel: "Favorites",
           }}
           redirect={!isSignedIn}
         />

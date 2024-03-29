@@ -29,6 +29,7 @@ export type Product = {
   sub_category: string | null
   title: string | null
   discount: number
+  is_favorite?: boolean 
 };
 
 export type Address = {
@@ -56,8 +57,8 @@ export type Address = {
 // };
 
 export type CartItem = {
-  product: Product;
-  quantity: number;
+  product: Product ;
+  quantity: number ;
 };
 
 export const OrderStatusList: OrderStatus[] = [

@@ -24,7 +24,7 @@ interface AppTextProps extends TextProps {
 }
 
 export default ({
-  fontFamily = "airMedium",
+  fontFamily = "airRegular",
   color = "GreyDark",
   fontSize = "regular",
   children,
@@ -40,6 +40,7 @@ export default ({
         fontFamily,
         fontSize: size,
         color: fontColor,
+        letterSpacing: 0.17,
         ...style,
       }}
       {...remainingProps}

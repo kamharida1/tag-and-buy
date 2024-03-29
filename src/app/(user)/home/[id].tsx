@@ -3,10 +3,10 @@ import ImageList from "@/components/ImageList";
 import formatPrice from "@/utils/naira_price";
 import { Ionicons } from "@expo/vector-icons";
 import PlusIcon from "../../../../assets/svgs/PlusIcon.svg";
-import {useLocalSearchParams, useNavigation } from "expo-router";
-import { useLayoutEffect, useState } from "react";
+import {router, useLocalSearchParams, useNavigation } from "expo-router";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { BlurView } from 'expo-blur';
-import { Modal, TouchableOpacity } from "react-native";
+import { Modal, TouchableOpacity, Vibration } from "react-native";
 import { Dimensions, Share, StyleSheet, View } from "react-native";
 import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, useSharedValue } from "react-native-reanimated";
 import { StatusBar } from "expo-status-bar";
@@ -21,27 +21,118 @@ import AppButton from "@/components/AppButton";
 import CartButtonWithIndicator from "@/components/CartButtonWithIndicator";
 import ModalBottomSheet from "@/components/BottomSheet";
 import ModalBottomSheetMessage from "@/components/ModalBottomSheetMessage";
+import { useCartStore } from "@/store";
+import { Product } from "@/types";
+import { fa } from "@faker-js/faker";
+import { useIsFocused } from "@react-navigation/native";
+import { showProductAddedToast, showProductRemovedToast, showToast } from "@/utils/functions";
 
 const { width } = Dimensions.get("window");
 const IMG_HEIGHT = 450;
 
 export default function ProductDetail() {
   const { id } = useLocalSearchParams();
-  const { data: product, isLoading, isError } = useProduct(id as string);
   const navigation = useNavigation();
+    const { data: productData, error, isLoading } = useProduct(id as string);
+
   const [isModalVisible, setModalVisible] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [product, setProduct] = useState<Product>({} as Product)
+
+  const [cartMessage, setCartMessage] = useState("");
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const AnimatedBlur = Animated.createAnimatedComponent(BlurView)
   
   const scrollOffset = useScrollViewOffset(scrollRef);
 
+  const store = useCartStore();
+
+  const getProductDetails = (productId: string) => {
+    if (productId) {
+      if (
+        Object.keys(productData).length &&
+        Object.hasOwn(productData, 'id')
+      ) {
+        const updatedProductDetails: Product = {
+          ...productData,
+          isFavorite: store.favorites.some(
+            favorite => favorite.id === product.id
+          ),
+        };
+        setProduct(updatedProductDetails);
+      }
+
+    }
+  }
+
+  const isProductLoaded =
+    product &&
+    !!product?.id &&
+    !!product.title &&
+    !!product.price;
+
+  const isFocused = useIsFocused();
+
+  const isProductInCart = store.cart.length
+    ? store.cart.some((item) => item.product.id === product.id)
+    : false;
+
+  const isProductInFavorites = useMemo(() => {
+    if (product) {
+      return store.favorites.some(
+        (product) => product.id === product.id
+      );
+    }
+  }, [store.favorites.length, product?.isFavorite]);
+
+  //console.warn("Product", product.title, isProductInCart);
+
+  useEffect(() => {
+    if (productData) {
+      getProductDetails(productData.id);
+    }
+  }, [isFocused, isProductInFavorites, productData]);
+
+   const handleAddToCart = () => {
+     if (product) {
+       if (isProductInCart) {
+         store.removeFromCart(product?.id); // Add null check for productData
+         showProductRemovedToast(product?.title || ''); // Add null check for productData
+       } else {
+         showProductAddedToast(product?.title || ''); // Add null check for productData
+         store.addToCart(product, 1);
+         toggleModalVisible();
+       }
+     }
+   };
+  
+  const handleOnFavorite = () => {
+    if (product) {
+      if (isProductInFavorites) {
+        store.removeFromFavorites(product.id);
+      } else {
+        store.addToFavorites(product);
+        Vibration.vibrate(5);
+        showToast(
+          "Added to favorites",
+          `${product.title} has been added to your favorites!`
+        );
+      }
+    }
+  };
+  
+  const handleOnBuyNow = () => {
+    if (product) {
+      store.addToCart(product, 1);
+      router.push("/cart");
+    }
+  };
+
   const shareListing = async () => {
     try {
       await Share.share({
-        title: product.title,
-        url: product.image,
+        title: product.title || "", // Provide a default value if product.title is null
+        url: product.image || "",
       });
     } catch (err) {
       console.log(err);
@@ -53,11 +144,11 @@ export default function ProductDetail() {
         headerShown: true,
         headerRight: () => (
           <Animated.View style={styles.bar}>
-            <TouchableOpacity style={styles.roundButton} onPress={() => shareListing}>
+            <TouchableOpacity style={styles.roundButton} onPress={shareListing}>
               <Ionicons name="share-social" size={24} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.roundButton} onPress={shareListing}>
-              <Ionicons name="heart" size={24} color="black" />
+            <TouchableOpacity style={styles.roundButton} onPress={handleOnFavorite}>
+             { isProductInFavorites ? <Ionicons name="heart" size={24} color="red" /> : <Ionicons name="heart" size={30} color="black" /> }
             </TouchableOpacity>
           </Animated.View>
         ),
@@ -89,12 +180,13 @@ export default function ProductDetail() {
 
   let closeModal = () => setModalVisible(false);
 
-  let toggleModalVisible = () => setModalVisible(true);
+  let toggleModalVisible = () => setModalVisible(!isModalVisible);
 
   return (
     <Animated.View style={styles.container}>
       <StatusBar style="dark" />
       <Animated.ScrollView
+        
         ref={scrollRef}
         scrollEventThrottle={16}
         contentContainerStyle={{ paddingBottom: 100 }}
@@ -106,7 +198,7 @@ export default function ProductDetail() {
 
             <PaddingContainer>
               <AppText fontFamily="airBold" fontSize="extraLarge">
-                {product?.title}
+                {product.title}
               </AppText>
               <Spacer space={20} />
               {/* <AppText fontFamily="airLight" fontSize="infinite">
@@ -127,7 +219,7 @@ export default function ProductDetail() {
                       textDecorationLine: "line-through",
                     }}
                     fontSize="large"
-                    color="PureWhite"
+                    //color="PureWhite"
                   >
                     {product?.old_price &&
                       formatPrice(product?.old_price) + "% OFF"}
@@ -145,13 +237,7 @@ export default function ProductDetail() {
               >
                 Description
               </AppText>
-              <AppText
-                fontSize="regular"
-                color="PureBlack"
-                fontFamily="airRegular"
-              >
-                {product?.description}
-              </AppText>
+              <AppText color="PureBlack">{product?.description}</AppText>
               <Divider />
               <AppText
                 fontFamily="airBold"
@@ -169,7 +255,7 @@ export default function ProductDetail() {
                   </AppText>
                   <Spacer space={10} between />
                   <AppText color="GreyDarkLight" fontSize="large">
-                    {product?.reviews || "0"}
+                    {/* {product?.reviews || "0"} */}
                   </AppText>
                   <Spacer between space={270} />
                   <QuickActionButton onPress={() => alert("Hello")}>
@@ -184,31 +270,50 @@ export default function ProductDetail() {
               <Divider />
               <Spacer space={26} />
               <FlexContainer position="center">
-                <AppButton
-                  style={styles.addToCartButton}
-                  onPress={() => toggleModalVisible()}
-                  color="PrimaryBlue"
-                >
-                  {"Add To Cart"}
-                </AppButton>
+                {!isProductInCart ? (
+                  <>
+                    <AppButton
+                      style={styles.addToCartButton}
+                      onPress={handleAddToCart}
+                      color="PrimaryGreen"
+                    >
+                      {"Add To Cart"}
+                    </AppButton>
+                  </>
+                ) : (
+                  <>
+                    <AppButton
+                      style={styles.addToCartButton}
+                        onPress={() => {
+                          router.push(`/cart`);
+                        }}
+                      color="PrimaryGreen"
+                    >
+                      {"Already in Cart. View Cart"}
+                    </AppButton>
+                  </>
+                )}
                 <Spacer space={20} />
                 <AppButton
                   style={{ flex: 1, width: "100%" }}
-                  onPress={() => alert("Buy now")}
+                  onPress={handleOnBuyNow}
                 >
                   Buy Now
                 </AppButton>
               </FlexContainer>
               <ModalBottomSheet
-                title="Errors in the code"
+                title="Added to Cart "
                 isModalVisible={isModalVisible}
                 onClose={closeModal}
               >
                 <ModalBottomSheetMessage
-                  isError={isModalVisible}
-                  buttonText="Try Again"
-                  message="An error occured while adding to cart"
-                  onPressModalButton={closeModal}
+                  isError={false}
+                  buttonText="Go to Cart"
+                  message={`${product?.title} has been added to your cart!`}
+                  onPressModalButton={() => {
+                    closeModal();
+                    router.push("/cart");
+                  }}
                 />
               </ModalBottomSheet>
             </PaddingContainer>
@@ -227,8 +332,8 @@ const styles = StyleSheet.create({
   addToCartButton: {
     width: "100%",
     borderWidth: 1,
-    borderColor: AppColors.PrimaryBlue,
-    backgroundColor: undefined,
+    borderColor: AppColors.PrimaryGreen,
+    backgroundColor: AppColors.PureWhite,
     flex: 1,
   },
   image: { width, height: IMG_HEIGHT },
@@ -268,7 +373,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 15,
     borderRadius: 100,
-    backgroundColor: AppColors.PrimaryGreen,
+    backgroundColor: AppColors.GreySurfaceSelected,
   },
 });
 
