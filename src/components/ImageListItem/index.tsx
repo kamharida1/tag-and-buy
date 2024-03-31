@@ -5,11 +5,10 @@ import { ScreenSize, useDimensions } from '@/helpers/dimensions';
 import { RemoteImage } from '../RemoteImage';
 import { defaultPizzaImage } from '../ProductListItem';
 import Animated, { Extrapolate, interpolate, useAnimatedStyle } from 'react-native-reanimated';
-import { Link, router, useSegments } from 'expo-router';
-import DiscountBadge from '../DiscountBadge';
-import { position } from '@shopify/restyle';
-import { useCartStore } from '@/store';
-import { showToast } from '@/utils/functions';
+import { Link } from 'expo-router';
+import { BlurView } from "expo-blur";
+import {HEADER_SCROLL_DISTANCE,HEADER_MIN_HEIGHT, HEADER_MAX_HEIGHT as IMG_HEIGHT,} from '@/constants'
+
 
 interface ImageListItemProps {
   product: Product;
@@ -21,12 +20,11 @@ interface ImageListItemProps {
   setIsLoading: Function;
 };
 
-const IMG_HEIGHT = 450;
-// const HEADER_MAX_HEIGHT = 350;
-// const HEADER_MIN_HEIGHT = 100;
-// const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
 
 const AnimatedImage = Animated.createAnimatedComponent(RemoteImage);
+const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
+
 
 const ImageListItem = memo<ImageListItemProps>(
   ({
@@ -46,41 +44,41 @@ const ImageListItem = memo<ImageListItemProps>(
 
     let imageSize = isLandscape
       ? { width: width / 2, height: "100%" }
-      : { width, height: isIphone ? 450 : 576 };
+      : { width, height: isIphone ? IMG_HEIGHT : 576 };
 
     const imageAnimatedStyle = useAnimatedStyle(() => {
       return {
         transform: [
-          {
-            translateY: interpolate(
-              scrollOffset.value,
-              [ 0, IMG_HEIGHT],
-              [ 0, IMG_HEIGHT * 0.75],
-              Extrapolate.CLAMP
-            ),
-          },
           // {
-          //   scale: interpolate(
+          //   translateY: interpolate(
           //     scrollOffset.value,
-          //     [ 0, IMG_HEIGHT],
-          //     [1, 0],
+          //     [ 0, 100, 200, HEADER_SCROLL_DISTANCE],
+          //     [ 0, 0, 0, HEADER_MIN_HEIGHT],
           //     Extrapolate.CLAMP
           //   ),
           // },
+          {
+            scale: interpolate(
+              scrollOffset.value,
+              [ 0, -50],
+              [1, 1.1],
+              Extrapolate.CLAMP
+            ),
+          },
         ],
+        opacity: interpolate(
+          scrollOffset.value,
+          [ 0, 150, 200, HEADER_SCROLL_DISTANCE],
+          [ 1, 1, 1, 0],
+          Extrapolate.CLAMP
+        ),
       };
     });
 
     return (
       <Link href={`/(user)/home/item?item=${item}`} asChild>
         <Pressable>
-          <Animated.View
-            style={[
-              imageSize as any,
-              imageAnimatedStyle,
-            ]
-            }
-          >
+          <Animated.View style={[imageSize as any, imageAnimatedStyle]}>
             {loading && (
               <ActivityIndicator
                 style={StyleSheet.absoluteFill}
@@ -96,24 +94,9 @@ const ImageListItem = memo<ImageListItemProps>(
               onLoad={() => {
                 setIsLoading(false);
               }}
-            />
+            >
+            </AnimatedImage>
           </Animated.View>
-          {/* {product.discount > 0 ? (
-            <DiscountBadge
-              value={product?.discount}
-              containerStyle={
-                isIphone
-                  ? [styles.discountBox, styles.discountBoxTablet]
-                  : styles.discountBox
-              }
-              textStyle={[
-                isTabletPortrait && styles.discountBoxTabletText,
-                {
-                  fontWeight: "bold",
-                },
-              ]}
-            />
-          ) : null} */}
         </Pressable>
       </Link>
     );

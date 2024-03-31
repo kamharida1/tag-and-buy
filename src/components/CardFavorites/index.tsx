@@ -89,4 +89,4 @@ const handleRemove = () => {
   );
 });
 
-export { CardFavorites };
+export default CardFavorites ;

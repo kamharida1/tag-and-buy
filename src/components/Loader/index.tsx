@@ -1,35 +1,27 @@
 import React, { memo } from "react";
 import { StyleSheet, View, ActivityIndicator } from "react-native";
 
-const styles = StyleSheet.create({
-  activityIndicator: {
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.1)",
-    borderRadius: 20,
-    overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,1)",
-  },
-});
-
 interface LoaderT {
   size?: number | "small" | "large";
-  animating?: boolean;
-  color?: string;
+  isLoading?: boolean;
 }
 
-const Loader = memo<LoaderT>(({ size, animating, color }) => {
-  const { activityIndicator } = styles;
+const Loader = memo<LoaderT>(({ size, isLoading }) => {
   return (
-    <View style={activityIndicator}>
-        {!animating && <ActivityIndicator size={size} color={color} />}
-      </View>
+   <View style={{
+      position:'absolute',
+       top: 0,
+       left:0,
+       bottom:0,
+       right:0,
+       backgroundColor: '#fff',
+       alignItems: 'center',
+       justifyContent: 'center'
+      }}
+   >
+
+    { isLoading && <ActivityIndicator size="large" color="#000"/>}
+  </View>
   );
 });
 

@@ -55,7 +55,7 @@ const TabsPage = () => {
           options={{
             headerTitle: "Favorites",
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="heart" size={size} color={color} />
+              <Ionicons name="heart-outline" size={size} color={color} />
             ),
             tabBarLabel: "Favorites",
           }}

@@ -21,6 +21,7 @@ import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanima
 import { Text } from "../Theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { HEADER_MAX_HEIGHT } from "@/constants";
 
 type Props = {
   product: Product;
@@ -94,7 +95,7 @@ export default function ImageList({
 
   return (
     <>
-      <View style={{ margin: "auto", width: width, height: 450 }}>
+      <View style={{ margin: "auto", width: width, height: HEADER_MAX_HEIGHT }}>
         <Animated.FlatList
           data={product?.images}
           renderItem={({ item, index }) => (

@@ -1,13 +1,15 @@
 //import { transition } from "@/components/ImageListItem";
+import QuickActionButton from "@/components/QuickActionButton";
 import { RemoteImage } from "@/components/RemoteImage";
-import RoundIconButton from "@/components/RoundIconButton";
-import { Ionicons } from "@expo/vector-icons";
+import CloseIcon from "../../../../assets/svgs/CloseIcon.svg";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Dimensions, Pressable, StyleSheet } from "react-native";
+import { Dimensions, Pressable, StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { Easing, FadeInDown, FadeInUp, SharedTransition, SlideInDown, SlideInUp, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { SafeAreaView,  useSafeAreaInsets } from "react-native-safe-area-context";
+import { AppColors } from "@/utils";
+import { useEffect, useState } from "react";
 
 const AnimatedRemoteImage = Animated.createAnimatedComponent(RemoteImage);
 const { width } = Dimensions.get("window");
@@ -21,6 +23,13 @@ export default function ImageItem() {
   const savedScale = useSharedValue(1);
   const rotation = useSharedValue(0);
   const savedRotation = useSharedValue(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if(item) {
+      setIsLoading(false);
+    }
+  },[item])
 
   const { top } = useSafeAreaInsets();
   
@@ -70,6 +79,19 @@ export default function ImageItem() {
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <StatusBar style="light" />
+      <View
+        style={{
+          position: "absolute",
+          right: 0,
+          top: 40,
+          left: 30,
+          zIndex: 100,
+        }}
+      >
+        <QuickActionButton onPress={() => router.back()}>
+          <CloseIcon width={30} height={30} fill={AppColors.DarkBlue} />
+        </QuickActionButton>
+      </View>
       <Animated.View
         entering={SlideInDown.duration(500)}
         //exiting={SlideInUp.duration(500)}
@@ -81,18 +103,6 @@ export default function ImageItem() {
           paddingTop: top,
         }}
       >
-        <RoundIconButton
-          backgroundColor="textInfo"
-          onPress={() => router.back()}
-          style={{
-            position: "absolute",
-            top: 35,
-            left: 20,
-          }}
-          name="close"
-          size={40}
-          color="bgFillMagic"
-        />
         <Animated.View
           style={{
             width: Dimensions.get("window").width - 40,
@@ -104,19 +114,23 @@ export default function ImageItem() {
           }}
         >
           <GestureDetector gesture={composed}>
-            {item && (
-              <AnimatedRemoteImage
-                path={item as string}
-                style={[
-                  animatedStyles,
-                  {
-                    ...StyleSheet.absoluteFillObject,
-                  },
-                ]}
-                fallback={""}
-                blurRadius={0}
-                resizeMode="contain"
-              />
+            {isLoading ? (
+              <View style={styles.placeholder} />
+            ) : (
+              isValidUri(item as string) && (
+                <AnimatedRemoteImage
+                  path={item as string}
+                  style={[
+                    animatedStyles,
+                    {
+                      ...StyleSheet.absoluteFillObject,
+                    },
+                  ]}
+                  fallback={""}
+                  blurRadius={0}
+                  resizeMode="contain"
+                />
+              )
             )}
           </GestureDetector>
         </Animated.View>
@@ -124,3 +138,22 @@ export default function ImageItem() {
     </>
   );
 }
+function isValidUri(uri: string): boolean {
+  const pattern = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  ); // fragment locator
+  return !!pattern.test(uri);
+}
+
+const styles = StyleSheet.create({
+  placeholder: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#ccc",
+  },
+});

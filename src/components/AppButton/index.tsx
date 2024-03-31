@@ -8,6 +8,7 @@ import {
   TouchableOpacityProps,
   ViewStyle,
 } from "react-native";
+import Animated, { StyleProps } from "react-native-reanimated";
 
 /**
  * AppButton is a wrapper of Button component from React Native.
@@ -30,8 +31,10 @@ interface AppButtonProps
   color?: AppColorKeys;
   backgroundColor?: AppColorKeys;
   onPress: ((event: GestureResponderEvent) => void) | undefined;
-  style?: ViewStyle;
+  style?: StyleProps;
 }
+
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 export default ({
   color = "PureWhite",
@@ -47,7 +50,7 @@ export default ({
   const fontColor = AppColors[color as keyof typeof AppColors];
   const background = AppColors[backgroundColor as keyof typeof AppColors];
   return (
-    <TouchableOpacity
+    <AnimatedTouchableOpacity
       activeOpacity={ACTIVE_BUTTON_OPACITY}
       onPress={onPress}
       style={{
@@ -67,7 +70,7 @@ export default ({
       >
         {children}
       </Text>
-    </TouchableOpacity>
+    </AnimatedTouchableOpacity>
   );
 };
 
