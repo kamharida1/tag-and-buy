@@ -15,6 +15,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Text } from '../Theme';
 import { el } from '@faker-js/faker';
+import { AppColors } from '@/utils';
+import Divider from '../Divider';
 
 const categories = [
   {
@@ -71,7 +73,7 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
     const selected = itemsRef.current[index];
     setActiveIndex(index);
     selected?.measure((x, y, width, height, pageX, pageY) => {
-      scrollRef.current?.scrollTo({ x: x -16, y: 0, animated: true });
+      scrollRef.current?.scrollTo({ x: x - 16, y: 0, animated: true });
     });
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onCategoryChanged(categories[index].name);
@@ -95,7 +97,7 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
             onPress={() => router.push("/cart")}
             style={styles.filterBtn}
           >
-            <Ionicons name="options-outline" size={24} />
+            <Ionicons name="options-outline" size={30} />
           </TouchableOpacity>
         </View>
         <ScrollView
@@ -141,7 +143,10 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
                       fontFamily:
                         activeIndex === index ? "airBold" : "airLight",
                       fontSize: activeIndex === index ? 14 : 13,
-                      color: activeIndex === index ? "black" : "#222",
+                      color:
+                        activeIndex === index
+                          ? AppColors.PureBlack
+                          : AppColors.PureBlack,
                     },
                   ]}
                 >
@@ -177,10 +182,10 @@ const styles = StyleSheet.create({
     paddingBottom: 11,
   },
   filterBtn: {
-   //]padding: 10,
+    padding: 5,
     borderWidth: 1,
     borderColor: "#A2A0A2",
-    borderRadius: 24,
+    borderRadius: 100,
   },
   searchBtn: {
     backgroundColor: "#fff",
@@ -202,13 +207,12 @@ const styles = StyleSheet.create({
     },
   },
   categoriesBtn: {
-    flex: 0.5,
+    //flex: 0.5,
     //paddingBottom: 8,
   },
   categoriesBtnActive: {
     flex: 1,
     borderBottomColor: "#000",
-    borderBottomWidth: 2,
     width: 100,
     //paddingBottom: 8,
   },

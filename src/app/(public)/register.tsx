@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { useSignUp } from '@clerk/clerk-expo';
 import * as Yup from "yup";
@@ -13,6 +13,7 @@ import Colors from '@/constants/Colors';
 import {ButtonOutline} from '@/components/ButtonOutline';
 import { Ionicons } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
+import AppText from '@/components/AppText';
 
 enum Strategy {
   Google = "oauth_google",
@@ -187,34 +188,39 @@ const Register = () => {
               </View>
 
               <View style={{ gap: 20 }}>
-                <ButtonOutline onPress={() => onSelectAuth(Strategy.Apple)}>
-                  <Ionicons
-                    name="md-logo-apple"
-                    size={24}
-                    style={defaultStyles.btnIcon}
-                  />
-                  <Text style={styles.btnOutlineText}>Continue with Apple</Text>
-                </ButtonOutline>
-                <ButtonOutline onPress={() => onSelectAuth(Strategy.Google)}>
-                  <Ionicons
-                    name="md-logo-google"
-                    size={24}
-                    style={defaultStyles.btnIcon}
-                  />
-                  <Text style={styles.btnOutlineText}>
+                <Pressable
+                  style={tw(
+                    `items-center justify-center gap-5 flex-row w-full border p-3 border-green-900 rounded-full`
+                  )}
+                  onPress={() => onSelectAuth(Strategy.Apple)}
+                >
+                  <Ionicons name="md-logo-apple" size={24} />
+                  <AppText fontFamily="airMedium" style={styles.btnOutlineText}>
+                    Continue with Apple
+                  </AppText>
+                </Pressable>
+                <Pressable
+                  style={tw(
+                    `items-center justify-center gap-5 flex-row w-full border p-3 border-green-900 rounded-full`
+                  )}
+                  onPress={() => onSelectAuth(Strategy.Google)}
+                >
+                  <Ionicons name="md-logo-google" size={24} />
+                  <AppText fontFamily="airMedium" style={styles.btnOutlineText}>
                     Continue with Google
-                  </Text>
-                </ButtonOutline>
-                <ButtonOutline onPress={() => onSelectAuth(Strategy.Facebook)}>
-                  <Ionicons
-                    name="md-logo-facebook"
-                    size={24}
-                    style={defaultStyles.btnIcon}
-                  />
-                  <Text style={styles.btnOutlineText}>
+                  </AppText>
+                </Pressable>
+                <Pressable
+                  style={tw(
+                    `items-center justify-center gap-5 flex-row w-full border p-3 border-green-900 rounded-full`
+                  )}
+                  onPress={() => onSelectAuth(Strategy.Facebook)}
+                >
+                  <Ionicons name="md-logo-facebook" size={24} />
+                  <AppText fontFamily="airMedium" style={styles.btnOutlineText}>
                     Continue with Facebook
-                  </Text>
-                </ButtonOutline>
+                  </AppText>
+                </Pressable>
               </View>
             </AppForm>
           </>
@@ -227,10 +233,7 @@ const Register = () => {
                 Check your email for a verification code
               </Text>
             </MotiView>
-            <AppForm
-              initialValues={{ code: "" }}
-              onSubmit={onPressVerify}
-            >
+            <AppForm initialValues={{ code: "" }} onSubmit={onPressVerify}>
               <Field
                 component={InputField}
                 name="code"

@@ -17,6 +17,7 @@ import { ButtonSubmit } from "@/components/ButtonSubmit";
 import { ButtonOutline } from "@/components/ButtonOutline";
 import AppButton from "@/components/AppButton";
 import Spacer from "@/components/Spacer";
+import AppText from "@/components/AppText";
 
 enum Strategy {
   Google = "oauth_google",
@@ -157,63 +158,51 @@ const Login = () => {
         </View>
 
         <View style={{ gap: 20 }}>
-          <AppButton
-            style={styles.buttonStyle}
-            onPress={() => router.push("/(public)/register")}
+          <Pressable
+            style={tw(
+              `items-center justify-center gap-5 flex-row w-full border p-3 border-green-900 rounded-full`
+            )}
+            onPress={() => router.push("/register")}
           >
-            <Ionicons
-              name="mail-outline"
-              size={24}
-              style={defaultStyles.btnIcon}
-            />
-            <Spacer space={15} between />
-            <Text style={[styles.btnOutlineText, { fontFamily: "airMedium" }]}>
+            <Ionicons name="mail-outline" size={24} />
+            <AppText fontFamily="airMedium" style={styles.btnOutlineText}>
               Continue with Email
-            </Text>
-          </AppButton>
-
-          <AppButton
-            style={styles.buttonStyle}
+            </AppText>
+          </Pressable>
+          <Pressable
+            style={tw(
+              `items-center justify-center gap-5 flex-row w-full border p-3 border-green-900 rounded-full`
+            )}
             onPress={() => onSelectAuth(Strategy.Apple)}
           >
-            <Ionicons
-              name="md-logo-apple"
-              size={24}
-              style={defaultStyles.btnIcon}
-            />
-            <Spacer space={15} between />
-            <Text style={[styles.btnOutlineText, { fontFamily: "airMedium" }]}>
+            <Ionicons name="md-logo-apple" size={24} />
+            <AppText fontFamily="airMedium" style={styles.btnOutlineText}>
               Continue with Apple
-            </Text>
-          </AppButton>
-          <AppButton
-            style={styles.buttonStyle}
-            onPress={() => onSelectAuth(Strategy.Google)}
+            </AppText>
+          </Pressable>
+
+          <Pressable
+            style={tw(
+              `items-center justify-center gap-5 flex-row w-full border p-3 border-green-900 rounded-full`
+            )}
+            onPress={() => onSelectAuth(Strategy.Apple)}
           >
-            <Ionicons
-              name="md-logo-google"
-              size={24}
-              style={defaultStyles.btnIcon}
-            />
-            <Spacer space={15} between />
-            <Text style={[styles.btnOutlineText, { fontFamily: "airMedium" }]}>
+            <Ionicons name="md-logo-google" size={24} />
+            <AppText fontFamily="airMedium" style={styles.btnOutlineText}>
               Continue with Google
-            </Text>
-          </AppButton>
-          <AppButton
-            style={styles.buttonStyle}
-            onPress={() => onSelectAuth(Strategy.Facebook)}
+            </AppText>
+          </Pressable>
+          <Pressable
+            style={tw(
+              `items-center justify-center gap-5 flex-row w-full border p-3 border-green-900 rounded-full`
+            )}
+            onPress={() => onSelectAuth(Strategy.Apple)}
           >
-            <Ionicons
-              name="md-logo-facebook"
-              size={24}
-              style={defaultStyles.btnIcon}
-            />
-            <Spacer space={15} between />
-            <Text style={[styles.btnOutlineText, { fontFamily: "airMedium" }]}>
+            <Ionicons name="md-logo-facebook" size={24} />
+            <AppText fontFamily="airMedium" style={styles.btnOutlineText}>
               Continue with Facebook
-            </Text>
-          </AppButton>
+            </AppText>
+          </Pressable>
         </View>
       </AppForm>
     </MotiView>
@@ -224,12 +213,14 @@ export default Login;
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    backgroundColor: Colors.light.tint,
+    backgroundColor:'transparent',
     width: "100%",
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 30,
+    borderWidth: 1,
+    borderColor: "#A2A0A2",
   },
   seperatorView: {
     flexDirection: "row",
@@ -243,7 +234,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   btnOutlineText: {
-    color: "#fff",
+    color: "#555",
     fontSize: 16,
     //fontFamily: "mon-sb",
   },

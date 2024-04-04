@@ -14,7 +14,7 @@ export interface RoundIconProps {
 
 const RoundIcon = ({
   name,
-  size,
+  size = 30,
   color,
   backgroundColor,
   iconRatio,

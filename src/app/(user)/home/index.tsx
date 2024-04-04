@@ -1,4 +1,8 @@
-import { useGetSelectedAddress, useMyAddressList, useUpdateAddress } from "@/api/addresses";
+import {
+  useGetSelectedAddress,
+  useMyAddressList,
+  useUpdateAddress,
+} from "@/api/addresses";
 import { useProductList } from "@/api/products";
 import ExploreHeader from "@/components/ExploreHeader";
 import ListingsBottomSheet from "@/components/ListingsBottomSheet";
@@ -6,7 +10,11 @@ import { Address } from "@/types";
 import { supabaseClient } from "@/utils/supabaseClient";
 import { useAuth } from "@clerk/clerk-expo";
 import { AntDesign, Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetScrollView,
+} from "@gorhom/bottom-sheet";
 import { Stack, router, useFocusEffect } from "expo-router";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
@@ -17,16 +25,20 @@ export default function Home() {
   const { mutate: selectAddress } = useUpdateAddress();
   const { data: addresses } = useMyAddressList();
   const [category, setCategory] = useState<string>("Freezers");
+  const { getToken } = useAuth();
 
   const updateAddress = async (addressId: string) => {
-    const {getToken} = useAuth();
     if (selectedAddress?.is_selected) {
-      const token = await getToken({ template: "supabase" });
-      const supabase = await supabaseClient(token);
-      await supabase
-        .from("addresses")
-        .update({ is_selected: false })
-        .eq("id", selectedAddress.id);
+      // const token = await getToken({ template: "supabase" });
+      // const supabase = await supabaseClient(token);
+      // await supabase
+      //   .from("addresses")
+      //   .update({ is_selected: false })
+      //   .eq("id", selectedAddress.id);
+      selectAddress({
+        id: selectedAddress.id,
+        updatedFields: { is_selected: false },
+      });
     }
     selectAddress({
       id: addressId,

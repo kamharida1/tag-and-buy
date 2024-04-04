@@ -24,7 +24,7 @@ const InputField = memo((props: any) => {
 
   let [isFocused, setIsFocused] = useState(false);
 
-  const SIZE = theme.borderRadii.m * 2;
+  const SIZE = theme.borderRadii.l;
  
   const hasError = errors[name] && touched[name];
   return (
@@ -88,7 +88,7 @@ const InputField = memo((props: any) => {
         )}
         {touched[name] && (
           <RoundIcon
-            name={!hasError ? "check" : "x"}
+            name={!hasError ? "check" : "close"}
             size={SIZE}
             backgroundColor={!hasError ? "primary" : "danger"}
             color="background"
