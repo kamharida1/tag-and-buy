@@ -144,6 +144,7 @@ const Listings = ({ listings: items, refresh, category }: Props) => {
         keyExtractor={(item) => item.id}
         onEndReached={() => console.log("End reached")}
         onEndReachedThreshold={0.5}
+        contentContainerStyle={{ flexGrow: 1}}
         ListHeaderComponent={
           <Text style={styles.info}>{items.length} products</Text>
         }

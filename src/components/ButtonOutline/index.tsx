@@ -8,16 +8,21 @@ const ButtonOutline = memo(
     onPress,
     style,
     textStyle,
+    children,
   }: {
     title: string;
     onPress: () => void;
     style?: ViewStyle;
     textStyle?: TextStyle;
+    children?: React.ReactNode;
   }) => {
     return (
-      <Pressable onPress={onPress} style={[styles.container, style]}>
-        <Text style={[styles.text, textStyle]}>{title}</Text>
-      </Pressable>
+      <>
+        <Pressable onPress={onPress} style={[styles.container, style]}>
+          <Text style={[styles.text, textStyle]}>{title}</Text>
+        </Pressable>
+        {children}
+      </>
     );
   }
 );

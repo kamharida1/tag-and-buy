@@ -22,7 +22,7 @@ const RenderOrderDetailsText = ({
   return (
     <>
       <FlexContainer direction="row" position="rowBetween">
-        <AppText fontSize="medium"   color="LightGrey">
+        <AppText fontFamily='airMedium' fontSize="medium"   color="LightGrey">
           {title}
         </AppText>
         <AppText fontSize="medium" fontFamily="airMedium" color="GreyDark">
@@ -52,15 +52,15 @@ const CartScreen = () => {
   return (
     <MainContainer style={{ paddingHorizontal: 0 }} fillHeight>
       <Stack.Screen options={{ headerShown: false }} />
-      <PaddingContainer>
+      <PaddingContainer style={{padding: 0}}>
         <FlexContainer direction="row" position="start">
           <QuickActionButton
             onPress={() => router.canGoBack() && router.back()}
           >
-            <AntDesign name="arrowleft" size={24} color="black" />
+            <AntDesign name="arrowdown" size={24} color="black" />
           </QuickActionButton>
-          <Spacer space={17} between />
-          <AppText fontSize="medium">{`Shopping Cart (${
+          <Spacer space={10} between />
+          <AppText fontFamily='airMedium' fontSize="medium">{`Shopping Cart (${
             store.cart.length || 0
           })`}</AppText>
         </FlexContainer>

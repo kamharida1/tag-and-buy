@@ -85,7 +85,7 @@ export default function ImageItem() {
           right: 0,
           top: 40,
           left: 30,
-          zIndex: 100,
+          zIndex: 80,
         }}
       >
         <QuickActionButton onPress={() => router.back()}>

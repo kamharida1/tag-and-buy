@@ -1,4 +1,4 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, Touchable, TouchableOpacity } from "react-native";
 import React, { memo } from "react";
 import { AnimatePresence } from "moti";
 import CardAnimated from "../CardAnimated";
@@ -9,29 +9,34 @@ import { RemoteImage } from "../RemoteImage";
 import { StyleSheet } from "react-native";
 import { defaultPizzaImage } from "../ProductListItem";
 import { ButtonOutline } from "../ButtonOutline";
+import AppText from "../AppText";
+import { router } from "expo-router";
 
 const CardFavorites = memo(({ product }: { product: Product }) => {
  
 const removeFromFavorites = useCartStore(state => state.removeFromFavorites);
 
-const handleRemove = () => {
-  removeFromFavorites(product.id)
-};
+  const handleRemove = () => {
+    if(product) removeFromFavorites(product.id)
+  };  
 
   return (
     <AnimatePresence exitBeforeEnter>
       <CardAnimated>
-        <View
+        <TouchableOpacity
+          onPress={() => router.push({ pathname: '/(user)/home/[id]', params: { id: product?.id } })}
           style={{
-            marginHorizontal: 10,
+            //marginHorizontal: 7,
             flexDirection: "row",
           }}
         >
           <View
             style={{
               width: 100,
-              height: 200,
+              height: 100,
               margin: 8,
+              borderRadius: 10,
+              overflow: "hidden",
             }}
           >
             <RemoteImage
@@ -48,31 +53,32 @@ const handleRemove = () => {
               marginLeft: 40,
               justifyContent: "center",
               flexWrap: "wrap",
-              width: 150,
+              width: 250,
             }}
           >
-            <Text
+            <AppText
+              fontFamily="airMedium"
               numberOfLines={2}
               style={{
                 fontWeight: "600",
-                fontSize: 16,
-                width: 150,
+                fontSize: 17,
+                width: 250,
               }}
             >
               {product.title}
-            </Text>
-            <Text style={{ fontSize: 14, fontWeight: "400" }}>
+            </AppText>
+            <AppText style={{ fontSize: 14, fontWeight: "400" }}>
               {product.brand}
-            </Text>
-            <Text style={{ fontSize: 18, fontWeight: "600" }}>
+            </AppText>
+            <AppText style={{ fontSize: 18, fontWeight: "600" }}>
               {formatPrice(product.price as number)}
-            </Text>
+            </AppText>
             <ButtonOutline
               title="Remove from favorites"
               onPress={handleRemove}
               style={{
                 margin: "auto",
-                marginTop: 30,
+                marginTop: 20,
                 width: 180,
                 borderColor: "red",
               }}
@@ -83,10 +89,10 @@ const handleRemove = () => {
               }}
             />
           </View>
-        </View>
+        </TouchableOpacity>
       </CardAnimated>
     </AnimatePresence>
   );
 });
 
-export default CardFavorites ;
+export { CardFavorites } ;

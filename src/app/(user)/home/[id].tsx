@@ -1,13 +1,14 @@
 import AppText from "@/components/AppText";
 import { Image, MotiView } from "moti";
-import { Share, StyleSheet, View, ActivityIndicator } from "react-native";
+import { Share, StyleSheet, View, ActivityIndicator, Vibration } from "react-native";
 import Animated, { BounceIn, BounceInDown, BounceInUp, Easing, Extrapolate, FadeInDown, FadeInUp, FadeOutUp, FlipInEasyX, FlipInEasyY, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import PlusIcon from "../../../../assets/svgs/PlusIcon.svg";
 import Heart from "../../../../assets/svgs/Heart.svg";
 import ArrowIcon from "../../../../assets/svgs/Arrow.svg";
 import ShareIcon from "../../../../assets/svgs/Share.svg";
-import {Loader} from "@/components/Loader"
+import { Loader } from "@/components/Loader"
+import tw from 'twrnc'
 
 import { faker } from "@faker-js/faker";
 import { router, useLocalSearchParams } from "expo-router";
@@ -50,7 +51,7 @@ export default function ProductDetails() {
 
   const scrollHandler = useAnimatedScrollHandler((event) => {
     scrollY.value = event.contentOffset.y;
-    console.warn(event.contentOffset.y);
+    //console.warn(event.contentOffset.y);
   });
 
   const buyNowButtonStyle = useAnimatedStyle(() => {
@@ -58,8 +59,14 @@ export default function ProductDetails() {
     return {
       opacity: interpolate(
         scrollY.value,
+        [905, 920, 961],
+        [0, 0.5, 1],
+        Extrapolate.CLAMP
+      ),
+      zIndex: interpolate(
+        scrollY.value,
         [905, 961],
-        [0, 1],
+        [0, 101],
         Extrapolate.CLAMP
       ),
     };
@@ -113,6 +120,10 @@ export default function ProductDetails() {
   const isProductInCart = store.cart.length
     ? store.cart.some((item) => item.product.id === product?.id)
     : false;
+  
+ const isProductInFavorites = store.favorites.length && store.favorites.some(
+   (favoriteProduct) => favoriteProduct.id === product?.id
+ );
 
   let toggleModalVisible = () => setModalVisible(!isModalVisible);
   let closeModal = () => setModalVisible(false);
@@ -131,11 +142,24 @@ export default function ProductDetails() {
   };
 
   const handleOnBuyNow = () => {
-    if (product) {
+    if (product && !isProductInCart) {
       store.addToCart(product, 1);
+      router.push("/cart");
+    } else {
       router.push("/cart");
     }
   };
+
+  const handleOnFavorite = () => {
+    if (product) {
+      if (isProductInFavorites) {
+        store.removeFromFavorites(product.id);
+      } else {
+        store.addToFavorites(product);
+        Vibration.vibrate(5);
+      }
+    }
+  }
 
   if (isLoading) return <Loader isLoading={isLoading} />
 
@@ -149,105 +173,113 @@ export default function ProductDetails() {
         onScroll={scrollHandler}
         scrollEventThrottle={16}
         contentContainerStyle={{
-          paddingTop: HEADER_MAX_HEIGHT - 32,
-          backgroundColor: "#fff",
+          paddingTop: HEADER_MAX_HEIGHT - insets.top,
+          //backgroundColor: "#fff",
         }}
       >
-        <View style={{ flex: 1, paddingHorizontal: 16 }}>
+        <View style={{ flex: 1 }}>
           {/* {DATA.map(renderListItem)} */}
-          <AppText fontFamily="airBold" fontSize="extraLarge">
-            {product?.title}
-          </AppText>
-          <Spacer space={15} />
-          <FlexContainer position="start" direction="row">
-            <AppText
-              fontSize="extraLarge"
-              color="PrimaryGreen"
-              fontFamily="airMedium"
-            >
-              {product?.price && formatPrice(product?.price)}
+          <Animated.View style={tw` bg-white py-6 p-2 mb-1`}>
+            <AppText fontFamily="airRegular" fontSize="extraLarge">
+              {product?.title}
             </AppText>
-            <Spacer space={10} between />
-            <View style={styles.discountTextHolder}>
-              <AppText
-                style={{
-                  textDecorationLine: "line-through",
-                }}
-                fontSize="large"
-                //color="PureWhite"
-              >
-                {product?.old_price &&
-                  formatPrice(product?.old_price) + "% OFF"}
-              </AppText>
-            </View>
-          </FlexContainer>
-          <Divider />
-          <AppText
-            fontFamily="airBold"
-            fontSize="medium"
-            style={{
-              marginBottom: 10,
-              //textDecorationLine: "underline",
-            }}
-          >
-            Description
-          </AppText>
-          <AppText color="PureBlack">{product?.description}</AppText>
-          <Divider />
-          <AppText
-            fontFamily="airBold"
-            fontSize="medium"
-            style={{ marginBottom: 7 }}
-          >
-            Product Details
-          </AppText>
-          <CardProductDetail productDetails={product?.product_details} />
-          <Divider />
-          <FlexContainer position="rowBetween" direction="row">
+            <Spacer space={15} />
             <FlexContainer position="start" direction="row">
-              <AppText fontFamily="airBold" fontSize="medium">
-                Reviews
+              <AppText
+                fontSize="extraLarge"
+                color="PrimaryGreen"
+                fontFamily="airMedium"
+              >
+                {product?.price && formatPrice(product?.price)}
               </AppText>
               <Spacer space={10} between />
-              <AppText color="GreyDarkLight" fontSize="large">
-                {/* {product?.reviews || "0"} */}
-              </AppText>
-              <Spacer between space={270} />
-              <QuickActionButton onPress={() => alert("Hello")}>
-                <PlusIcon height={25} width={25} fill={AppColors.PureBlack} />
-              </QuickActionButton>
-            </FlexContainer>
-          </FlexContainer>
-          <Divider />
-          <FlexContainer position="center">
-            {!isProductInCart ? (
-              <>
-                <AppButton
-                  style={styles.addToCartButton}
-                  onPress={handleAddToCart}
-                  color="PrimaryGreen"
-                >
-                  {"Add To Cart"}
-                </AppButton>
-              </>
-            ) : (
-              <>
-                <AppButton
-                  style={styles.addToCartButton}
-                  onPress={() => {
-                    router.push(`/cart`);
+              <View style={styles.discountTextHolder}>
+                <AppText
+                  style={{
+                    textDecorationLine: "line-through",
+                    marginBottom: 10,
                   }}
-                  color="PrimaryGreen"
+                  fontSize="large"
+                  //color="PureWhite"
                 >
-                  {"Already in Cart. View Cart"}
-                </AppButton>
-              </>
-            )}
-            <Spacer space={20} />
-            <Animated.View style={[{ flex: 1, width: "100%" }]}>
-              <AppButton onPress={handleOnBuyNow}>Buy Now</AppButton>
-            </Animated.View>
-          </FlexContainer>
+                  {product?.old_price &&
+                    formatPrice(product?.old_price) + "% OFF"}
+                </AppText>
+              </View>
+            </FlexContainer>
+          </Animated.View>
+          <Animated.View style={tw`bg-white p-2 mb-1`}>
+            <AppText
+              fontFamily="airBold"
+              fontSize="medium"
+              style={{
+                marginBottom: 10,
+                //textDecorationLine: "underline",
+              }}
+            >
+              Description
+            </AppText>
+            <AppText color="PureBlack">{product?.description}</AppText>
+          </Animated.View>
+          <Animated.View style={tw`bg-white p-2 mb-1`}>
+            <AppText
+              fontFamily="airBold"
+              fontSize="medium"
+              style={{ marginBottom: 7 }}
+            >
+              Product Details
+            </AppText>
+            <CardProductDetail productDetails={product?.product_details} />
+          </Animated.View>
+
+          <View style={tw`bg-white p-2`}>
+            <FlexContainer position="rowBetween" direction="row">
+              <FlexContainer position="start" direction="row">
+                <AppText fontFamily="airBold" fontSize="medium">
+                  Reviews
+                </AppText>
+                <Spacer space={10} between />
+                <AppText color="GreyDarkLight" fontSize="large">
+                  {/* {product?.reviews || "0"} */}
+                </AppText>
+                <Spacer between space={270} />
+                <QuickActionButton onPress={() => alert("Hello")}>
+                  <PlusIcon height={25} width={25} fill={AppColors.PureBlack} />
+                </QuickActionButton>
+              </FlexContainer>
+            </FlexContainer>
+          </View>
+          <View style={tw`bg-white p-2 mb-1 flex`}>
+            <FlexContainer position="center">
+              {!isProductInCart ? (
+                <>
+                  <AppButton
+                    style={styles.addToCartButton}
+                    onPress={handleAddToCart}
+                    color="PrimaryGreen"
+                  >
+                    {"Add To Cart"}
+                  </AppButton>
+                </>
+              ) : (
+                <>
+                  <AppButton
+                    style={styles.addToCartButton}
+                    onPress={() => {
+                      router.push(`/cart`);
+                    }}
+                    color="PrimaryGreen"
+                  >
+                    {"Already in Cart. View Cart"}
+                  </AppButton>
+                </>
+              )}
+              <Spacer space={20} />
+              <Animated.View style={[{ flex: 1, width: "100%" }]}>
+                <AppButton onPress={handleOnBuyNow}>Buy Now</AppButton>
+              </Animated.View>
+            </FlexContainer>
+          </View>
           <ModalBottomSheet
             title="Added to Cart "
             isModalVisible={isModalVisible}
@@ -263,7 +295,15 @@ export default function ProductDetails() {
               }}
             />
           </ModalBottomSheet>
-          {DATA.map(renderListItem)}
+          <View style={tw`flex bg-white`}>
+            <AppText
+              fontFamily="airBold"
+              fontSize="medium"
+              style={tw`p-2`}>
+              Similar Products
+              </AppText>
+            {DATA.map(renderListItem)}
+          </View>
         </View>
       </Animated.ScrollView>
       <Animated.View style={[styles.header, headerStyle]}>
@@ -287,12 +327,15 @@ export default function ProductDetails() {
                 <ShareIcon height={25} width={25} fill={AppColors.PureBlack} />
               </QuickActionButton>
               <Spacer space={20} between />
-              <QuickActionButton onPress={handleAddToCart}>
+              <QuickActionButton onPress={handleOnFavorite}>
                 <Heart
                   height={25}
-                  stroke={AppColors.PureBlack}
                   width={25}
-                  fill={AppColors.LightOrange}
+                  fill={
+                    isProductInFavorites
+                      ? AppColors.PrimaryGreen
+                      : AppColors.PureBlack
+                  }
                 />
               </QuickActionButton>
             </FlexContainer>
@@ -358,7 +401,11 @@ const styles = StyleSheet.create({
   },
   bar: {
     padding: 20,
-    zIndex: 100,
+    zIndex: 99,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
   },
   topBarNow: {
     position: "absolute",
@@ -393,7 +440,10 @@ const styles = StyleSheet.create({
     },
   discountTextHolder: {
     paddingVertical: 4,
+    paddingTop: 10,
     paddingHorizontal: 15,
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 100,
     backgroundColor: AppColors.GreySurfaceSelected,
   },

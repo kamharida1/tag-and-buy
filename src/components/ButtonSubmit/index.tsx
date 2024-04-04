@@ -43,7 +43,7 @@ const ButtonSubmit = ({
       onPress={() => handleSubmit()}
       //disabled={(!isValid && disabled)}
     >
-      {loading && <Loader />}
+      {loading && <Loader isLoading={loading} size='small' />}
      {!loading && <Text style={[defaultStyles.btnText, textStyle]}>{title}</Text>}
     </MotiPressable>
   );

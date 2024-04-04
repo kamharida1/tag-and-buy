@@ -5,6 +5,7 @@ import { SafeAreaView } from "moti";
 import { useLocalSearchParams } from "expo-router";
 import { useCartStore } from "@/store";
 import { CardFavorites } from "@/components/CardFavorites";
+import AppText from "@/components/AppText";
 
 export default function Wishlist() {
   //  const { wishlisted } = useLocalSearchParams();
@@ -19,6 +20,21 @@ export default function Wishlist() {
           data={products}
           keyExtractor={(item) => (item.id ? item.id.toString() : "default")}
           renderItem={({ item }) => <CardFavorites product={item} />}
+          ListHeaderComponent={() => (
+            <AppText
+              fontFamily="airBold"
+              style={{
+                fontSize: 30,
+                fontWeight: "bold",
+                color: "#333",
+                margin: 10,
+                paddingHorizontal: 10
+              }}
+            >
+              Wishlist
+            </AppText>
+          
+          )}
         />
       ) : (
         <View

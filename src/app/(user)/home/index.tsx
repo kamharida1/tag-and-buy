@@ -1,318 +1,46 @@
-// import { View, Text, StyleSheet, Image } from "react-native";
-// import React from "react";
-// import Animated, {
-//   Extrapolate,
-//   interpolate,
-//   interpolateColor,
-//   useAnimatedScrollHandler,
-//   useAnimatedStyle,
-//   useSharedValue,
-//   withSpring,
-//   withTiming,
-// } from "react-native-reanimated";
-// import { faker } from "@faker-js/faker";
-// import {
-//   SafeAreaView,
-//   useSafeAreaInsets,
-// } from "react-native-safe-area-context";
-// import { StatusBar } from "expo-status-bar";
-
-// const HEADER_MAX_HEIGHT = 240;
-// const HEADER_MIN_HEIGHT = 84;
-// const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-
-// const DATA = Array(10)
-//   .fill(null)
-//   .map((_, idx) => ({
-//     id: idx,
-//     avatar: faker.image.avatar(),
-//     fullName: `${faker.person.firstName()} ${faker.person.lastName()}`,
-//   }));
-
-// const Page = () => {
-//   const scrollY = useSharedValue(0);
-
-//   const scrollHandler = useAnimatedScrollHandler((event) => {
-//     scrollY.value = event.contentOffset.y;
-//     console.log(event.contentOffset.y);
-//   });
-
-//   const headerStyle = useAnimatedStyle(() => {
-//     "worklet";
-//     return {
-//       height: interpolate(
-//         scrollY.value,
-//         [0, HEADER_SCROLL_DISTANCE],
-//         [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
-//         Extrapolate.CLAMP
-//       ),
-//     };
-//   });
-
-//   const imageOpacity = useAnimatedStyle(() => {
-//     "worklet";
-//     return {
-//       opacity: interpolate(
-//         scrollY.value,
-//         [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-//         [1, 0.5, 0],
-//         Extrapolate.CLAMP
-//       ),
-//     };
-//   });
-
-//   const imageTranslateY = useAnimatedStyle(() => {
-//     "worklet";
-//     return {
-//       transform: [
-//         {
-//           translateY: interpolate(
-//             scrollY.value,
-//             [0, HEADER_SCROLL_DISTANCE],
-//             [0, 30],
-//             Extrapolate.CLAMP
-//           ),
-//         },
-//       ],
-//     };
-//   });
-
-//   const textScale = useAnimatedStyle(() => {
-//     "worklet";
-//     return {
-//       fontSize: withSpring(
-//         interpolate(
-//           scrollY.value,
-//           [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-//           [30, 20, 16],
-//           Extrapolate.CLAMP
-//         ),
-//         { damping: 10, stiffness: 100 }
-//       ),
-//       color: interpolateColor(
-//         scrollY.value,
-//         [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-//         ["#fff", "#fff", "#000"]
-//       ),
-//     };
-//   });
-
-//   const titleScale = useAnimatedStyle(() => {
-//     "worklet";
-//     return {
-//       transform: [
-//         {
-//           scale: interpolate(
-//             scrollY.value,
-//             [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-//             [1, 0.2, 0.5],
-//             Extrapolate.CLAMP
-//           ),
-//         },
-//       ],
-//     };
-//   });
-
-//   const titleTranslateY = useAnimatedStyle(() => {
-//     "worklet";
-//     return {
-//       transform: [
-//         {
-//           translateY: interpolate(
-//             scrollY.value,
-//             [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-//             [0, 0, -8],
-//             Extrapolate.CLAMP
-//           ),
-//         },
-//       ],
-//     };
-//   });
-
-//   const renderListItem = (item: any) => (
-//     <View key={item.id} style={styles.card}>
-//       <Image style={styles.avatar} source={{ uri: item.avatar }} />
-//       <Text numberOfLines={2} style={styles.fullNameText}>
-//         {item.fullName}
-//       </Text>
-//     </View>
-//   );
-
-//   const rstyle = useAnimatedStyle(() => {
-//     const scale = interpolate(
-//       scrollY.value,
-//       [0, 300],
-//       [0.5, 1],
-//       Extrapolate.CLAMP
-//     );
-//     const transY = interpolate(
-//       scrollY.value,
-//       [0, 300],
-//       [0, 100],
-//       Extrapolate.CLAMP
-//     );
-
-//     const borderRadius = withTiming(
-//       interpolate(scrollY.value, [0, 300], [100, 5], Extrapolate.CLAMP),
-//       { duration: 300 }
-//     );
-//     const borderWidth = interpolate(
-//       scrollY.value,
-//       [0, 300],
-//       [1, 3],
-//       Extrapolate.CLAMP
-//     );
-//     return {
-//       transform: [{ translateY: transY }],
-//       borderRadius,
-//       borderWidth,
-//       borderColor: "#999",
-//       alignItems: "center",
-//       justifyContent: "center",
-//     };
-//   });
-//   const insets = useSafeAreaInsets();
-
-//   return (
-//     <View style={[styles.saveArea, { paddingTop: insets.top }]}>
-//       <Animated.ScrollView
-//         showsVerticalScrollIndicator={false}
-//         onScroll={scrollHandler}
-//         scrollEventThrottle={16}
-//         contentContainerStyle={{
-//           paddingTop: HEADER_MAX_HEIGHT - 32,
-//           backgroundColor: "#fff",
-//         }}
-//       >
-//         {DATA.map(renderListItem)}
-//       </Animated.ScrollView>
-//       <Animated.View style={[styles.header, headerStyle]}>
-//         <Animated.Image
-//           style={[styles.headerBackground, imageOpacity, imageTranslateY]}
-//           source={require("../../../../assets/images/brand2.jpeg")}
-//         />
-//       </Animated.View>
-//       <Animated.View
-//         style={[
-//           styles.topBar,
-//           // titleScale,
-//           // titleTranslateY,
-//           // { paddingTop: insets.top },
-//         ]}
-//       >
-//         <Animated.Text style={[styles.title, textScale]}>
-//           Management
-//         </Animated.Text>
-//       </Animated.View>
-//       <Animated.View style={[styles.bottom, rstyle]}>
-//         <Text
-//           style={{
-//             color: "#fff",
-//             textAlign: "center",
-//             fontSize: 17,
-//             fontFamily: "airMedium",
-//           }}
-//         >
-//           Bottom
-//         </Text>
-//       </Animated.View>
-//       <StatusBar style="light" />
-//     </View>
-//   );
-// };
-
-// export default Page;
-
-// const styles = StyleSheet.create({
-//   saveArea: {
-//     flex: 1,
-//     backgroundColor: "#eff3fb",
-//   },
-//   card: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//     shadowColor: "#000",
-//     backgroundColor: "#fff",
-//     shadowOffset: { width: 0, height: 2 },
-//     shadowOpacity: 0.2,
-//     borderWidth: StyleSheet.hairlineWidth,
-//     borderColor: "#aaa",
-//     shadowRadius: 7,
-//     elevation: 1,
-//     borderRadius: 10,
-//     marginHorizontal: 12,
-//     marginTop: 12,
-//     paddingHorizontal: 16,
-//     paddingVertical: 12,
-//   },
-//   header: {
-//     position: "absolute",
-//     top: 0,
-//     left: 0,
-//     right: 0,
-//     backgroundColor: "#62d1bc",
-//     overflow: "hidden",
-//     height: HEADER_MAX_HEIGHT,
-//   },
-//   headerBackground: {
-//     position: "absolute",
-//     top: 0,
-//     left: 0,
-//     right: 0,
-//     width: null,
-//     height: HEADER_MAX_HEIGHT,
-//     resizeMode: "cover",
-//   },
-//   topBar: {
-//     marginTop: 40,
-//     height: 50,
-//     alignItems: "center",
-//     justifyContent: "center",
-//     position: "absolute",
-//     top: 0,
-//     left: 0,
-//     right: 0,
-//   },
-//   title: {
-//     color: "white",
-//     fontSize: 30,
-//     fontWeight: "bold",
-//     fontFamily: "airBold",
-//   },
-//   avatar: {
-//     height: 54,
-//     width: 54,
-//     resizeMode: "contain",
-//     borderRadius: 54 / 2,
-//   },
-//   fullNameText: {
-//     fontSize: 16,
-//     marginLeft: 24,
-//     fontFamily: "airMedium",
-//   },
-//   bottom: {
-//     backgroundColor: "rgba(0,0,0,0.8)",
-//     position: "absolute",
-//     bottom: 0,
-//     left: 0,
-//     right: 0,
-//     height: 60,
-//     width: 260,
-//     marginHorizontal: 80,
-//     marginBottom: 20,
-//   },
-// });
-
+import { useGetSelectedAddress, useMyAddressList, useUpdateAddress } from "@/api/addresses";
 import { useProductList } from "@/api/products";
 import ExploreHeader from "@/components/ExploreHeader";
 import ListingsBottomSheet from "@/components/ListingsBottomSheet";
-import { Stack } from "expo-router";
-import { useCallback, useMemo, useState } from "react";
-import { View } from "react-native";
+import { Address } from "@/types";
+import { supabaseClient } from "@/utils/supabaseClient";
+import { useAuth } from "@clerk/clerk-expo";
+import { AntDesign, Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { Stack, router, useFocusEffect } from "expo-router";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 export default function Home() {
   const { data: products, error, isLoading } = useProductList();
+  const { data: selectedAddress } = useGetSelectedAddress();
+  const { mutate: selectAddress } = useUpdateAddress();
+  const { data: addresses } = useMyAddressList();
   const [category, setCategory] = useState<string>("Freezers");
+
+  const updateAddress = async (addressId: string) => {
+    const {getToken} = useAuth();
+    if (selectedAddress?.is_selected) {
+      const token = await getToken({ template: "supabase" });
+      const supabase = await supabaseClient(token);
+      await supabase
+        .from("addresses")
+        .update({ is_selected: false })
+        .eq("id", selectedAddress.id);
+    }
+    selectAddress({
+      id: addressId,
+      updatedFields: { is_selected: true },
+    });
+  };
+
+  const addressSheetRef = useRef<BottomSheetModal>(null);
+  const openAddress = () => {
+    addressSheetRef.current?.present();
+  };
+  const closeAddress = () => {
+    addressSheetRef.current?.dismiss();
+  };
 
   const filteredProducts = useMemo(() => {
     if (!products) return [];
@@ -324,13 +52,218 @@ export default function Home() {
   }, []);
 
   return (
-    <View style={{ flex: 1, marginTop: 150 }}>
-      <Stack.Screen
-        options={{
-          header: () => <ExploreHeader onCategoryChanged={onCategoryChanged} />,
-        }}
-      />
-      <ListingsBottomSheet listings={filteredProducts} category={category} />
-    </View>
+    <BottomSheetModalProvider>
+      <View style={{ flex: 1 }}>
+        <Stack.Screen
+          options={{
+            header: () => (
+              <>
+                <ExploreHeader onCategoryChanged={onCategoryChanged} />
+                <Pressable
+                  onPress={openAddress}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: 120,
+                    padding: 10,
+                    paddingTop: 10,
+                    backgroundColor: "#AFEEEE",
+                  }}
+                >
+                  <Ionicons name="location-outline" size={24} color="black" />
+
+                  <View>
+                    {selectedAddress ? (
+                      <Text>
+                        Deliver to {selectedAddress?.first_name} -{" "}
+                        {selectedAddress?.street}
+                      </Text>
+                    ) : (
+                      <Text style={{ fontSize: 13, fontWeight: "500" }}>
+                        Add Address
+                      </Text>
+                    )}
+                  </View>
+
+                  <MaterialIcons
+                    name="keyboard-arrow-down"
+                    size={24}
+                    color="black"
+                  />
+                </Pressable>
+              </>
+            ),
+          }}
+        />
+
+        <ListingsBottomSheet listings={filteredProducts} category={category} />
+        <BottomSheetModal
+          ref={addressSheetRef}
+          snapPoints={["50%"]}
+          index={0}
+          backgroundComponent={({ style }) => (
+            <View
+              style={[
+                style,
+                {
+                  backgroundColor: "#fff",
+                  borderTopRightRadius: 10,
+                  borderTopLeftRadius: 10,
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 3.84,
+                },
+              ]}
+            />
+          )}
+        >
+          <BottomSheetScrollView style={{}}>
+            <View
+              style={{
+                marginBottom: 8,
+                padding: 10,
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                Choose your Location
+              </Text>
+
+              <Text style={{ marginTop: 5, fontSize: 16, color: "gray" }}>
+                Select your delivery location to see product availability and
+                faster delivery options
+              </Text>
+            </View>
+
+            <ScrollView
+              style={{ padding: 10 }}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            >
+              {/* already added address */}
+              {addresses?.map((address, index) => (
+                <Pressable
+                  key={index}
+                  onPress={() => {
+                    updateAddress(address.id);
+                    closeAddress();
+                  }}
+                  style={{
+                    width: 140,
+                    height: 140,
+                    borderColor: "#D0D0D0",
+                    borderWidth: 1,
+                    padding: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: 3,
+                    marginRight: 15,
+                    marginTop: 10,
+                    backgroundColor:
+                      selectedAddress?.id === address.id ? "#FBCEB1" : "white",
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 3,
+                    }}
+                  >
+                    <Text style={{ fontSize: 13, fontWeight: "bold" }}>
+                      {address?.first_name} {address?.last_name}
+                    </Text>
+                    <Entypo name="location-pin" size={24} color="red" />
+                  </View>
+
+                  <Text
+                    numberOfLines={1}
+                    style={{ width: 130, fontSize: 13, textAlign: "center" }}
+                  >
+                    {address?.street}, {address?.street2}
+                  </Text>
+                  <Text
+                    numberOfLines={1}
+                    style={{ width: 130, fontSize: 13, textAlign: "center" }}
+                  >
+                    {address?.state}, {address?.city}
+                  </Text>
+                  <Text
+                    numberOfLines={1}
+                    style={{ width: 130, fontSize: 13, textAlign: "center" }}
+                  >
+                    {address?.phone}, {address?.zip_code}
+                  </Text>
+                </Pressable>
+              ))}
+
+              <Pressable
+                onPress={() => {
+                  router.push("/(user)/home/address-screen");
+                  addressSheetRef.current?.dismiss();
+                }}
+                style={{
+                  width: 140,
+                  height: 140,
+                  borderColor: "#D0D0D0",
+                  marginTop: 10,
+                  borderWidth: 1,
+                  padding: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: "#0066b2",
+                    fontWeight: "500",
+                  }}
+                >
+                  Add an address or pick-up point
+                </Text>
+              </Pressable>
+            </ScrollView>
+
+            <View
+              style={{
+                padding: 10,
+                flexDirection: "column",
+                gap: 7,
+                marginBottom: 30,
+              }}
+            >
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+              >
+                <Entypo name="location-pin" size={24} color="#0066b2" />
+                <Text style={{ color: "#0066b2", fontWeight: "400" }}>
+                  Enter delivery address to see product availability
+                </Text>
+              </View>
+
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+              >
+                <Ionicons name="locate-sharp" size={22} color="#0066b2" />
+                <Text style={{ color: "#0066b2", fontWeight: "400" }}>
+                  Use My Currect location
+                </Text>
+              </View>
+
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+              >
+                <AntDesign name="earth" size={22} color="#0066b2" />
+
+                <Text style={{ color: "#0066b2", fontWeight: "400" }}>
+                  Deliver outside Enugu
+                </Text>
+              </View>
+            </View>
+          </BottomSheetScrollView>
+        </BottomSheetModal>
+      </View>
+    </BottomSheetModalProvider>
   );
 }

@@ -107,8 +107,8 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
             justifyContent: "center",
             alignSelf: "flex-start",
             //backgroundColor: 'red',
-            gap: 20,
-            paddingHorizontal: 16,
+            //gap: 20,
+            //paddingHorizontal: 16,
           }}
         >
           {/* //contentContainerStyle={{paddingHorizontal: 16}}> */}
@@ -128,12 +128,14 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
-                  padding: 16,
-                  gap: 2,
+                  paddingHorizontal: 8,
+                  paddingBottom: 0,
+                  //gap: 2,
                 }}
               >
                 {category.icon}
                 <Text
+                  numberOfLines={1}
                   style={[
                     {
                       fontFamily:
@@ -157,7 +159,7 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    height: 180,
+    height: 150,
     elevation: 2,
     shadowColor: "#000",
     shadowOpacity: 0.1,
@@ -172,10 +174,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 15,
-    paddingBottom: 16,
+    paddingBottom: 11,
   },
   filterBtn: {
-    padding: 10,
+   //]padding: 10,
     borderWidth: 1,
     borderColor: "#A2A0A2",
     borderRadius: 24,
@@ -200,17 +202,14 @@ const styles = StyleSheet.create({
     },
   },
   categoriesBtn: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    flex: 0.5,
     //paddingBottom: 8,
   },
   categoriesBtnActive: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     borderBottomColor: "#000",
     borderBottomWidth: 2,
+    width: 100,
     //paddingBottom: 8,
   },
 });

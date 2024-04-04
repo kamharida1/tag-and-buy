@@ -1,12 +1,16 @@
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/providers/UserProvider';
 import { InsertTables, Tables, UpdateTables } from '@/types';
+import { supabaseClient } from '@/utils/supabaseClient';
+import { useAuth } from '@clerk/clerk-expo';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 
 export const useAdminAddressList = () => {
+  const { getToken } = useAuth();
+
   return useQuery({
     queryKey: ['addresses'],
     queryFn: async () => {
+      const token = await getToken({ template: 'supabase'});
+      const supabase = await supabaseClient(token);
       const { data, error } = await supabase
         .from('addresses')
         .select('*')
@@ -21,13 +25,14 @@ export const useAdminAddressList = () => {
 }
 
 export const useGetSelectedAddress = () => { 
-  const { session } = useAuth();
-  const userId = session?.user.id;
+  const {userId, getToken } = useAuth();
 
   return useQuery({
     queryKey: ['addresses', { userId }],
     queryFn: async () => {
       if (!userId) return null;
+      const token = await getToken({ template: 'supabase'});
+      const supabase = await supabaseClient(token);
       const { data, error } = await supabase
         .from('addresses')
         .select('*')
@@ -44,9 +49,13 @@ export const useGetSelectedAddress = () => {
 }
 
 export const useAddress = (id: string) => { 
+  const { getToken } = useAuth();
+
   return useQuery({
     queryKey: ['product', id],
     queryFn: async () => {
+      const token = await getToken({ template: 'supabase'});
+      const supabase = await supabaseClient(token);
       const { data, error } = await supabase
         .from('addresses')
         .select('*')
@@ -61,17 +70,18 @@ export const useAddress = (id: string) => {
 };
 
 export const useMyAddressList = () => {
-  const { session } = useAuth();
-  const id = session?.user.id;
+  const { userId, getToken } = useAuth();
 
   return useQuery({
-    queryKey: ['addresses', id],
+    queryKey: ['addresses', userId],
     queryFn: async () => {
-      if (!id) return null;
+      if (!userId) return null;
+      const token = await getToken({ template: 'supabase'});
+      const supabase = await supabaseClient(token);
       const { data, error } = await supabase
         .from('addresses')
         .select('*')
-        .eq('user_id', id)
+        .eq('user_id', userId)
         .order('created_at', { ascending: false });
       if (error) {
         throw new Error(error.message);
@@ -84,11 +94,12 @@ export const useMyAddressList = () => {
 
 export const useInsertAddress = () => {
   const queryClient = useQueryClient();
-  const { session } = useAuth();
-  const userId = session?.user.id;
+  const { userId, getToken } = useAuth();
 
   return useMutation({
     async mutationFn(data: InsertTables<'addresses'>) {
+      const token = await getToken({ template: 'supabase'});
+      const supabase = await supabaseClient(token);
       const { error, data: newAddress } = await supabase
         .from('addresses')
         .insert({ ...data, user_id: userId })
@@ -108,11 +119,12 @@ export const useInsertAddress = () => {
 
 export const useEditAddress = () => {
   const queryClient = useQueryClient();
-  const { session } = useAuth();
-  const userId = session?.user.id;
+  const { userId, getToken } = useAuth();
 
   return useMutation({
     async mutationFn(data: any) {
+      const token = await getToken({ template: 'supabase'});
+      const supabase = await supabaseClient(token);
       const { data: address, error } = await supabase
         .from('addresses')
         .update({
@@ -148,6 +160,7 @@ export const useEditAddress = () => {
 
 export const useUpdateAddress = () => {
   const queryClient = useQueryClient();
+  const { getToken } = useAuth();
 
   return useMutation({
     async mutationFn({
@@ -157,6 +170,8 @@ export const useUpdateAddress = () => {
       id: string;
       updatedFields: UpdateTables<'addresses'>;
       }) {
+      const token = await getToken({ template: 'supabase'});
+      const supabase = await supabaseClient(token);
       await supabase.from("addresses").update({ is_selected: false });
       const { error, data: updatedAddress } = await supabase
         .from('addresses')
@@ -183,9 +198,12 @@ export const useUpdateAddress = () => {
 
 export const useDeleteAddress = () => {
   const queryClient = useQueryClient();
+  const { getToken } = useAuth();
 
   return useMutation({
     async mutationFn(id: string) {
+      const token = await getToken({ template: 'supabase'});
+      const supabase = await supabaseClient(token);
       const { error } = await supabase
         .from('addresses')
         .delete()

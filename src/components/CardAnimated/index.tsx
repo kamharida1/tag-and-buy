@@ -50,9 +50,9 @@ const styles = StyleSheet.create({
     shadowRadius: 7,
     elevation: 1,
     borderRadius: 10,
-    marginHorizontal: 12,
+    //marginHorizontal: 8,
     marginTop: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     paddingVertical: 12,
   },
 });

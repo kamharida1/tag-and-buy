@@ -10,7 +10,7 @@ import { InputField } from '@/components/InputField';
 import { Link } from 'expo-router';
 import { ButtonSubmit } from '@/components/ButtonSubmit';
 import Colors from '@/constants/Colors';
-import ButtonOutline from '@/components/ButtonOutline';
+import {ButtonOutline} from '@/components/ButtonOutline';
 import { Ionicons } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
 
