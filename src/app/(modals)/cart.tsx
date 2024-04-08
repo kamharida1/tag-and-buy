@@ -12,6 +12,9 @@ import { TouchableOpacity } from 'react-native';
 import { ACTIVE_BUTTON_OPACITY } from '@/constants';
 import { AppColors } from '@/utils';
 import AppButton from '@/components/AppButton'; 
+import Animated from 'react-native-reanimated';
+import formatPrice from '@/utils/naira_price';
+
 const RenderOrderDetailsText = ({
   title,
   value,
@@ -22,11 +25,11 @@ const RenderOrderDetailsText = ({
   return (
     <>
       <FlexContainer direction="row" position="rowBetween">
-        <AppText fontFamily='airMedium' fontSize="medium"   color="LightGrey">
+        <AppText fontFamily='airMedium' fontSize="medium" color="LightGrey">
           {title}
         </AppText>
         <AppText fontSize="medium" fontFamily="airMedium" color="GreyDark">
-          {`$${value || 0}`}
+          {formatPrice(value)}
         </AppText>
       </FlexContainer>
       <Spacer space={13} />
@@ -52,19 +55,22 @@ const CartScreen = () => {
   return (
     <MainContainer style={{ paddingHorizontal: 0 }} fillHeight>
       <Stack.Screen options={{ headerShown: false }} />
-      <PaddingContainer style={{padding: 0}}>
-        <FlexContainer direction="row" position="start">
-          <QuickActionButton
-            onPress={() => router.canGoBack() && router.back()}
-          >
-            <AntDesign name="arrowdown" size={24} color="black" />
-          </QuickActionButton>
-          <Spacer space={10} between />
-          <AppText fontFamily='airMedium' fontSize="medium">{`Shopping Cart (${
-            store.cart.length || 0
-          })`}</AppText>
-        </FlexContainer>
-      </PaddingContainer>
+      <Animated.View style={{height: 50, width: "100%"}}>
+        <PaddingContainer style={{ padding: 0 }}>
+          <FlexContainer direction="row" position="start">
+            <QuickActionButton
+              onPress={() => router.canGoBack() && router.back()}
+            >
+              <AntDesign name="arrowleft" size={24} color="black" />
+            </QuickActionButton>
+            <Spacer space={10} between />
+            <AppText
+              fontFamily="airMedium"
+              fontSize="extraLarge"
+            >{`Shopping Cart (${store.cart.length || 0})`}</AppText>
+          </FlexContainer>
+        </PaddingContainer>
+      </Animated.View>
       {isCartEmpty ? (
         <View style={styles.noItemsIndicator}>
           <AppText fontSize="extraLarge">
@@ -126,11 +132,7 @@ const CartScreen = () => {
 export default CartScreen;
 
 const styles = StyleSheet.create({
-  checkoutView: {
-    backgroundColor: AppColors.GreySurface,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-  },
+  checkoutView: {},
   noItemsIndicator: {
     flex: 1,
     paddingHorizontal: 15,

@@ -29,7 +29,6 @@ export type Product = {
   sub_category: string | null
   title: string | null
   discount: number
-  is_favorite?: boolean 
 };
 
 export type Address = {

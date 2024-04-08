@@ -18,7 +18,7 @@ export const useAdminAddressList = () => {
       if (error) {
         throw new Error(error.message);
       }
-      return data;
+      return data as Tables<'addresses'>[];
     },
     //refetchOnWindowFocus: false,
   });
@@ -42,7 +42,7 @@ export const useGetSelectedAddress = () => {
       if (error) {
         throw new Error(error.message);
       }
-      return data;
+      return data as Tables<'addresses'>;
     },
     //refetchOnWindowFocus: false,
   });   
@@ -64,7 +64,7 @@ export const useAddress = (id: string) => {
       if (error) {
         throw new Error(error.message);
       }
-      return data;
+      return data as Tables<'addresses'>;
     },
   });
 };
@@ -86,7 +86,7 @@ export const useMyAddressList = () => {
       if (error) {
         throw new Error(error.message);
       }
-      return data;
+      return data as Tables<'addresses'>[];
     },
     //refetchOnWindowFocus: false,
   });
@@ -172,7 +172,7 @@ export const useUpdateAddress = () => {
       }) {
       const token = await getToken({ template: 'supabase'});
       const supabase = await supabaseClient(token);
-      await supabase.from("addresses").update({ is_selected: false });
+      await supabase.from("addresses").update({ is_selected: updatedFields.is_selected });
       const { error, data: updatedAddress } = await supabase
         .from('addresses')
         .update(updatedFields)

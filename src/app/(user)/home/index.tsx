@@ -6,6 +6,8 @@ import {
 import { useProductList } from "@/api/products";
 import ExploreHeader from "@/components/ExploreHeader";
 import ListingsBottomSheet from "@/components/ListingsBottomSheet";
+import { Loader } from "@/components/Loader";
+import { Tables } from "@/database.types";
 import { Address } from "@/types";
 import { supabaseClient } from "@/utils/supabaseClient";
 import { useAuth } from "@clerk/clerk-expo";
@@ -22,19 +24,14 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 export default function Home() {
   const { data: products, error, isLoading } = useProductList();
   const { data: selectedAddress } = useGetSelectedAddress();
-  const { mutate: selectAddress } = useUpdateAddress();
-  const { data: addresses } = useMyAddressList();
+  const { mutateAsync: selectAddress, isPending } = useUpdateAddress();
+  const { data: addresses, isLoading: isFetchingAddress } = useMyAddressList();
   const [category, setCategory] = useState<string>("Freezers");
   const { getToken } = useAuth();
 
+
   const updateAddress = async (addressId: string) => {
     if (selectedAddress?.is_selected) {
-      // const token = await getToken({ template: "supabase" });
-      // const supabase = await supabaseClient(token);
-      // await supabase
-      //   .from("addresses")
-      //   .update({ is_selected: false })
-      //   .eq("id", selectedAddress.id);
       selectAddress({
         id: selectedAddress.id,
         updatedFields: { is_selected: false },
@@ -43,6 +40,14 @@ export default function Home() {
     selectAddress({
       id: addressId,
       updatedFields: { is_selected: true },
+    }, {
+      onSuccess: () => {
+        console.log("Address updated successfully");
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    
     });
   };
 
@@ -55,7 +60,7 @@ export default function Home() {
   };
 
   const filteredProducts = useMemo(() => {
-    if (!products) return [];
+    if (!products) return <Loader isLoading={isLoading} />;
     return products.filter((product) => product.category === category);
   }, [products, category]);
 
@@ -71,44 +76,53 @@ export default function Home() {
             header: () => (
               <>
                 <ExploreHeader onCategoryChanged={onCategoryChanged} />
-                <Pressable
-                  onPress={openAddress}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginTop: 120,
-                    padding: 10,
-                    paddingTop: 10,
-                    backgroundColor: "#AFEEEE",
-                  }}
-                >
-                  <Ionicons name="location-outline" size={24} color="black" />
+                <View>
+                  <Pressable
+                    onPress={openAddress}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginTop: 80,
+                      padding: 10,
+                      paddingTop: 10,
+                      backgroundColor: "#AFEEEE",
+                    }}
+                  >
+                    <Ionicons name="location-outline" size={24} color="black" />
 
-                  <View>
-                    {selectedAddress ? (
-                      <Text>
-                        Deliver to {selectedAddress?.first_name} -{" "}
-                        {selectedAddress?.street}
-                      </Text>
-                    ) : (
-                      <Text style={{ fontSize: 13, fontWeight: "500" }}>
-                        Add Address
-                      </Text>
-                    )}
-                  </View>
+                    <View>
+                      {selectedAddress ? (
+                        <Text>
+                          Deliver to {selectedAddress?.first_name} -{" "}
+                          {selectedAddress?.street}
+                        </Text>
+                      ) : isFetchingAddress ? (
+                        <Text style={{ fontSize: 13, fontWeight: "500" }}>
+                          fetching Address...
+                        </Text>
+                      ) : (
+                        <Text style={{ fontSize: 13, fontWeight: "500" }}>
+                          Add Address
+                        </Text>
+                      )}
+                    </View>
 
-                  <MaterialIcons
-                    name="keyboard-arrow-down"
-                    size={24}
-                    color="black"
-                  />
-                </Pressable>
+                    <MaterialIcons
+                      name="keyboard-arrow-down"
+                      size={24}
+                      color="black"
+                    />
+                  </Pressable>
+                </View>
               </>
             ),
           }}
         />
 
-        <ListingsBottomSheet listings={filteredProducts} category={category} />
+        <ListingsBottomSheet
+          listings={filteredProducts as Tables<"products">[]}
+          category={category}
+        />
         <BottomSheetModal
           ref={addressSheetRef}
           snapPoints={["50%"]}
@@ -211,7 +225,7 @@ export default function Home() {
 
               <Pressable
                 onPress={() => {
-                  router.push("/(user)/home/address-screen");
+                  router.push("/addresses");
                   addressSheetRef.current?.dismiss();
                 }}
                 style={{

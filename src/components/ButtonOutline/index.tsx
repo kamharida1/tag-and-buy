@@ -1,6 +1,7 @@
 import { Text, Pressable, ViewStyle, TextStyle } from "react-native";
 import React, { memo } from "react";
 import { StyleSheet } from "react-native";
+import AppText from "../AppText";
 
 const ButtonOutline = memo(
   ({
@@ -19,9 +20,11 @@ const ButtonOutline = memo(
     return (
       <>
         <Pressable onPress={onPress} style={[styles.container, style]}>
-          <Text style={[styles.text, textStyle]}>{title}</Text>
+          <AppText fontFamily="airBold" style={[styles.text, textStyle]}>
+            {title}
+          </AppText>
+          {children}
         </Pressable>
-        {children}
       </>
     );
   }
@@ -32,16 +35,16 @@ export { ButtonOutline };
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "transparent",
-    paddingHorizontal: 3,
-    paddingVertical: 10,
     borderRadius: 5,
     borderColor: "#666",
     borderWidth: 0.6,
-    width: 150,
-    height: 40,
+    minWidth: 150,
+    minHeight: 40,
+    alignItems: "center",
+    justifyContent: "center",
   },
   text: {
     color: "#888",
-    textAlign: "center",
+    //textAlign: "center",
   },
 });

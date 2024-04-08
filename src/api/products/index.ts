@@ -2,6 +2,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 //import { supabase } from '../../lib/supabase';
 import { useAuth } from '@clerk/clerk-expo';
 import { supabaseClient } from '@/utils/supabaseClient';
+import { Product } from '@/types';
+import { Tables } from '@/database.types';
 
 
 
@@ -17,7 +19,7 @@ export const useProductList = () => {
       if (error) {
         throw new Error(error.message);
       }
-      return data;
+      return data as Tables<'products'>[];
     },
   });
 };
@@ -38,7 +40,7 @@ export const useProduct = (id: string) => {
       if (error) {
         throw new Error(error.message);
       }
-      return data;
+      return data as Tables<'products'>;
     },
   });
 };
@@ -57,7 +59,7 @@ export const useInsertProduct = () => {
       if (error) {
         throw new Error(error.message);
       }
-      return product;
+      return product as Tables<'products'>;
     },  
       
     async onSuccess() {
@@ -98,7 +100,7 @@ export const useUpdateProduct = () => {
       if (error) {
         throw new Error(error.message);
       }
-      return product;
+      return product as Tables<'products'>;
     },
       
     async onSuccess(_, { id }) {

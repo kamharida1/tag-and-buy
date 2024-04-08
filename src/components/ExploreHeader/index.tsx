@@ -17,6 +17,8 @@ import { Text } from '../Theme';
 import { el } from '@faker-js/faker';
 import { AppColors } from '@/utils';
 import Divider from '../Divider';
+import CartButtonWithIndicator from '../CartButtonWithIndicator';
+import { useCartStore } from '@/store';
 
 const categories = [
   {
@@ -69,6 +71,9 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
   const itemsRef = useRef<Array<TouchableOpacity | null>>([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
+   const { cart } = useCartStore();
+   const cartItem = cart.reduce((acc, item) => acc + item.quantity, 0);
+
   const selectCategory = (index: number) => { 
     const selected = itemsRef.current[index];
     setActiveIndex(index);
@@ -78,6 +83,7 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onCategoryChanged(categories[index].name);
   }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.container}>
@@ -93,12 +99,7 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
               </View>
             </TouchableOpacity>
           </Link>
-          <TouchableOpacity
-            onPress={() => router.push("/cart")}
-            style={styles.filterBtn}
-          >
-            <Ionicons name="options-outline" size={30} />
-          </TouchableOpacity>
+          <CartButtonWithIndicator quantity={cartItem} style={{right: 12}} />
         </View>
         <ScrollView
           ref={scrollRef}
@@ -164,7 +165,7 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    height: 150,
+    height: 120,
     elevation: 2,
     shadowColor: "#000",
     shadowOpacity: 0.1,
@@ -191,8 +192,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     flexDirection: "row",
     alignItems: "center",
-    padding: 14,
-    width: 340,
+    padding: 4,
+    width: 350,
     gap: 10,
     borderRadius: 60,
     elevation: 2,

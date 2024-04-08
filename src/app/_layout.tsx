@@ -118,6 +118,7 @@ const InitialLayout = () => {
       <Stack.Screen name="(user)" options={{ headerShown: false }} />
       <Stack.Screen name="(public)" options={{ headerShown: false }} />
       <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+      <Stack.Screen name="addresses" options={{ headerShown: false }} />
     </Stack>
   );
 };
@@ -132,11 +133,11 @@ function RootLayoutNav() {
         tokenCache={tokenCache}
       >
         <ThemeProvider>
-          <GestureHandlerRootView style={{flex: 1}}>
-            <SafeAreaProvider>
+          <SafeAreaProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
               <InitialLayout />
-            </SafeAreaProvider>
-          </GestureHandlerRootView>
+            </GestureHandlerRootView>
+          </SafeAreaProvider>
         </ThemeProvider>
         {/* </ThemeProvider> */}
       </ClerkProvider>

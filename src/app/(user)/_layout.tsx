@@ -22,8 +22,8 @@ export const LogoutButton = () => {
 
 const TabsPage = () => {
 	const { isSignedIn } = useAuth();
-  const { cart } = useCartStore();
-  const cartItem = cart.reduce((acc, item) => acc + item.quantity, 0);
+  // const { cart } = useCartStore();
+  // const cartItem = cart.reduce((acc, item) => acc + item.quantity, 0);
   return (
     <>
       <StatusBar style="dark" />

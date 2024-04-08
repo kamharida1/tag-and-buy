@@ -1,4 +1,5 @@
 import { AppColors, AppFonts, FontSizes } from "@/utils";
+import { StyleProp } from "react-native";
 import { Text, TextProps, TextStyle } from "react-native";
 
 /**
@@ -20,7 +21,7 @@ interface AppTextProps extends TextProps {
   fontFamily?: AppFontKeys;
   fontSize?: AppFontSizes;
   color?: AppColorKeys;
-  style?: TextStyle;
+  style?: StyleProp<TextStyle>;
 }
 
 export default ({
@@ -36,13 +37,14 @@ export default ({
 
   return (
     <Text
-      style={{
-        fontFamily,
+      style={[
+        {fontFamily,
         fontSize: size,
         color: fontColor,
-        letterSpacing: 0.17,
-        ...style,
-      }}
+          letterSpacing: 0.17
+        },
+        style,
+      ]}
       {...remainingProps}
     >
       {children}

@@ -5,9 +5,11 @@ import { TAB_ICON_SIZE as CART_ICON_SIZE } from "@/constants";
 import  Cart  from "../../../assets/svgs/Cart.svg";
 import {
   GestureResponderEvent,
+  StyleProp,
   StyleSheet,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from "react-native";
 import AppText from "../AppText";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,16 +20,18 @@ type CartButtonWithIndicatorProps = {
   onPress?: ((event: GestureResponderEvent) => void) | undefined;
   color?: string;
   size?: number;
+  style?: StyleProp<ViewStyle>;
 };
 
 export default ({
   quantity = 0,
   onPress,
   size = CART_ICON_SIZE,
-  color = AppColors.PureWhite,
+  color = AppColors.PureBlack,
+  style,
 }: CartButtonWithIndicatorProps): JSX.Element => {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
+    <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
       {/* <Cart
         stroke={cartIconColor}
 

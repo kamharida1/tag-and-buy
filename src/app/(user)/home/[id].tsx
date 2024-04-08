@@ -29,6 +29,7 @@ import AppButton from "@/components/AppButton";
 import ModalBottomSheet from "@/components/BottomSheet";
 import ModalBottomSheetMessage from "@/components/ModalBottomSheetMessage";
 import { Ionicons } from "@expo/vector-icons";
+import { Product } from "@/types";
 
 
 const DATA = Array(10)
@@ -129,13 +130,13 @@ export default function ProductDetails() {
   let closeModal = () => setModalVisible(false);
 
   const handleAddToCart = () => {
-    if (product) {
+    if (product ) {
       if (isProductInCart) {
         store.removeFromCart(product?.id); // Add null check for productData
         showProductRemovedToast(product?.title || ""); // Add null check for productData
       } else {
         showProductAddedToast(product?.title || ""); // Add null check for productData
-        store.addToCart(product, 1);
+        store.addToCart(product as Product, 1);
         toggleModalVisible();
       }
     }
@@ -143,7 +144,7 @@ export default function ProductDetails() {
 
   const handleOnBuyNow = () => {
     if (product && !isProductInCart) {
-      store.addToCart(product, 1);
+      store.addToCart(product as Product, 1);
       router.push("/cart");
     } else {
       router.push("/cart");
@@ -155,7 +156,7 @@ export default function ProductDetails() {
       if (isProductInFavorites) {
         store.removeFromFavorites(product.id);
       } else {
-        store.addToFavorites(product);
+        store.addToFavorites(product as Product);
         Vibration.vibrate(5);
       }
     }
@@ -180,7 +181,7 @@ export default function ProductDetails() {
         <View style={{ flex: 1 }}>
           {/* {DATA.map(renderListItem)} */}
           <Animated.View style={tw` bg-white py-6 p-2 mb-1`}>
-            <AppText fontFamily="airRegular" fontSize="extraLarge">
+            <AppText fontFamily="airMedium" fontSize="extraLarge">
               {product?.title}
             </AppText>
             <Spacer space={15} />
@@ -311,7 +312,7 @@ export default function ProductDetails() {
           style={[styles.headerBackground]}
           source={require("../../../../assets/images/brand4.jpeg")}
         /> */}
-        <ImageList scrollOffset={scrollY} product={product} />
+        <ImageList scrollOffset={scrollY} product={product as Product} />
       </Animated.View>
       <Animated.View style={[styles.topBar]}>
         {/* <Animated.Text style={[styles.title, topBarStyle]}>
