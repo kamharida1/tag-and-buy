@@ -131,7 +131,7 @@ const theme = createTheme({
       fontFamily: "airMedium",
     },
     body: {
-      fontSize: 15,
+      //fontSize: 15,
       lineHeight: 24,
       color: "textDark",
       fontFamily: "airMedium",

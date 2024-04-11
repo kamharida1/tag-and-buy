@@ -120,7 +120,7 @@ const CartScreen = () => {
             value={getTotalCartPrice() + DELIVERY_COST}
           />
           <Spacer space={30} />
-          <AppButton onPress={() => alert("Handle checkout!")}>
+          <AppButton onPress={()=>router.push(`/checkout`)}>
             Proceed To checkout
           </AppButton>
         </PaddingContainer>

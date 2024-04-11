@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
   },
   sheetContainer: {
     backgroundColor: "white",
+    marginTop: 130,
     elevation: 4,
     shadowColor: "#000",
     shadowOpacity: 0.3,

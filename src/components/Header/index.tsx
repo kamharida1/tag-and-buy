@@ -1,6 +1,9 @@
 import { GestureResponderEvent, Pressable, StyleSheet, ViewProps } from "react-native";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import tw from 'twrnc'
+import { Text } from "../Theme";
+import AppText from "../AppText";
+import Divider from "../Divider";
 
 type HeaderProps = {
   leftNode?: JSX.Element;
@@ -22,41 +25,45 @@ const Header: React.FC<HeaderProps> = ({
   leftContainerStyle = null,
 }) => {
   return (
-    <View style={styles.pageHeaderContainer}>
-      <Pressable
-        onPress={handleOnPressLeftNode}
-        style={leftContainerStyle || styles.leftItem}
-      >
-        {leftNode}
-      </Pressable>
-      <View style={styles.headerItem}>
-        <Text style={tw`text-center font-medium text-[17px]`}>
-          {headerText}
-        </Text>
+    <>
+      <View style={styles.pageHeaderContainer}>
+        <Pressable
+          onPress={handleOnPressLeftNode}
+          style={leftContainerStyle || styles.leftItem}
+        >
+          {leftNode}
+        </Pressable>
+        <View style={styles.headerItem}>
+          <AppText
+            fontFamily="airBold"
+            numberOfLines={1}
+            style={tw`font-bold text-[23px]`}
+          >
+            {headerText}
+          </AppText>
+        </View>
+        <Pressable
+          onPress={handleOnPressRightNode}
+          style={rightContainerStyle || styles.rightItem}
+        >
+          {rightNode}
+        </Pressable>
       </View>
-      <Pressable
-        onPress={handleOnPressRightNode}
-        style={rightContainerStyle || styles.rightItem}
-      >
-        {rightNode}
-      </Pressable>
-    </View>
+      <Divider  />
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  pageHeaderContainer: tw.style(
-    `flex flex-row justify-between items-center border-b border-gray-200`,
-    {
-      shadowColor: "#000",
-      shadowOffset: { width: 1, height: 2 },
-      shadowOpacity: 0.05,
-      elevation: 3,
-    }
-  ),
-  leftItem: tw`flex-1 pl-4 py-4`,
-  rightItem: tw`flex-1 pr-4 items-end py-4`,
-  headerItem: tw`flex-1 py-4`,
+  pageHeaderContainer: tw.style(`flex flex-row justify-between items-center `, {
+    shadowColor: "#000",
+    shadowOffset: { width: 1, height: 2 },
+    shadowOpacity: 0.05,
+    elevation: 3,
+  }),
+  leftItem: tw`flex-1 pl-4 pt-4`,
+  rightItem: tw`flex-1 pr-4 items-end pt-4`,
+  headerItem: tw`flex-1 pt-4 flex-nowrap `,
 });
 
 export default Header;

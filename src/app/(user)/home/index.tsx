@@ -4,6 +4,7 @@ import {
   useUpdateAddress,
 } from "@/api/addresses";
 import { useProductList } from "@/api/products";
+import AppText from "@/components/AppText";
 import ExploreHeader from "@/components/ExploreHeader";
 import ListingsBottomSheet from "@/components/ListingsBottomSheet";
 import { Loader } from "@/components/Loader";
@@ -76,48 +77,45 @@ export default function Home() {
             header: () => (
               <>
                 <ExploreHeader onCategoryChanged={onCategoryChanged} />
-                <View>
-                  <Pressable
-                    onPress={openAddress}
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginTop: 80,
-                      padding: 10,
-                      paddingTop: 10,
-                      backgroundColor: "#AFEEEE",
-                    }}
-                  >
-                    <Ionicons name="location-outline" size={24} color="black" />
-
-                    <View>
-                      {selectedAddress ? (
-                        <Text>
-                          Deliver to {selectedAddress?.first_name} -{" "}
-                          {selectedAddress?.street}
-                        </Text>
-                      ) : isFetchingAddress ? (
-                        <Text style={{ fontSize: 13, fontWeight: "500" }}>
-                          fetching Address...
-                        </Text>
-                      ) : (
-                        <Text style={{ fontSize: 13, fontWeight: "500" }}>
-                          Add Address
-                        </Text>
-                      )}
-                    </View>
-
-                    <MaterialIcons
-                      name="keyboard-arrow-down"
-                      size={24}
-                      color="black"
-                    />
-                  </Pressable>
-                </View>
               </>
             ),
           }}
         />
+        <View>
+          <Pressable
+            onPress={openAddress}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              //justifyContent: "space-between",
+              marginTop: 85,
+              padding: 10,
+              paddingTop: 10,
+              backgroundColor: "#AFEEEE",
+            }}
+          >
+            <Ionicons name="location-outline" size={24} color="black" />
+
+            <View style={{ marginLeft: 10 }}>
+              {selectedAddress ? (
+                <AppText>
+                  Deliver to {selectedAddress?.first_name} -{" "}
+                  {selectedAddress?.street}
+                </AppText>
+              ) : isFetchingAddress ? (
+                <AppText style={{ fontSize: 13, fontWeight: "500" }}>
+                  fetching Address...
+                </AppText>
+              ) : (
+                <AppText style={{ fontSize: 13, fontWeight: "500" }}>
+                  Add Address
+                </AppText>
+              )}
+            </View>
+
+            <MaterialIcons name="keyboard-arrow-down" size={24} color="black" />
+          </Pressable>
+        </View>
 
         <ListingsBottomSheet
           listings={filteredProducts as Tables<"products">[]}

@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { Link, router } from 'expo-router';
 import AirCon from '../../../assets/svgs/AirCon.svg';
@@ -76,9 +76,13 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
 
   const selectCategory = (index: number) => { 
     const selected = itemsRef.current[index];
+    const screenWidth = Dimensions.get("window").width;
+    const itemWidth = 140; // Width of each address item
+    const offset = (screenWidth - itemWidth) ; // Offset to center the item
+    const scrollToX = index * itemWidth - offset;
     setActiveIndex(index);
     selected?.measure((x, y, width, height, pageX, pageY) => {
-      scrollRef.current?.scrollTo({ x: x - 16, y: 0, animated: true });
+      scrollRef.current?.scrollTo({ x: scrollToX, y: 0, animated: true });
     });
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onCategoryChanged(categories[index].name);
@@ -99,20 +103,13 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
               </View>
             </TouchableOpacity>
           </Link>
-          <CartButtonWithIndicator quantity={cartItem} style={{right: 12}} />
+          <CartButtonWithIndicator onPress={()=> router.push(`/cart`)} quantity={cartItem} style={{right: 12}} />
         </View>
         <ScrollView
           ref={scrollRef}
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            alignItems: "center",
-            justifyContent: "center",
-            alignSelf: "flex-start",
-            //backgroundColor: 'red',
-            //gap: 20,
-            //paddingHorizontal: 16,
-          }}
+          contentContainerStyle={styles.scrollViewContent}
         >
           {/* //contentContainerStyle={{paddingHorizontal: 16}}> */}
           {categories.map((category, index) => (
@@ -127,14 +124,7 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
               }
             >
               <View
-                style={{
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  paddingHorizontal: 8,
-                  paddingBottom: 0,
-                  //gap: 2,
-                }}
+                style={styles.categoryItem}
               >
                 {category.icon}
                 <Text
@@ -175,6 +165,21 @@ const styles = StyleSheet.create({
       height: 10,
     },
   },
+  scrollViewContent: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    marginBottom: 8,
+  },
+  categoryItem: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    // paddingHorizontal: 8,
+    // paddingBottom: 0,
+    //gap: 2,
+  },
   actionRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -208,14 +213,14 @@ const styles = StyleSheet.create({
     },
   },
   categoriesBtn: {
-    //flex: 0.5,
-    //paddingBottom: 8,
+    paddingHorizontal: 8,
+    paddingBottom: 4,
   },
   categoriesBtnActive: {
-    flex: 1,
+    paddingHorizontal: 8,
+    paddingBottom: 4,
     borderBottomColor: "#000",
-    width: 100,
-    //paddingBottom: 8,
+    borderBottomWidth: 2,
   },
 });
 

@@ -92,18 +92,18 @@ export default function Addresses() {
         renderItem={({ item }) => (
           <View style={tw`py-2`}>
             <FlexContainer position="start" direction="row">
-              <AppText fontFamily="airBold" style={tw`text-base`}>
+              <AppText fontFamily="airMedium" style={tw`text-base`}>
                 {item.first_name} {item.last_name}
               </AppText>
             </FlexContainer>
-            <AppText fontFamily="airMedium" style={tw`text-sm text-gray-600`}>
+            <AppText fontFamily="airRegular" style={tw`text-sm text-gray-900`}>
               {item.street} {`\n`}
               {item.street2}
             </AppText>
-            <AppText fontFamily="airMedium" style={tw`text-sm  text-gray-600`}>
+            <AppText fontFamily="airRegular" style={tw`text-sm  text-gray-900`}>
               {item.city}, {item.state}
             </AppText>
-            <AppText fontFamily="airMedium" style={tw`text-sm  text-gray-600`}>
+            <AppText fontFamily="airRegular" style={tw`text-sm  text-gray-900`}>
               {item.zip_code}
             </AppText>
             <FlexContainer style={tw`mt-4`} position="rowBetween">
