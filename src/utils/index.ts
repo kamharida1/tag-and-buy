@@ -7,7 +7,7 @@ enum AppColors {
   PrimaryGreen = '#007900',
   DarkBlue = '#153075',
   DarkGreen = '#005200',
-  PrimaryYellow = '#F9B023',
+  PrimaryYellow = '#FFC72C',
   PureWhite = '#FFF',
   //Grey = '#B2BBCE',
   PureBlack = '#000000',

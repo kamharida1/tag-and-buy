@@ -15,7 +15,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useProduct } from "@/api/products";
 import ImageList from "@/components/ImageList";
 import { HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT, HEADER_SCROLL_DISTANCE } from "@/constants";
-import { useCartStore } from "@/store";
 import { showProductAddedToast, showProductRemovedToast } from "@/utils/functions";
 import { useState } from "react";
 import { FlexContainer, PaddingContainer } from "@/containers";
@@ -30,6 +29,7 @@ import ModalBottomSheet from "@/components/BottomSheet";
 import ModalBottomSheetMessage from "@/components/ModalBottomSheetMessage";
 import { Ionicons } from "@expo/vector-icons";
 import { Product } from "@/types";
+import { useCart } from "@/providers/CartProvider";
 
 
 const DATA = Array(10)
@@ -46,9 +46,10 @@ export default function ProductDetails() {
   const [isModalVisible, setModalVisible] = useState(false);
 
   // console.log("Product: ", product)
-  const store = useCartStore();
+  //const store = useCartStore();
 
-  const scrollY = useSharedValue(0);
+  const { items, deleteItem, addItem, clearCart } = useCart();
+   const scrollY = useSharedValue(0);
 
   const scrollHandler = useAnimatedScrollHandler((event) => {
     scrollY.value = event.contentOffset.y;
@@ -118,13 +119,13 @@ export default function ProductDetails() {
       console.log(err);
     }
   };
-  const isProductInCart = store.cart.length
-    ? store.cart.some((item) => item.product.id === product?.id)
+  const isProductInCart = items.length
+    ? items.some((item) => item.product.id === product?.id)
     : false;
   
- const isProductInFavorites = store.favorites.length && store.favorites.some(
-   (favoriteProduct) => favoriteProduct.id === product?.id
- );
+//  const isProductInFavorites = store.favorites.length && store.favorites.some(
+//    (favoriteProduct) => favoriteProduct.id === product?.id
+//  );
 
   let toggleModalVisible = () => setModalVisible(!isModalVisible);
   let closeModal = () => setModalVisible(false);
@@ -132,11 +133,11 @@ export default function ProductDetails() {
   const handleAddToCart = () => {
     if (product ) {
       if (isProductInCart) {
-        store.removeFromCart(product?.id); // Add null check for productData
+       deleteItem(product); // Add null check for productData
         showProductRemovedToast(product?.title || ""); // Add null check for productData
       } else {
         showProductAddedToast(product?.title || ""); // Add null check for productData
-        store.addToCart(product as Product, 1);
+        addItem(product);
         toggleModalVisible();
       }
     }
@@ -144,23 +145,23 @@ export default function ProductDetails() {
 
   const handleOnBuyNow = () => {
     if (product && !isProductInCart) {
-      store.addToCart(product as Product, 1);
+      addItem(product as Product);
       router.push("/cart");
     } else {
       router.push("/cart");
     }
   };
 
-  const handleOnFavorite = () => {
-    if (product) {
-      if (isProductInFavorites) {
-        store.removeFromFavorites(product.id);
-      } else {
-        store.addToFavorites(product as Product);
-        Vibration.vibrate(5);
-      }
-    }
-  }
+  // const handleOnFavorite = () => {
+  //   if (product) {
+  //     if (isProductInFavorites) {
+  //       store.removeFromFavorites(product.id);
+  //     } else {
+  //       store.addToFavorites(product as Product);
+  //       Vibration.vibrate(5);
+  //     }
+  //   }
+  // }
 
   if (isLoading) return <Loader isLoading={isLoading} />
 
@@ -328,7 +329,7 @@ export default function ProductDetails() {
                 <ShareIcon height={25} width={25} fill={AppColors.PureBlack} />
               </QuickActionButton>
               <Spacer space={20} between />
-              <QuickActionButton onPress={handleOnFavorite}>
+              {/* <QuickActionButton onPress={handleOnFavorite}>
                 <Heart
                   height={25}
                   width={25}
@@ -338,7 +339,7 @@ export default function ProductDetails() {
                       : AppColors.PureBlack
                   }
                 />
-              </QuickActionButton>
+              </QuickActionButton> */}
             </FlexContainer>
           </FlexContainer>
         </Animated.View>

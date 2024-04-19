@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase"
+import { useAuth } from "@clerk/clerk-expo";
 import { useQueryClient } from "@tanstack/react-query"
 import { useEffect } from "react";
 
@@ -26,7 +27,7 @@ export const useInsertOrderSubscription = () => {
 
 export const useUpdateOrderSubscription = (id: string) => {
   const queryClient = useQueryClient();
-
+  const { getToken, userId } = useAuth();
   useEffect(() => {
     const orders = supabase
       .channel('custom-update-channel')

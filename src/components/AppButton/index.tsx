@@ -3,12 +3,12 @@ import { AppColors, AppFonts, FontSizes } from "@/utils";
 import {
   GestureResponderEvent,
   StyleSheet,
-  Text,
   TouchableOpacity,
   TouchableOpacityProps,
   ViewStyle,
 } from "react-native";
 import Animated, { StyleProps } from "react-native-reanimated";
+import { Text } from "../Theme";
 
 /**
  * AppButton is a wrapper of Button component from React Native.
@@ -77,7 +77,7 @@ export default ({
 const styles = StyleSheet.create({
   button: {
     paddingVertical: 16,
-    borderRadius: 20,
+    borderRadius: 15,
     paddingHorizontal: 20,
   },
 });

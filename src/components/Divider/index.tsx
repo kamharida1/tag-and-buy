@@ -7,7 +7,7 @@ interface DividerProps {
 }
 
 const Divider = memo<DividerProps>(({style}) => {
-  return <View style={[style,styles.divider]} />;
+  return <View style={[styles.divider, style]} />;
 });
 
 export default Divider

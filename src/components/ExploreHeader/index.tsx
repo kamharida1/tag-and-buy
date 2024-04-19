@@ -14,11 +14,9 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Text } from '../Theme';
-import { el } from '@faker-js/faker';
 import { AppColors } from '@/utils';
-import Divider from '../Divider';
 import CartButtonWithIndicator from '../CartButtonWithIndicator';
-import { useCartStore } from '@/store';
+import { useCart } from '@/providers/CartProvider';
 
 const categories = [
   {
@@ -71,8 +69,8 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
   const itemsRef = useRef<Array<TouchableOpacity | null>>([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
-   const { cart } = useCartStore();
-   const cartItem = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const { items } = useCart();
+  const cartItem = items.reduce((acc, item) => acc + item.quantity, 0);
 
   const selectCategory = (index: number) => { 
     const selected = itemsRef.current[index];

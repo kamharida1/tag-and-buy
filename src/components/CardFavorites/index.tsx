@@ -11,13 +11,13 @@ import { defaultPizzaImage } from "../ProductListItem";
 import { ButtonOutline } from "../ButtonOutline";
 import AppText from "../AppText";
 import { router } from "expo-router";
+import { useCart } from "@/providers/CartProvider";
 
 const CardFavorites = memo(({ product }: { product: Product }) => {
  
-const removeFromFavorites = useCartStore(state => state.removeFromFavorites);
-
+  const { deleteItem } = useCart();
   const handleRemove = () => {
-    if(product) removeFromFavorites(product.id)
+    if(product) deleteItem(product)
   };  
 
   return (

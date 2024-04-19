@@ -163,33 +163,23 @@ export const useUpdateAddress = () => {
   const { getToken } = useAuth();
 
   return useMutation({
-    async mutationFn({
-      id,
-      updatedFields
-    }: {
-      id: string;
-      updatedFields: UpdateTables<'addresses'>;
-      }) {
+    async mutationFn(data: Tables<'addresses'>[]) {
       const token = await getToken({ template: 'supabase'});
       const supabase = await supabaseClient(token);
-      await supabase.from("addresses").update({ is_selected: updatedFields.is_selected });
+      // await supabase.from("addresses").update({ is_selected: false });
       const { error, data: updatedAddress } = await supabase
         .from('addresses')
-        .update(updatedFields)
-        .eq('id', id)
+        .upsert(data)
         .select()
-        .single();
-
       if (error) {
         throw new Error(error.message);
       }
       return updatedAddress;
     },
-    async onSuccess(_, { id, updatedFields }) {
+    async onSuccess(_, data) {
       await queryClient.invalidateQueries({queryKey: ['addresses']});
-      await queryClient.invalidateQueries({queryKey: ['addresses', id]});
-      await queryClient.setQueryData(['addresses', id], (oldData: any) => { 
-        oldData ? {...oldData, updatedFields} : oldData 
+      await queryClient.setQueryData(['addresses', data], (oldData: any) => { 
+        oldData ? {...oldData, data} : oldData 
       })
     },
   });

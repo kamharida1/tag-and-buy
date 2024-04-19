@@ -28,7 +28,7 @@ export type Product = {
   ratings: number | null
   sub_category: string | null
   title: string | null
-  discount: number
+  discount: number | null
 };
 
 export type Address = {
@@ -48,17 +48,13 @@ export type Address = {
   zip_code: string | null
 }
 
-// export type CartItem = {
-//   id: string;
-//   quantity: number;
-//   product: Product;
-//   product_id: string;
-// };
-
 export type CartItem = {
-  product: Product ;
-  quantity: number ;
+  id: string;
+  quantity: number;
+  product: Product;
+  product_id: string;
 };
+
 
 export const OrderStatusList: OrderStatus[] = [
   "New",

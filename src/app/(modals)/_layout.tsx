@@ -7,8 +7,6 @@ export default function StackLayout() {
       presentation: "modal"
     }}>
       <Stack.Screen name="search"  />
-      <Stack.Screen name="cart" />
-      <Stack.Screen name="checkout" options={{ presentation: "fullScreenModal", }} />
     </Stack>
   );
 }

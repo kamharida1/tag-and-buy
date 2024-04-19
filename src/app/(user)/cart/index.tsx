@@ -5,22 +5,21 @@ import { FlexContainer, MainContainer, PaddingContainer } from '@/containers';
 import { Stack, router } from 'expo-router';
 import AppText from '@/components/AppText';
 import Spacer from '@/components/Spacer';
-import { useCartStore } from '@/store';
 import QuickActionButton from '@/components/QuickActionButton';
 import { AntDesign } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 import { ACTIVE_BUTTON_OPACITY } from '@/constants';
-import { AppColors } from '@/utils';
 import AppButton from '@/components/AppButton'; 
 import Animated from 'react-native-reanimated';
 import formatPrice from '@/utils/naira_price';
+import { useCart } from '@/providers/CartProvider';
 
 const RenderOrderDetailsText = ({
   title,
   value,
 }: {
   title: string;
-  value: number;
+  value: any;
 }): JSX.Element => {
   return (
     <>
@@ -38,19 +37,21 @@ const RenderOrderDetailsText = ({
 };
 
 const CartScreen = () => {
-  const store = useCartStore();
 
-  const isCartEmpty = store.cart.length === 0;
+  const { items, total } = useCart();
+
+
+  const isCartEmpty = items.length === 0;
   const DELIVERY_COST = 20.45;
 
-  const getTotalCartPrice = (): number => {
-    const totalCartPrice = store.cart.reduce((total, item) => {
-      const price = item.product.price || 0; // Add null check for item.product.price
-      return total + item.quantity * price;
-    }, 0);
+  // const getTotalCartPrice = (): number => {
+  //   const totalCartPrice = items.reduce((total, item) => {
+  //     const price = item.product.price || 0; // Add null check for item.product.price
+  //     return total + item.quantity * price;
+  //   }, 0);
 
-    return totalCartPrice;
-  };
+  //   return totalCartPrice;
+  // };
 
   return (
     <MainContainer style={{ paddingHorizontal: 0 }} fillHeight>
@@ -67,7 +68,7 @@ const CartScreen = () => {
             <AppText
               fontFamily="airMedium"
               fontSize="extraLarge"
-            >{`Shopping Cart (${store.cart.length || 0})`}</AppText>
+            >{`Shopping Cart (${items.length  || 0})`}</AppText>
           </FlexContainer>
         </PaddingContainer>
       </Animated.View>
@@ -81,15 +82,9 @@ const CartScreen = () => {
         <ScrollView showsVerticalScrollIndicator={false}>
           <PaddingContainer style={{ paddingVertical: 0 }}>
             <Spacer space={30} />
-            {store.cart.map(({ product }, index) => {
-              const isLastProduct = index === store.cart.length - 1;
-              return (
-                <CartProductItem
-                  key={product.id}
-                  product={product}
-                  isLastProduct={isLastProduct}
-                />
-              );
+            {items.map((item, index) => {
+              const isLastProduct = index === items.length - 1;
+              return <CartProductItem key={item.id} cartItem={item} />;
             })}
             <Spacer space={10} />
             {!isCartEmpty ? (
@@ -112,15 +107,15 @@ const CartScreen = () => {
           <Spacer space={10} />
           <RenderOrderDetailsText
             title="Subtotal"
-            value={getTotalCartPrice()}
+            value={total}
           />
           <RenderOrderDetailsText title="Delivery" value={DELIVERY_COST} />
           <RenderOrderDetailsText
             title="Total"
-            value={getTotalCartPrice() + DELIVERY_COST}
+            value={total}
           />
           <Spacer space={30} />
-          <AppButton onPress={()=>router.push(`/checkout`)}>
+          <AppButton onPress={()=>router.push(`/(modals)/checkout`)}>
             Proceed To checkout
           </AppButton>
         </PaddingContainer>

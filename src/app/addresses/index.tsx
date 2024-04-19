@@ -1,5 +1,5 @@
 import { Alert, FlatList, Linking, Pressable, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Link, Stack, router } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDeleteAddress, useGetSelectedAddress, useMyAddressList, useUpdateAddress } from '@/api/addresses';
@@ -16,28 +16,31 @@ import { ButtonOutline } from '@/components/ButtonOutline';
 
 export default function Addresses() {
   const { data: addresses, error, isLoading } = useMyAddressList();
-  const { data: selectedAddress } = useGetSelectedAddress();
+  const { data: selectedAddress, } = useGetSelectedAddress();
   const { mutate: selectAddress } = useUpdateAddress();
   const { mutate: deleteAddress } = useDeleteAddress();
 
-   const [isEnabled, setIsEnabled] = useState(selectedAddress ? true : false);
-   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-
-
-  const updateAddress = (addressId: string) => {
-    if (selectedAddress) {
-      toggleSwitch()
-      selectAddress({
-        id: selectedAddress.id,
-        updatedFields: { is_selected: false },
-      });
-    }
-    toggleSwitch();
-    selectAddress({
-      id: addressId,
-      updatedFields: { is_selected: true },
-    });
+  const [isEnabled, setIsEnabled] = useState(selectedAddress ? true : false);
+  
+  const toggleSwitch = (id: string) => {
+    if (id) setIsEnabled((previousState) => !previousState);
   };
+  
+ const updateAddress = useCallback(
+   async (addressId: string) => {
+     if (selectedAddress?.id) {
+        selectAddress({
+         id: selectedAddress.id,
+         updatedFields: { is_selected: false },
+       });
+     }
+     selectAddress({
+       id: addressId,
+       updatedFields: { is_selected: true },
+     });
+   },
+   [selectedAddress, selectAddress]
+ );
 
   const onDelete = (addressId: string) => {
     deleteAddress(addressId, {
@@ -90,20 +93,25 @@ export default function Addresses() {
         data={addresses || []}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={tw`py-2`}>
+          <View
+            style={tw.style({
+              "bg-green-100": selectedAddress?.id === item.id,
+              padding: 10,
+            })}
+          >
             <FlexContainer position="start" direction="row">
-              <AppText fontFamily="airMedium" style={tw`text-base`}>
+              <AppText fontFamily="airBold" style={tw`text-base`}>
                 {item.first_name} {item.last_name}
               </AppText>
             </FlexContainer>
-            <AppText fontFamily="airRegular" style={tw`text-sm text-gray-900`}>
+            <AppText fontFamily="airMedium" style={tw`text-sm text-gray-900`}>
               {item.street} {`\n`}
               {item.street2}
             </AppText>
-            <AppText fontFamily="airRegular" style={tw`text-sm  text-gray-900`}>
+            <AppText fontFamily="airMedium" style={tw`text-sm  text-gray-800`}>
               {item.city}, {item.state}
             </AppText>
-            <AppText fontFamily="airRegular" style={tw`text-sm  text-gray-900`}>
+            <AppText fontFamily="airMedium" style={tw`text-sm  text-gray-700`}>
               {item.zip_code}
             </AppText>
             <FlexContainer style={tw`mt-4`} position="rowBetween">
@@ -128,7 +136,10 @@ export default function Addresses() {
                 value={selectedAddress?.id === item.id}
               />
               <FlexContainer position="end" direction="row">
-                <QuickActionButton onPress={() => updateAddress(item.id)}>
+                <QuickActionButton onPress={() => {
+                  toggleSwitch(item.id)
+                  updateAddress(item.id);
+                }}>
                   <AntDesign
                     name={
                       selectedAddress?.id === item.id

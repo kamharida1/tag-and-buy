@@ -13,7 +13,7 @@ interface Props{
 }
 
 const ListingsBottomSheet = ({ listings, category }: Props) => { 
-  const snapPoints = useMemo(() => ['10%', '100%'], []);
+  const snapPoints = useMemo(() => ['8%', '82.8%'], []);
   const bottomSheetRef = useRef<BottomSheet>(null); 
   const [refresh, setRefresh] = useState<number>(0);
 
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   sheetContainer: {
     backgroundColor: "white",
-    marginTop: 130,
+    //marginTop: 130,
     elevation: 4,
     shadowColor: "#000",
     shadowOpacity: 0.3,

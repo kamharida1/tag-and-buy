@@ -36,8 +36,8 @@ const Header: React.FC<HeaderProps> = ({
         <View style={styles.headerItem}>
           <AppText
             fontFamily="airBold"
-            numberOfLines={1}
-            style={tw`font-bold text-[23px]`}
+            numberOfLines={0}
+            style={tw`font-bold text-[18px]`}
           >
             {headerText}
           </AppText>
@@ -49,21 +49,22 @@ const Header: React.FC<HeaderProps> = ({
           {rightNode}
         </Pressable>
       </View>
-      <Divider  />
+      <Divider style={tw`mt-0 mb-0`} />
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  pageHeaderContainer: tw.style(`flex flex-row justify-between items-center `, {
+  pageHeaderContainer: tw.style(`flex gap-8 flex-row  items-center `, {
     shadowColor: "#000",
     shadowOffset: { width: 1, height: 2 },
     shadowOpacity: 0.05,
     elevation: 3,
+    backgroundColor: "transparent",
   }),
-  leftItem: tw`flex-1 pl-4 pt-4`,
-  rightItem: tw`flex-1 pr-4 items-end pt-4`,
-  headerItem: tw`flex-1 pt-4 flex-nowrap `,
+  leftItem: tw` pl-4 pb-4`,
+  rightItem: tw`pr-5  pb-4`,
+  headerItem: tw`pb-4 flex-1 items-center justify-center`,
 });
 
 export default Header;

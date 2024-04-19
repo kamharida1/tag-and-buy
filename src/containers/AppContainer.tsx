@@ -41,25 +41,6 @@ const AppContainer = memo<AppContainerProps>(
   }) => {
     const MyView = safe ? SafeAreaView : View;
     return (
-      // <View style={styles.pageHeaderContainer}>
-      //   <Pressable
-      //     onPress={handleOnPressLeftNode}
-      //     style={leftContainerStyle || styles.leftItem}
-      //   >
-      //     {leftNode}
-      //   </Pressable>
-      //   <View style={styles.headerItem}>
-      //     <Text variant="body" style={tw`text-center font-bold text-[20px]`}>
-      //       {headerText}
-      //     </Text>
-      //   </View>
-      //   <Pressable
-      //     onPress={handleOnPressRightNode}
-      //     style={rightContainerStyle || styles.rightItem}
-      //   >
-      //     {rightNode}
-      //   </Pressable>
-      // </View>
       <KeyboardAvoidingView>
         <MyView style={[styles.container, style]}>
           {loading ? (
@@ -110,10 +91,10 @@ export default AppContainer;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    //backgroundColor: "#fff",
   },
   sub: {
     flex: 1,
-    paddingHorizontal: 15
+   // paddingHorizontal: 8
   }
 })

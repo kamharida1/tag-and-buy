@@ -24,6 +24,27 @@ export const useProductList = () => {
   });
 };
 
+export const getProductWeight = (product: Product) => {
+  const { getToken } = useAuth();
+  
+  return useQuery({
+    queryKey: ['product', product.id],
+    queryFn: async () => {
+      const token = await getToken({ template: 'supabase'});
+      const supabase = await supabaseClient(token);
+      const { data, error } = await supabase
+        .from('products')
+        .select(`weight:  product_details->>weight`)
+        .eq('id', product.id)
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data[0]?.weight;
+    },
+  });
+ }
+
+
 export const useProduct = (id: string) => { 
   const { getToken } = useAuth();
 

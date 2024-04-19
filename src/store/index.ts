@@ -14,7 +14,12 @@ type CartStore = {
   removeFromFavorites: (productId: string) => void;
 };
 
-const useCartStore = create<CartStore>()(
+type CheckoutState = {
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
+}
+
+export const useCartStore = create<CartStore>()(
   persist(
     (set) => ({
       cart: [],
@@ -75,5 +80,9 @@ const useCartStore = create<CartStore>()(
   ),  
 );
 
-
-export {useCartStore};
+export const useCheckoutStore = create<CheckoutState>((set) => ({
+  currentStep: 0,
+  setCurrentStep: (step) => {
+    set({ currentStep: step });
+  },
+}));

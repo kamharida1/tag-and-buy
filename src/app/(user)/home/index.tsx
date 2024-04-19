@@ -31,25 +31,24 @@ export default function Home() {
   const { getToken } = useAuth();
 
 
-  const updateAddress = async (addressId: string) => {
-    if (selectedAddress?.is_selected) {
-      selectAddress({
-        id: selectedAddress.id,
-        updatedFields: { is_selected: false },
-      });
-    }
-    selectAddress({
-      id: addressId,
-      updatedFields: { is_selected: true },
-    }, {
+  const updateAddress = async (address: Tables<'addresses'>) => {
+    const updatedAddresses = addresses?.map((addr) => { 
+      if (addr.id === address.id) {
+        return { ...addr, is_selected: true };
+      }
+      return { ...addr, is_selected: false };
+    });
+
+    selectAddress(updatedAddresses as Tables<'addresses'>[]), 
+    {
       onSuccess: () => {
         console.log("Address updated successfully");
       },
-      onError: (error) => {
-        console.log(error);
+      onError: (error: any) => {
+        console.log("Error updating address", error);
       },
-    
-    });
+    }
+    closeAddress();
   };
 
   const addressSheetRef = useRef<BottomSheetModal>(null);
@@ -96,18 +95,24 @@ export default function Home() {
           >
             <Ionicons name="location-outline" size={24} color="black" />
 
-            <View style={{ marginLeft: 10 }}>
+            <View style={{ marginLeft: 10, marginRight: 5 }}>
               {selectedAddress ? (
-                <AppText>
+                <AppText fontFamily="airMedium">
                   Deliver to {selectedAddress?.first_name} -{" "}
                   {selectedAddress?.street}
                 </AppText>
               ) : isFetchingAddress ? (
-                <AppText style={{ fontSize: 13, fontWeight: "500" }}>
+                <AppText
+                  fontFamily="airMedium"
+                  style={{ fontSize: 13, fontWeight: "500" }}
+                >
                   fetching Address...
                 </AppText>
               ) : (
-                <AppText style={{ fontSize: 13, fontWeight: "500" }}>
+                <AppText
+                  fontFamily="airMedium"
+                  style={{ fontSize: 13, fontWeight: "500" }}
+                >
                   Add Address
                 </AppText>
               )}
@@ -168,10 +173,7 @@ export default function Home() {
               {addresses?.map((address, index) => (
                 <Pressable
                   key={index}
-                  onPress={() => {
-                    updateAddress(address.id);
-                    closeAddress();
-                  }}
+                  onPress={() => updateAddress(address)}
                   style={{
                     width: 140,
                     height: 140,

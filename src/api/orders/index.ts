@@ -1,14 +1,17 @@
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/providers/UserProvider';
 import { InsertTables, Tables, UpdateTables } from '@/types';
+import { supabaseClient } from '@/utils/supabaseClient';
+import { useAuth } from '@clerk/clerk-expo';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 
 export const useAdminOrderList = ({ archived = false }) => {
   const statuses = archived ? ['Delivered'] : ['New', 'Preparing', 'Shipped', 'Delivered', 'Cancelled', 'Refunded'];
+  const { getToken } = useAuth();
 
   return useQuery({
     queryKey: ['orders', { archived }],
     queryFn: async () => {
+      const token = await getToken({ template: 'supabase'});
+      const supabase = await supabaseClient(token);
       const { data, error } = await supabase
         .from('orders')
         .select('*')
@@ -23,17 +26,18 @@ export const useAdminOrderList = ({ archived = false }) => {
 };
 
 export const useMyOrderList = () => {
-  const { session } = useAuth();
-  const id = session?.user.id;
+  const {userId, getToken } = useAuth();
 
   return useQuery({
-    queryKey: ['orders', { userId: id }],
+    queryKey: ['orders', { userId }],
     queryFn: async () => {
-      if (!id) return null;
+      if (!userId) return null;
+      const token = await getToken({ template: 'supabase'});
+      const supabase = await supabaseClient(token);
       const { data, error } = await supabase
         .from('orders')
         .select('*')
-        .eq('user_id', id)
+        .eq('user_id', userId)
         .order('created_at', { ascending: false });
       if (error) {
         throw new Error(error.message);
@@ -44,9 +48,13 @@ export const useMyOrderList = () => {
 };
 
 export const useOrderDetails = (id: string) => {
+  const { getToken } = useAuth();
+
   return useQuery({
     queryKey: ['orders', id],
     queryFn: async () => {
+      const token = await getToken({ template: 'supabase'});
+      const supabase = await supabaseClient(token);
       const { data, error } = await supabase
         .from('orders')
         .select('*, order_items(*, products(*))')
@@ -63,11 +71,12 @@ export const useOrderDetails = (id: string) => {
 
 export const useInsertOrder = () => {
   const queryClient = useQueryClient();
-  const { session } = useAuth();
-  const userId = session?.user.id;
+  const {userId, getToken } = useAuth();
 
   return useMutation({
     async mutationFn(data: InsertTables<'orders'>) {
+      const token = await getToken({ template: 'supabase'});
+      const supabase = await supabaseClient(token);
       const { error, data: newOrder } = await supabase
         .from('orders')
         .insert({ ...data, user_id: userId })
@@ -87,6 +96,7 @@ export const useInsertOrder = () => {
 
 export const useUpdateOrder = () => {
   const queryClient = useQueryClient();
+  const { getToken } = useAuth();
 
   return useMutation({
     async mutationFn({
@@ -95,7 +105,9 @@ export const useUpdateOrder = () => {
     }: {
       id: string;
       updatedFields: UpdateTables<'orders'>;
-    }) {
+      }) {
+      const token = await getToken({ template: 'supabase' });
+      const supabase = await supabaseClient(token);
       const { error, data: updatedOrder } = await supabase
         .from('orders')
         .update(updatedFields)

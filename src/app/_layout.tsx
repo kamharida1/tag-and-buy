@@ -13,6 +13,7 @@ import { ClerkProvider, useAuth, useUser } from "@clerk/clerk-expo";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import QueryProvider from "@/providers/QueryProvider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import CartProvider from "@/providers/CartProvider";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -114,10 +115,13 @@ const InitialLayout = () => {
   return (
     <Stack>
       <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-      <Stack.Screen name="(modals)" options={{ presentation: "transparentModal", headerShown: false }} />
+      <Stack.Screen
+        name="(modals)"
+        options={{ presentation: "transparentModal", headerShown: false }}
+      />
       <Stack.Screen name="(user)" options={{ headerShown: false }} />
       <Stack.Screen name="(public)" options={{ headerShown: false }} />
-      <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+      <Stack.Screen name="modal" options={{ headerShown: false }} />
       <Stack.Screen name="addresses" options={{ headerShown: false }} />
     </Stack>
   );
@@ -135,7 +139,9 @@ function RootLayoutNav() {
         <ThemeProvider>
           <SafeAreaProvider>
             <GestureHandlerRootView style={{ flex: 1 }}>
-              <InitialLayout />
+              <CartProvider>
+                <InitialLayout />
+              </CartProvider>
             </GestureHandlerRootView>
           </SafeAreaProvider>
         </ThemeProvider>
