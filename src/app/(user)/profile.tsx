@@ -1,6 +1,9 @@
 import { View, Text, Button, TextInput, StyleSheet, Pressable } from "react-native";
 import { useState } from "react";
 import { useAuth, useUser } from "@clerk/clerk-expo";
+import Spacer from "@/components/Spacer";
+import AppButton from "@/components/AppButton";
+import { router } from "expo-router";
 
 export const LogoutButton = () => {
   const { signOut } = useAuth();
@@ -77,6 +80,10 @@ const profile = () => {
         color={"#6c47ff"}
       ></Button>
       <LogoutButton />
+      <Spacer space={20} />
+      <AppButton onPress={() => router.push("/my-orders/")}>
+        My Orders
+      </AppButton>
     </View>
   );
 };

@@ -24,14 +24,14 @@ export const useAdminAddressList = () => {
   });
 }
 
-export const useGetSelectedAddress = () => { 
-  const {userId, getToken } = useAuth();
+export const useGetSelectedAddress = () => {
+  const { userId, getToken } = useAuth();
 
   return useQuery({
     queryKey: ['addresses', { userId }],
     queryFn: async () => {
       if (!userId) return null;
-      const token = await getToken({ template: 'supabase'});
+      const token = await getToken({ template: 'supabase' });
       const supabase = await supabaseClient(token);
       const { data, error } = await supabase
         .from('addresses')
@@ -45,14 +45,14 @@ export const useGetSelectedAddress = () => {
       return data as Tables<'addresses'>;
     },
     //refetchOnWindowFocus: false,
-  });   
-}
+  });
+};
 
 export const useAddress = (id: string) => { 
   const { getToken } = useAuth();
 
   return useQuery({
-    queryKey: ['product', id],
+    queryKey: ['addresses', id],
     queryFn: async () => {
       const token = await getToken({ template: 'supabase'});
       const supabase = await supabaseClient(token);

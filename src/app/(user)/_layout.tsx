@@ -4,7 +4,7 @@ import { Pressable } from 'react-native';
 import { useAuth } from '@clerk/clerk-expo';
 import { StatusBar } from 'expo-status-bar';
 import CartButtonWithIndicator from '@/components/CartButtonWithIndicator';
-import { useCart } from '@/providers/CartProvider';
+import CartProvider, { useCart } from '@/providers/CartProvider';
 
 export const LogoutButton = () => {
   const { signOut } = useAuth();

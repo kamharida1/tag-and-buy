@@ -1,4 +1,5 @@
 import {
+  useDeleteAddress,
   useGetSelectedAddress,
   useMyAddressList,
   useUpdateAddress,
@@ -34,6 +35,7 @@ import { FlexContainer, PaddingContainer } from "@/containers";
 import QuickActionButton from "@/components/QuickActionButton";
 import { getProductWeight } from "@/api/products";
 import { useCart } from "@/providers/CartProvider";
+import { TouchableOpacity } from "react-native";
 
 export default function ConfirmOrder() {
   const steps = [
@@ -52,6 +54,7 @@ export default function ConfirmOrder() {
 
   
   const { data: selectedAddress } = useGetSelectedAddress();
+  const { mutate: deleteAddress } = useDeleteAddress();
   const { data: addresses } = useMyAddressList();
   const { mutate: selectAddress } = useUpdateAddress();
 
@@ -72,6 +75,31 @@ export default function ConfirmOrder() {
           console.log("Error updating address", error);
         },
       };
+  };
+
+  const onDelete = (addressId: string) => {
+    deleteAddress(addressId, {
+      onSuccess: () => {
+        alert("Address deleted successfully");
+        //router.back();
+      },
+      onError: (error: any) => {
+        alert(error.message);
+      },
+    });
+  };
+
+  const confirmDelete = (addressId: string) => {
+    Alert.alert("Confirm", "Are you sure you want to delete this address", [
+      {
+        text: "Cancel",
+      },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => onDelete(addressId),
+      },
+    ]);
   };
 
   const pay = () => (
@@ -261,7 +289,8 @@ export default function ConfirmOrder() {
                       <Text> Edit </Text>
                     </Pressable>
 
-                    <Pressable
+                    <TouchableOpacity
+                      onPress={() => confirmDelete(address?.id)}
                       style={{
                         backgroundColor: "#F5F5F5",
                         paddingHorizontal: 10,
@@ -272,9 +301,10 @@ export default function ConfirmOrder() {
                       }}
                     >
                       <Text> Remove </Text>
-                    </Pressable>
+                    </TouchableOpacity>
 
-                    <Pressable
+                    <TouchableOpacity
+                      onPress={() => updateAddress(address)}
                       style={{
                         backgroundColor: "#F5F5F5",
                         paddingHorizontal: 10,
@@ -285,7 +315,7 @@ export default function ConfirmOrder() {
                       }}
                     >
                       <Text> Set as Default </Text>
-                    </Pressable>
+                    </TouchableOpacity>
                   </View>
 
                   <View>

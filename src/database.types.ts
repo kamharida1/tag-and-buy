@@ -125,6 +125,7 @@ export type Database = {
       }
       orders: {
         Row: {
+          address_id: string | null
           created_at: string
           id: string
           status: string | null
@@ -132,6 +133,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          address_id?: string | null
           created_at?: string
           id?: string
           status?: string | null
@@ -139,13 +141,22 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          address_id?: string | null
           created_at?: string
           id?: string
           status?: string | null
           total?: number | null
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "public_orders_address_id_fkey"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       products: {
         Row: {

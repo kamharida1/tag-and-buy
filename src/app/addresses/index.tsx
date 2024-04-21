@@ -13,6 +13,7 @@ import AppText from '@/components/AppText';
 import Divider from '@/components/Divider';
 import { AppColors } from '@/utils';
 import { ButtonOutline } from '@/components/ButtonOutline';
+import { Tables } from '@/database.types';
 
 export default function Addresses() {
   const { data: addresses, error, isLoading } = useMyAddressList();
@@ -26,21 +27,24 @@ export default function Addresses() {
     if (id) setIsEnabled((previousState) => !previousState);
   };
   
- const updateAddress = useCallback(
-   async (addressId: string) => {
-     if (selectedAddress?.id) {
-        selectAddress({
-         id: selectedAddress.id,
-         updatedFields: { is_selected: false },
-       });
+ const updateAddress = async (address: Tables<"addresses">) => {
+   const updatedAddresses = addresses?.map((addr) => {
+     if (addr.id === address.id) {
+       return { ...addr, is_selected: true };
      }
-     selectAddress({
-       id: addressId,
-       updatedFields: { is_selected: true },
-     });
-   },
-   [selectedAddress, selectAddress]
- );
+     return { ...addr, is_selected: false };
+   });
+
+   selectAddress(updatedAddresses as Tables<"addresses">[]),
+     {
+       onSuccess: () => {
+         console.log("Address updated successfully");
+       },
+       onError: (error: any) => {
+         console.log("Error updating address", error);
+       },
+     };
+ };
 
   const onDelete = (addressId: string) => {
     deleteAddress(addressId, {
@@ -132,13 +136,13 @@ export default function Addresses() {
                 trackColor={{ false: "#767577", true: "#81b0ff" }}
                 thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={() => updateAddress(item.id)}
+                onValueChange={() => updateAddress(item)}
                 value={selectedAddress?.id === item.id}
               />
               <FlexContainer position="end" direction="row">
                 <QuickActionButton onPress={() => {
                   toggleSwitch(item.id)
-                  updateAddress(item.id);
+                  updateAddress(item);
                 }}>
                   <AntDesign
                     name={

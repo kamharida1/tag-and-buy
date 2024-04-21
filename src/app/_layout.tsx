@@ -123,6 +123,7 @@ const InitialLayout = () => {
       <Stack.Screen name="(public)" options={{ headerShown: false }} />
       <Stack.Screen name="modal" options={{ headerShown: false }} />
       <Stack.Screen name="addresses" options={{ headerShown: false }} />
+      <Stack.Screen name="my-orders" options={{ headerShown: false }} />
     </Stack>
   );
 };

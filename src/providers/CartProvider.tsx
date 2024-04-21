@@ -161,7 +161,7 @@ const CartProvider = ({ children }: PropsWithChildren) => {
   const checkout = async () => {
     try {
       insertOrder(
-        { total, status: "New" },
+        { total, status: "New", address_id: selectedAddress?.id },
         {
           onSuccess: (newOrder) => {
             console.log("New order created:", newOrder); // Check if newOrder is valid
