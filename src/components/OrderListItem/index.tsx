@@ -20,7 +20,7 @@ const OrderListItem = ({ order }: OrderListItemProps) => {
     <Link
       href={{
         pathname: "/my-orders/[id]",
-        params: { id: order.id, address: address?.street ||"No address"},
+        params: { id: order.id, address: JSON.stringify(address)},
       }}
 
       asChild

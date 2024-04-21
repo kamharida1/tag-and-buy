@@ -20,13 +20,17 @@ export default function OrderDetailsScreen() {
     return <Text>Failed to fetch order</Text>;
   }
 
+  const orderAddress = JSON.parse(address as string);
+
   return (
     <View style={{ padding: 10, gap: 20, flex: 1 }}>
       <Stack.Screen options={{ title: `Order #${idString}` }} />
 
       <FlatList
         data={order?.order_items as any}
-        renderItem={({ item }) => <OrderItemListItem address={address as string} item={item} />}
+        renderItem={({ item }) => (
+          <OrderItemListItem address={orderAddress} item={item} />
+        )}
         contentContainerStyle={{ gap: 10 }}
         ListHeaderComponent={() => <OrderListItem order={order} />}
       />

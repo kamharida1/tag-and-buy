@@ -9,7 +9,7 @@ import AppText from "../AppText";
 
 type OrderItemListItemProps = {
   item?: { products: Tables<"products"> } & Tables<"order_items">;
-  address?: string;
+  address?: Tables<"addresses">;
 };
 
 const OrderItemListItem = ({ item, address }: OrderItemListItemProps) => {
@@ -30,7 +30,7 @@ const OrderItemListItem = ({ item, address }: OrderItemListItemProps) => {
             {formatPrice(item?.products.price || 0)}
           </AppText>
           <AppText style={styles.price}>
-            {address || "No address"}
+            {address?.email || "No address"}
           </AppText>
         </View>
       </View>
