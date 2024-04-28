@@ -40,19 +40,6 @@ export default function CreateOrEditAddress() {
   const isUpdating = !!idString;
   const { userId } = useAuth();
 
-  const updaterAddress = async (addressId: string) => {
-    if (selectedAddress?.is_selected) {
-      selectAddress({
-        id: selectedAddress.id,
-        updatedFields: { is_selected: false },
-      });
-    }
-    selectAddress({
-      id: addressId,
-      updatedFields: { is_selected: true },
-    });
-  };
-
   const getInfo = (province: any, town: any) => {
     setProvince(province);
     setTown(town);

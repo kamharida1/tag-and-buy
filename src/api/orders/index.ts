@@ -1,3 +1,4 @@
+import { generateOrderNumber } from '@/helpers/generateOrderNo';
 import { InsertTables, Tables, UpdateTables } from '@/types';
 import { supabaseClient } from '@/utils/supabaseClient';
 import { useAuth } from '@clerk/clerk-expo';
@@ -79,7 +80,11 @@ export const useInsertOrder = () => {
       const supabase = await supabaseClient(token);
       const { error, data: newOrder } = await supabase
         .from('orders')
-        .insert({ ...data, user_id: userId })
+        .insert({
+          ...data,
+          user_id: userId,
+          order_no: generateOrderNumber(),
+        })
         .select()
         .single();
 

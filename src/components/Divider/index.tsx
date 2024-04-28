@@ -16,6 +16,6 @@ const styles = StyleSheet.create({
   divider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: AppColors.DarkGrey,
-    marginVertical: 10,
+    //marginVertical: 10,
   }
 })

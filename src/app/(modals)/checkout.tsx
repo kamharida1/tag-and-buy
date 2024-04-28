@@ -36,6 +36,9 @@ import QuickActionButton from "@/components/QuickActionButton";
 import { getProductWeight } from "@/api/products";
 import { useCart } from "@/providers/CartProvider";
 import { TouchableOpacity } from "react-native";
+import { AppColors } from "@/utils";
+import { ButtonSubmit } from "@/components/ButtonSubmit";
+import AppButton from "@/components/AppButton";
 
 export default function ConfirmOrder() {
   const steps = [
@@ -45,11 +48,11 @@ export default function ConfirmOrder() {
     { title: "Place Order", content: "Order Summary" },
   ];
 
-  const { total, checkout, avgShippingCost } = useCart();
+  const { total, checkout, avgShippingCost, isCheckoutInProgress } = useCart();
   
   const [option, setOption] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
-
+  const [deliveryOption, setDeliveryOption] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
 
   
@@ -130,27 +133,32 @@ export default function ConfirmOrder() {
     <ScrollView style={{ backgroundColor: "white" }}>
       <Stack.Screen options={{ title: "Confirm Order" }} />
       <SafeAreaView style={{ flex: 1, paddingHorizontal: 20 }}>
-        <Animated.View style={{ height: 50, width: "100%" }}>
-          <PaddingContainer style={{ padding: 0 }}>
-            <FlexContainer direction="row" position="start">
-              <QuickActionButton
-                onPress={() => router.canGoBack() && router.back()}
-              >
-                <AntDesign name="arrowleft" size={24} color="black" />
-              </QuickActionButton>
-              <Space space={10} between />
-              <AppText fontFamily="airMedium" fontSize="extraLarge">
-                Checkout
-              </AppText>
-            </FlexContainer>
-          </PaddingContainer>
+        <Animated.View
+          style={{
+            height: 50,
+            width: "100%",
+            paddingTop: 10,
+            marginBottom: 20,
+          }}
+        >
+          <FlexContainer direction="row" position="start">
+            <QuickActionButton
+              onPress={() => router.canGoBack() && router.back()}
+            >
+              <AntDesign name="arrowleft" size={24} color="black" />
+            </QuickActionButton>
+            <Space space={20} between />
+            <AppText fontFamily="airMedium" fontSize="extraLarge">
+              Checkout
+            </AppText>
+          </FlexContainer>
         </Animated.View>
         <View
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: 20,
+            marginBottom: 10,
           }}
         >
           {steps?.map((step, index) => (
@@ -180,11 +188,11 @@ export default function ConfirmOrder() {
                 ]}
               >
                 {index < currentStep ? (
-                  <Text
+                  <AppText
                     style={{ fontSize: 16, fontWeight: "bold", color: "white" }}
                   >
                     &#10003;
-                  </Text>
+                  </AppText>
                 ) : (
                   <Text
                     style={{ fontSize: 16, fontWeight: "bold", color: "white" }}
@@ -193,25 +201,25 @@ export default function ConfirmOrder() {
                   </Text>
                 )}
               </View>
-              <Text style={{ textAlign: "center", marginTop: 8 }}>
+              <AppText
+                fontFamily="airMedium"
+                style={{ textAlign: "center", marginTop: 8 }}
+              >
                 {step.title}
-              </Text>
+              </AppText>
             </View>
           ))}
         </View>
       </SafeAreaView>
 
       {currentStep === 0 && (
-        <Animated.View
-          entering={FadeInDown.duration(300).delay(300)}
-          style={{ marginHorizontal: 20 }}
-        >
-          <Animated.Text
-            entering={FadeInLeft.duration(300).delay(300)}
-            style={{ fontSize: 16, fontWeight: "bold" }}
+        <Animated.View style={{ marginHorizontal: 20 }}>
+          <AppText
+            fontFamily="airBold"
+            style={{ fontSize: 20, fontWeight: "bold" }}
           >
             Select Delivery Address
-          </Animated.Text>
+          </AppText>
 
           <Pressable>
             {addresses?.map((address, index) => (
@@ -249,24 +257,27 @@ export default function ConfirmOrder() {
                       gap: 3,
                     }}
                   >
-                    <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                    <AppText
+                      fontFamily="airBold"
+                      style={{ fontSize: 16, fontWeight: "bold" }}
+                    >
                       {address?.first_name} {address?.last_name}
-                    </Text>
+                    </AppText>
                     <Entypo name="location-pin" size={24} color="red" />
                   </View>
 
-                  <Text style={{ fontSize: 15, color: "#777" }}>
+                  <AppText style={{ fontSize: 15, color: "#777" }}>
                     {address?.street}, {address?.street2}
-                  </Text>
-                  <Text style={{ fontSize: 15, color: "#777" }}>
+                  </AppText>
+                  <AppText style={{ fontSize: 15, color: "#777" }}>
                     {address?.city}, {address?.state}
-                  </Text>
-                  <Text style={{ fontSize: 15, color: "#777" }}>
+                  </AppText>
+                  <AppText style={{ fontSize: 15, color: "#777" }}>
                     phone No : {address?.phone}
-                  </Text>
-                  <Text style={{ fontSize: 15, color: "#777" }}>
+                  </AppText>
+                  <AppText style={{ fontSize: 15, color: "#777" }}>
                     pin code : {address?.zip_code}
-                  </Text>
+                  </AppText>
 
                   <View
                     style={{
@@ -286,7 +297,7 @@ export default function ConfirmOrder() {
                         borderColor: "#D0D0D0",
                       }}
                     >
-                      <Text> Edit </Text>
+                      <AppText> Edit </AppText>
                     </Pressable>
 
                     <TouchableOpacity
@@ -300,7 +311,7 @@ export default function ConfirmOrder() {
                         borderColor: "#D0D0D0",
                       }}
                     >
-                      <Text> Remove </Text>
+                      <AppText> Remove </AppText>
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -314,7 +325,7 @@ export default function ConfirmOrder() {
                         borderColor: "#D0D0D0",
                       }}
                     >
-                      <Text> Set as Default </Text>
+                      <AppText> Set as Default </AppText>
                     </TouchableOpacity>
                   </View>
 
@@ -331,9 +342,12 @@ export default function ConfirmOrder() {
                           marginTop: 10,
                         }}
                       >
-                        <Text style={{ textAlign: "center", color: "white" }}>
+                        <AppText
+                          fontFamily="airMedium"
+                          style={{ textAlign: "center", color: "white" }}
+                        >
                           Deliver to this Address
-                        </Text>
+                        </AppText>
                       </Pressable>
                     )}
                   </View>
@@ -351,7 +365,7 @@ export default function ConfirmOrder() {
         >
           <Animated.Text
             entering={FadeInLeft.duration(100).delay(300)}
-            style={{ fontSize: 20 }}
+            style={{ fontSize: 20, fontFamily: "airBold" }}
           >
             Choose your delivery options
           </Animated.Text>
@@ -379,16 +393,26 @@ export default function ConfirmOrder() {
               />
             )}
 
-            <Text style={{ flex: 1 }}>
-              <Text style={{ color: "green", fontWeight: "500" }}>
+            <AppText style={{ flex: 1 }}>
+              <AppText style={{ color: "green", fontWeight: "500" }}>
                 Tomorrow by 10pm
-              </Text>{" "}
+              </AppText>{" "}
               - Free delivery with your Prime membership
-            </Text>
+            </AppText>
           </View>
 
           <Pressable
-            onPress={() => setCurrentStep(2)}
+            onPress={() => {
+              if (option) {
+                if (currentStep < steps.length - 1) {
+                  setCurrentStep(currentStep + 1);
+                }
+              } else {
+                alert(
+                  "Please select an option before moving to the next step."
+                );
+              }
+            }}
             style={{
               backgroundColor: "#FFC72C",
               padding: 10,
@@ -398,7 +422,29 @@ export default function ConfirmOrder() {
               marginTop: 15,
             }}
           >
-            <Text style={tw`text-base font-semibold`}>Continue</Text>
+            <AppText fontFamily="airMedium" style={tw`text-base font-semibold`}>
+              Continue
+            </AppText>
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              if (currentStep > 0) {
+                setCurrentStep(currentStep - 1);
+              }
+            }}
+            style={{
+              // backgroundColor: AppColors.Grey,
+              padding: 10,
+              borderRadius: 10,
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 15,
+              marginBottom: 10,
+            }}
+          >
+            <AppText fontFamily="airMedium" style={tw`text-base text-teal-600`}>
+              Go back
+            </AppText>
           </Pressable>
         </Animated.View>
       )}
@@ -408,12 +454,9 @@ export default function ConfirmOrder() {
           entering={FadeInUp.duration(200)}
           style={{ marginHorizontal: 20 }}
         >
-          <Animated.Text
-            entering={SlideInUp.duration(200)}
-            style={{ fontSize: 20, fontWeight: "bold" }}
-          >
+          <AppText style={{ fontSize: 20, fontFamily: "airBold" }}>
             Select your Payment Method
-          </Animated.Text>
+          </AppText>
 
           <View
             style={{
@@ -438,7 +481,7 @@ export default function ConfirmOrder() {
               />
             )}
 
-            <Text>Cash on Delivery</Text>
+            <AppText>Cash on Delivery</AppText>
           </View>
 
           <View
@@ -474,10 +517,20 @@ export default function ConfirmOrder() {
               />
             )}
 
-            <Text>Credit or debit card </Text>
+            <AppText>Credit or debit card </AppText>
           </View>
           <Pressable
-            onPress={() => setCurrentStep(3)}
+            onPress={() => {
+              if (selectedOption) {
+                if (currentStep < steps.length - 1) {
+                  setCurrentStep(currentStep + 1);
+                }
+              } else {
+                alert(
+                  "Please select an option before moving to the next step."
+                );
+              }
+            }}
             style={{
               backgroundColor: "#FFC72C",
               padding: 10,
@@ -488,7 +541,29 @@ export default function ConfirmOrder() {
               marginTop: 15,
             }}
           >
-            <Text style={tw`text-base font-medium`}>Continue</Text>
+            <AppText fontFamily="airMedium" style={tw`text-base font-medium`}>
+              Continue
+            </AppText>
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              if (currentStep > 0) {
+                setCurrentStep(currentStep - 1);
+              }
+            }}
+            style={{
+              // backgroundColor: AppColors.Grey,
+              padding: 10,
+              borderRadius: 10,
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 15,
+              marginBottom: 10,
+            }}
+          >
+            <AppText fontFamily="airMedium" style={tw`text-base text-teal-600`}>
+              Go back
+            </AppText>
           </Pressable>
         </Animated.View>
       )}
@@ -498,27 +573,22 @@ export default function ConfirmOrder() {
           entering={FadeInUp.duration(500)}
           style={{ marginHorizontal: 20 }}
         >
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>Order Now</Text>
+          <AppText style={{ fontSize: 20, fontFamily: "airBold" }}>
+            Order Now
+          </AppText>
           <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: 10,
-              alignItems: "center",
-              gap: 8,
-              backgroundColor: "white",
-              padding: 8,
-              borderColor: "#D0D0D0",
-              borderWidth: 1,
-            }}
+            style={tw`bg-white flex-row justify-between rounded-md p-4 border border-gray-300 mt-4`}
           >
             <View>
-              <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+              <AppText
+                fontFamily="airMedium"
+                style={{ fontSize: 17, fontWeight: "bold" }}
+              >
                 Save 5% and never run out
-              </Text>
-              <Text style={{ fontSize: 15, color: "gray", marginTop: 5 }}>
+              </AppText>
+              <AppText style={{ fontSize: 15, color: "gray", marginTop: 5 }}>
                 Get regular delivery of this item and save 5.0%{" "}
-              </Text>
+              </AppText>
             </View>
             <MaterialIcons
               name="keyboard-arrow-right"
@@ -527,91 +597,94 @@ export default function ConfirmOrder() {
             />
           </View>
 
-          <View
-            style={{
-              backgroundColor: "white",
-              padding: 8,
-              borderColor: "#D0D0D0",
-              borderWidth: 1,
-              marginTop: 10,
-            }}
-          >
-            <Text> Shipping to {selectedAddress?.first_name}</Text>
+          <View style={tw`bg-white rounded-md p-4 border border-gray-300 mt-4`}>
+            <AppText fontFamily="airMedium">
+              Shipping to {selectedAddress?.first_name}
+            </AppText>
 
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginTop: 8,
-                alignItems: "center",
-                // gap: 8,
-              }}
-            >
-              <Text style={{ fontSize: 16, fontWeight: "500", color: "gray" }}>
-                Items
-              </Text>
-
-              <Text style={{ fontSize: 16, fontWeight: "500", color: "gray" }}>
-                {formatPrice(total)}
-              </Text>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginTop: 8,
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ fontSize: 16, fontWeight: "500", color: "gray" }}>
-                Delivery
-              </Text>
-
-              <Text style={{ fontSize: 16, color: "gray" }}>
-                {formatPrice(avgShippingCost)}
-              </Text>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginTop: 8,
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ fontSize: 20, fontWeight: "500" }}>
-                Order Total
-              </Text>
-
-              <Text
-                style={{ color: "#C60C30", fontSize: 17, fontWeight: "bold" }}
+            <View style={tw`flex-row justify-between mt-4`}>
+              <AppText
+                fontFamily="airMedium"
+                style={{ fontSize: 16, fontWeight: "500", color: "gray" }}
               >
-                {formatPrice(Number(total))}
-              </Text>
+                Items
+              </AppText>
+
+              <AppText
+                fontFamily="airMedium"
+                style={{ fontSize: 16, fontWeight: "500", color: "gray" }}
+              >
+                {formatPrice(total)}
+              </AppText>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginTop: 8,
+                alignItems: "center",
+              }}
+            >
+              <AppText
+                fontFamily="airMedium"
+                style={{ fontSize: 16, fontWeight: "500", color: "gray" }}
+              >
+                Delivery
+              </AppText>
+
+              <AppText
+                fontFamily="airMedium"
+                style={{ fontSize: 16, color: "gray" }}
+              >
+                {formatPrice(avgShippingCost)}
+              </AppText>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginTop: 8,
+                alignItems: "center",
+              }}
+            >
+              <AppText
+                fontFamily="airMedium"
+                style={{ fontSize: 20, fontFamily: "airBold" }}
+              >
+                Order Total
+              </AppText>
+
+              <AppText
+                style={{
+                  color: "#C60C30",
+                  fontSize: 18,
+                  fontFamily: "airBold",
+                }}
+              >
+                {formatPrice(Number(total + avgShippingCost))}
+              </AppText>
             </View>
           </View>
 
-          <View
-            style={{
-              backgroundColor: "white",
-              padding: 8,
-              borderColor: "#D0D0D0",
-              borderWidth: 1,
-              marginTop: 10,
-            }}
-          >
-            <Text style={{ fontSize: 16, color: "gray" }}>Pay With</Text>
+          <View style={tw`bg-white rounded-md p-4 border border-gray-300 mt-4`}>
+            <AppText
+              style={{ fontSize: 16, fontFamily: "airMedium", color: "gray" }}
+            >
+              Pay With
+            </AppText>
 
-            <Text style={{ fontSize: 16, fontWeight: "600", marginTop: 7 }}>
+            <AppText
+              style={{ fontSize: 16, fontFamily: "airMedium", marginTop: 7 }}
+            >
               Pay on Delivery (Cash)
-            </Text>
+            </AppText>
           </View>
 
           <Space space={10} />
 
-          <Pressable
+          {/* <Pressable
             onPress={() => checkout()}
             style={{
               backgroundColor: "#FFC72C",
@@ -624,6 +697,28 @@ export default function ConfirmOrder() {
           >
             <AppText fontSize="medium" fontFamily="airMedium">
               Place your order
+            </AppText>
+          </Pressable> */}
+          <Button onPress={() => checkout()} label={isCheckoutInProgress ? "Processing" : "Place your order"} />
+
+          <Pressable
+            onPress={() => {
+              if (currentStep > 0) {
+                setCurrentStep(currentStep - 1);
+              }
+            }}
+            style={{
+              // backgroundColor: AppColors.Grey,
+              padding: 10,
+              borderRadius: 10,
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 15,
+              marginBottom: 10,
+            }}
+          >
+            <AppText fontFamily="airMedium" style={tw`text-base text-teal-600`}>
+              Go back
             </AppText>
           </Pressable>
         </Animated.View>

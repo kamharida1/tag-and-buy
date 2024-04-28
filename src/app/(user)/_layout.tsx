@@ -39,6 +39,7 @@ const TabsPage = () => {
         }}
       >
         <Tabs.Screen name="index" options={{ href: null }} />
+        <Tabs.Screen name="my-orders" options={{ href: null }} />
 
         <Tabs.Screen
           name="home"

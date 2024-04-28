@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     height: 18,
     width: 18,
     borderRadius: 100,
-    backgroundColor: AppColors.PrimaryGreen,
+    backgroundColor: AppColors.TextCritical,
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",

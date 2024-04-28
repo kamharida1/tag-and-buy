@@ -1,0 +1,25 @@
+import { AppColors } from "@/utils";
+
+export const customStyles = {
+    stepIndicatorSize: 25,
+    currentStepIndicatorSize: 30,
+    separatorStrokeWidth: 2,
+    currentStepStrokeWidth: 3,
+    stepStrokeCurrentColor: AppColors.LightOrange,
+    stepStrokeWidth: 3,
+    stepStrokeFinishedColor: AppColors.LightWhite,
+    stepStrokeUnFinishedColor: "#aaaaaa",
+    separatorFinishedColor: "#fe7013",
+    separatorUnFinishedColor: "#aaaaaa",
+    stepIndicatorFinishedColor: "#fe7013",
+    stepIndicatorUnFinishedColor: "#ffffff",
+    stepIndicatorCurrentColor: AppColors.PureWhite,
+    stepIndicatorLabelFontSize: 10,
+    currentStepIndicatorLabelFontSize: 13,
+    stepIndicatorLabelCurrentColor: "#fe7013",
+    stepIndicatorLabelFinishedColor: "#ffffff",
+    stepIndicatorLabelUnFinishedColor: "#aaaaaa",
+    labelColor: "#999999",
+    labelSize: 13,
+    currentStepLabelColor: "#fe7013",
+  };

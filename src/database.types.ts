@@ -127,24 +127,36 @@ export type Database = {
         Row: {
           address_id: string | null
           created_at: string
+          delivered_at: string | null
           id: string
-          status: string | null
+          order_no: string | null
+          processed_at: string | null
+          shipped_at: string | null
+          status: Database["public"]["Enums"]["OrderStatus"] | null
           total: number | null
           user_id: string | null
         }
         Insert: {
           address_id?: string | null
           created_at?: string
+          delivered_at?: string | null
           id?: string
-          status?: string | null
+          order_no?: string | null
+          processed_at?: string | null
+          shipped_at?: string | null
+          status?: Database["public"]["Enums"]["OrderStatus"] | null
           total?: number | null
           user_id?: string | null
         }
         Update: {
           address_id?: string | null
           created_at?: string
+          delivered_at?: string | null
           id?: string
-          status?: string | null
+          order_no?: string | null
+          processed_at?: string | null
+          shipped_at?: string | null
+          status?: Database["public"]["Enums"]["OrderStatus"] | null
           total?: number | null
           user_id?: string | null
         }
@@ -261,7 +273,13 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      OrderStatus:
+        | "NEW"
+        | "PROCESSING"
+        | "SHIPPED"
+        | "DELIVERED"
+        | "CANCELLED"
+        | "REFUNDED"
     }
     CompositeTypes: {
       [_ in never]: never

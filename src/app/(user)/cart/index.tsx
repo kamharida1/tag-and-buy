@@ -38,7 +38,7 @@ const RenderOrderDetailsText = ({
 
 const CartScreen = () => {
 
-  const { items, total } = useCart();
+  const { items, total, avgShippingCost } = useCart();
 
 
   const isCartEmpty = items.length === 0;
@@ -56,7 +56,7 @@ const CartScreen = () => {
   return (
     <MainContainer style={{ paddingHorizontal: 0 }} fillHeight>
       <Stack.Screen options={{ headerShown: false }} />
-      <Animated.View style={{height: 50, width: "100%"}}>
+      <Animated.View style={{ height: 50, width: "100%" }}>
         <PaddingContainer style={{ padding: 0 }}>
           <FlexContainer direction="row" position="start">
             <QuickActionButton
@@ -68,7 +68,7 @@ const CartScreen = () => {
             <AppText
               fontFamily="airMedium"
               fontSize="extraLarge"
-            >{`Shopping Cart (${items.length  || 0})`}</AppText>
+            >{`Shopping Cart (${items.length || 0})`}</AppText>
           </FlexContainer>
         </PaddingContainer>
       </Animated.View>
@@ -105,17 +105,11 @@ const CartScreen = () => {
       {!isCartEmpty ? (
         <PaddingContainer style={styles.checkoutView}>
           <Spacer space={10} />
-          <RenderOrderDetailsText
-            title="Subtotal"
-            value={total}
-          />
-          <RenderOrderDetailsText title="Delivery" value={DELIVERY_COST} />
-          <RenderOrderDetailsText
-            title="Total"
-            value={total}
-          />
+          <RenderOrderDetailsText title="Subtotal" value={total} />
+          <RenderOrderDetailsText title="Delivery" value={avgShippingCost} />
+          <RenderOrderDetailsText title="Total" value={total + avgShippingCost} />
           <Spacer space={30} />
-          <AppButton onPress={()=>router.push(`/(modals)/checkout`)}>
+          <AppButton onPress={() => router.push(`/(modals)/checkout`)}>
             Proceed To checkout
           </AppButton>
         </PaddingContainer>

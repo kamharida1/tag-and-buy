@@ -57,24 +57,17 @@ export type CartItem = {
 
 
 export const OrderStatusList: OrderStatus[] = [
-  "New",
-  "Preparing",
-  "Shipped",
-  "Delivered",
-  "Cancelled",
-  "Refunded",
+  "NEW",
+  "PROCESSING",
+  "SHIPPED",
+  "DELIVERED",
+  "CANCELLED",
+  "REFUNDED",
 ];
 
-export type OrderStatus = "New" | "Preparing" | "Shipped" | "Delivered" | "Cancelled" | "Refunded";
+export type OrderStatus = "NEW" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED" | "REFUNDED";
 
 export type Order = {
-  // id: string;
-  // created_at: string;
-  // total: number;
-  // user_id: string;
-  // status: OrderStatus;
-
-  // order_items?: OrderItem[];
   address_id?: string
   created_at?: string
   id?: string
@@ -82,6 +75,7 @@ export type Order = {
   total: number
   user_id: string | null
   order_items?: OrderItem[];
+  //processed_at?: Date | null
 };
 
 export type OrderItem = {

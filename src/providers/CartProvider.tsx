@@ -19,6 +19,7 @@ type CartType = {
   avgShippingCost: number;
   clearCart: () => void;
   deleteItem: (product: Product) => void;
+  isCheckoutInProgress?: boolean;
 };
 
 const CartContext = createContext<CartType>({
@@ -30,6 +31,7 @@ const CartContext = createContext<CartType>({
   total: 0,
   checkout: () => { },
   avgShippingCost: 0,
+  isCheckoutInProgress: false,
 });
 
 const CART_STORAGE_KEY = "cartItems";
@@ -39,6 +41,8 @@ const CartProvider = ({ children }: PropsWithChildren) => {
 
   const [avgShippingCost, setAvgShippingCost] = useState(0);
   const [shippingFee, setShippingFee] = useState(0);
+  const [isCheckoutInProgress, setIsCheckoutInProgress] = useState(false);
+
 
   const { data: selectedAddress } = useGetSelectedAddress();
 
@@ -159,9 +163,10 @@ const CartProvider = ({ children }: PropsWithChildren) => {
   };
 
   const checkout = async () => {
+    setIsCheckoutInProgress(true);
     try {
       insertOrder(
-        { total, status: "New", address_id: selectedAddress?.id },
+        { total, status: "NEW", address_id: selectedAddress?.id },
         {
           onSuccess: (newOrder) => {
             console.log("New order created:", newOrder); // Check if newOrder is valid
@@ -178,6 +183,8 @@ const CartProvider = ({ children }: PropsWithChildren) => {
       );
     } catch (error) {
       console.error("Error inserting order:", error);
+    } finally {
+      setIsCheckoutInProgress(false);
     }
   };
 
@@ -195,7 +202,7 @@ const CartProvider = ({ children }: PropsWithChildren) => {
     insertOrderItems(orderItems, {
       onSuccess() {
         clearCart();
-        router.push(`/(user)/home`);
+         router.push("/(user)/my-orders/");
       },
       onError(error) { 
         console.error("Error inserting order items:", error);
@@ -205,7 +212,7 @@ const CartProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <CartContext.Provider
-      value={{ items, clearCart, addItem, deleteItem, updateQuantity, total, checkout, avgShippingCost }}
+      value={{ items, clearCart, addItem, deleteItem, updateQuantity, total, checkout, avgShippingCost, isCheckoutInProgress }}
     >
       {children}
     </CartContext.Provider>

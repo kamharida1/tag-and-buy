@@ -23,7 +23,6 @@ import * as FileSystem from "expo-file-system";
 import { useAuth } from "@clerk/clerk-expo";
 import { MaterialIcons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
-import { AppContainer } from "@/components/AppContainer";
 import { Text } from "@/components/Theme";
 import Button from "@/components/Button";
 import tw from "twrnc";
@@ -33,6 +32,7 @@ import { generateFieldsForCategory } from "@/utils/generateFieldsForCategory";
 import DynamicForm from "@/components/FormDyamic";
 import { supabaseClient } from "@/utils/supabaseClient";
 import KeyboardAvoidingView from "@/components/KeyboardAvoidingView ";
+import { AppContainer } from "@/components/AppContainer";
 const { width } = Dimensions.get("window");
 
 export default function CreateProduct() {
@@ -367,174 +367,172 @@ export default function CreateProduct() {
     );
 
   return (
-    <KeyboardAvoidingView>
-      <AppContainer>
-        <View style={{ flex: 1 }}>
-          <Stack.Screen
-            options={{
-              headerBackTitleStyle: { fontFamily: "airMedium" },
-              headerTitleStyle: { fontFamily: "airMedium" },
-              title: "Create Product",
-            }}
-          />
-          <Text style={styles.label}>Name</Text>
-          <TextInput
-            value={title}
-            onChangeText={setTitle}
-            placeholder="Title"
-            style={styles.input}
-          />
-          <Text style={styles.label}>Description</Text>
-          <TextInput
-            value={description}
-            onChangeText={setDescription}
-            placeholder="Description"
-            style={styles.input}
-          />
-          <Text style={styles.label}>Price</Text>
-          <TextInput
-            value={price}
-            onChangeText={setPrice}
-            placeholder="Price"
-            style={styles.input}
-            keyboardType="numeric"
-          />
-          <Text style={styles.label}>Count</Text>
-          <TextInput
-            value={count}
-            onChangeText={setCount}
-            placeholder="Count"
-            style={styles.input}
-            keyboardType="numeric"
-          />
-          <Text style={styles.label}>Old Price</Text>
-          <TextInput
-            value={old_price}
-            onChangeText={setOldPrice}
-            placeholder="Old Price"
-            style={styles.input}
-            keyboardType="numeric"
-          />
-          <Text style={styles.label}>Ratings</Text>
-          <TextInput
-            value={ratings}
-            onChangeText={setRatings}
-            placeholder="Ratings"
-            style={styles.input}
-            keyboardType="numeric"
-          />
-          <Text style={styles.label}>Avg Rating</Text>
-          <TextInput
-            value={avg_rating}
-            onChangeText={setAvgRating}
-            placeholder="Avg Rating"
-            style={styles.input}
-            keyboardType="numeric"
-          />
-          <Button
-            //variant="primary"
-            label="Pick Images"
-            onPress={pickImages}
-            style={{ marginBottom: 10 }}
-          />
-          <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-            {selectedImages.map((uri) => (
-              <View
-                key={uri}
-                style={{
-                  width: 100,
-                  height: 100,
-                  margin: 5,
-                  backgroundColor: "gray",
-                }}
-              >
-                <Image
-                  source={{ uri }}
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </View>
-            ))}
-          </View>
-          <Button
-            //variant="primary"
-            label="Upload Images"
-            onPress={uploadImages}
-            style={{ marginBottom: 10 }}
-          />
-          {isLoading && <Text>Uploading...</Text>}
-          {error && <Text style={{ color: "red" }}>{error}</Text>}
-          {successMessage && (
-            <Text style={{ color: "green" }}>{successMessage}</Text>
-          )}
-          <View
-            style={tw` flex-row  bg-white border-[1.5px] rounded-md h-13 justify-between px-2 border-slate-300 items-center relative`}
-          >
-            <View>
-              <RNPickerSelect
-                onValueChange={handleBrandChange}
-                style={pickerSelectStyles}
-                value={brand}
-                placeholder={{ label: "Select a brand", value: null }}
-                items={brands.map((brand) => ({
-                  label: brand,
-                  value: brand,
-                }))}
-              />
-            </View>
-            {showIconPlatform}
-          </View>
-          <View
-            style={tw` flex-row my-4 bg-white border-[1.5px] rounded-md h-13 justify-between px-2 border-slate-300 items-center relative`}
-          >
-            <View>
-              <RNPickerSelect
-                onValueChange={handleCategoryChange}
-                style={pickerSelectStyles}
-                value={category}
-                placeholder={{ label: "Select a category", value: null }}
-                items={categories.map((category) => ({
-                  label: category,
-                  value: category,
-                }))}
-              />
-            </View>
-            {showIconPlatform}
-          </View>
-          {category && (
+    <AppContainer>
+      <View style={{ flex: 1 }}>
+        <Stack.Screen
+          options={{
+            headerBackTitleStyle: { fontFamily: "airMedium" },
+            headerTitleStyle: { fontFamily: "airMedium" },
+            title: "Create Product",
+          }}
+        />
+        <Text style={styles.label}>Name</Text>
+        <TextInput
+          value={title}
+          onChangeText={setTitle}
+          placeholder="Title"
+          style={styles.input}
+        />
+        <Text style={styles.label}>Description</Text>
+        <TextInput
+          value={description}
+          onChangeText={setDescription}
+          placeholder="Description"
+          style={styles.input}
+        />
+        <Text style={styles.label}>Price</Text>
+        <TextInput
+          value={price}
+          onChangeText={setPrice}
+          placeholder="Price"
+          style={styles.input}
+          keyboardType="numeric"
+        />
+        <Text style={styles.label}>Count</Text>
+        <TextInput
+          value={count}
+          onChangeText={setCount}
+          placeholder="Count"
+          style={styles.input}
+          keyboardType="numeric"
+        />
+        <Text style={styles.label}>Old Price</Text>
+        <TextInput
+          value={old_price}
+          onChangeText={setOldPrice}
+          placeholder="Old Price"
+          style={styles.input}
+          keyboardType="numeric"
+        />
+        <Text style={styles.label}>Ratings</Text>
+        <TextInput
+          value={ratings}
+          onChangeText={setRatings}
+          placeholder="Ratings"
+          style={styles.input}
+          keyboardType="numeric"
+        />
+        <Text style={styles.label}>Avg Rating</Text>
+        <TextInput
+          value={avg_rating}
+          onChangeText={setAvgRating}
+          placeholder="Avg Rating"
+          style={styles.input}
+          keyboardType="numeric"
+        />
+        <Button
+          //variant="primary"
+          label="Pick Images"
+          onPress={pickImages}
+          style={{ marginBottom: 10 }}
+        />
+        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+          {selectedImages.map((uri) => (
             <View
-              style={tw` flex-row mb-5 bg-neutral-50 border-[1.5px] rounded-md h-13 justify-between px-2 border-slate-300 items-center relative`}
+              key={uri}
+              style={{
+                width: 100,
+                height: 100,
+                margin: 5,
+                backgroundColor: "gray",
+              }}
             >
-              <View>
-                <RNPickerSelect
-                  onValueChange={handleSubCategoryChange}
-                  style={pickerSelectStyles}
-                  value={sub_category}
-                  placeholder={{ label: "Select a subtype", value: null }}
-                  items={getAvailableSubtypes(category).map((subtype) => ({
-                    label: subtype,
-                    value: subtype,
-                  }))}
-                />
-              </View>
-              {showIconPlatform}
+              <Image
+                source={{ uri }}
+                style={{ width: "100%", height: "100%" }}
+              />
             </View>
-          )}
-          {category && sub_category && (
-            <DynamicForm
-              fields={generateFieldsForCategory(category, sub_category)}
-              onFieldChange={handleProductDetailsChange}
-            />
-          )}
-          <Text style={{ color: "red" }}>{errors}</Text>
-          <Button onPress={onSubmit} label={isUpdating ? "Update" : "Create"} />
-          {isUpdating && (
-            <Text onPress={confirmDelete} style={styles.textButton}>
-              Delete
-            </Text>
-          )}
+          ))}
         </View>
-      </AppContainer>
-    </KeyboardAvoidingView>
+        <Button
+          //variant="primary"
+          label="Upload Images"
+          onPress={uploadImages}
+          style={{ marginBottom: 10 }}
+        />
+        {isLoading && <Text>Uploading...</Text>}
+        {error && <Text style={{ color: "red" }}>{error}</Text>}
+        {successMessage && (
+          <Text style={{ color: "green" }}>{successMessage}</Text>
+        )}
+        <View
+          style={tw` flex-row  bg-white border-[1.5px] rounded-md h-13 justify-between px-2 border-slate-300 items-center relative`}
+        >
+          <View>
+            <RNPickerSelect
+              onValueChange={handleBrandChange}
+              style={pickerSelectStyles}
+              value={brand}
+              placeholder={{ label: "Select a brand", value: null }}
+              items={brands.map((brand) => ({
+                label: brand,
+                value: brand,
+              }))}
+            />
+          </View>
+          {showIconPlatform}
+        </View>
+        <View
+          style={tw` flex-row my-4 bg-white border-[1.5px] rounded-md h-13 justify-between px-2 border-slate-300 items-center relative`}
+        >
+          <View>
+            <RNPickerSelect
+              onValueChange={handleCategoryChange}
+              style={pickerSelectStyles}
+              value={category}
+              placeholder={{ label: "Select a category", value: null }}
+              items={categories.map((category) => ({
+                label: category,
+                value: category,
+              }))}
+            />
+          </View>
+          {showIconPlatform}
+        </View>
+        {category && (
+          <View
+            style={tw` flex-row mb-5 bg-neutral-50 border-[1.5px] rounded-md h-13 justify-between px-2 border-slate-300 items-center relative`}
+          >
+            <View>
+              <RNPickerSelect
+                onValueChange={handleSubCategoryChange}
+                style={pickerSelectStyles}
+                value={sub_category}
+                placeholder={{ label: "Select a subtype", value: null }}
+                items={getAvailableSubtypes(category).map((subtype) => ({
+                  label: subtype,
+                  value: subtype,
+                }))}
+              />
+            </View>
+            {showIconPlatform}
+          </View>
+        )}
+        {category && sub_category && (
+          <DynamicForm
+            fields={generateFieldsForCategory(category, sub_category)}
+            onFieldChange={handleProductDetailsChange}
+          />
+        )}
+        <Text style={{ color: "red" }}>{errors}</Text>
+        <Button onPress={onSubmit} label={isUpdating ? "Update" : "Create"} />
+        {isUpdating && (
+          <Text onPress={confirmDelete} style={styles.textButton}>
+            Delete
+          </Text>
+        )}
+      </View>
+    </AppContainer>
   );
 }
 

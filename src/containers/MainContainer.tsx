@@ -23,7 +23,7 @@ export default ({
       style={{
         flex: fillHeight ? 1 : undefined,
         backgroundColor: backgroundColor || AppColors.PureWhite,
-        paddingVertical: 20,
+        //paddingVertical: 20,
         paddingHorizontal: 10,
         ...style,
       }}

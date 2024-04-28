@@ -1,12 +1,12 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, Touchable, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { FlatList } from "react-native";
 import { SafeAreaView } from "moti";
-import { useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import { useCartStore } from "@/store";
 import { CardFavorites } from "@/components/CardFavorites";
 import AppText from "@/components/AppText";
-
+import tw from "twrnc";
 export default function Wishlist() {
   //  const { wishlisted } = useLocalSearchParams();
   //  const wish = JSON.parse(wishlisted as string);
@@ -28,21 +28,25 @@ export default function Wishlist() {
                 fontWeight: "bold",
                 color: "#333",
                 margin: 10,
-                paddingHorizontal: 10
+                paddingHorizontal: 10,
               }}
             >
               Wishlist
             </AppText>
-          
           )}
         />
       ) : (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <Text style={{ fontSize: 24, fontWeight: "bold", color: "#333" }}>
+          <AppText  style={{ fontSize: 24, fontWeight: "bold", color: "#333" }}>
             No items on wishlist
-          </Text>
+            </AppText>
+            <Link href={`/`} asChild>
+              <TouchableOpacity style={tw`mt-4 border p-3 border-gray-400 rounded-md`}>
+                <AppText style={{ }} fontSize="large" fontFamily="airBold">ADD PRODUCT</AppText>
+              </TouchableOpacity>
+            </Link>
         </View>
       )}
     </SafeAreaView>
